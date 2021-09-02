@@ -205,10 +205,10 @@ public class SetupRegions implements Listener
 
     public static void battleTimer(ProtectedRegion regionRed, ProtectedRegion regionBlue, int particleRunnerID){
         RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
-        Bukkit.broadcastMessage("Prepare for Battle! Gather Supplies!");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies!");
         int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             public void run() {
-                Bukkit.broadcastMessage("Let the Battle Begin! Force fields have come down!");
+                Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down!");
 
                 //Remove Flags
                 regionBlue.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
