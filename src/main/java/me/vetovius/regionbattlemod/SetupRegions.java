@@ -15,9 +15,12 @@ import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.logging.Logger;
 
 public class SetupRegions implements Listener
@@ -25,9 +28,16 @@ public class SetupRegions implements Listener
 
     private static final Logger LOGGER = Logger.getLogger( SetupRegions.class.getName() );
 
+    private static int regionSize = 300; //dimension region should be (a square at y=0 to max height)
+
+    //for findRegionZones()
+    //TODO X,Z(min/max) MUST BE POSITIVE FOR PARTICLES TO WORK, May be worth fixing (Negative messes up the > in particle location loop)
+    private static int max = 1800; //max coordinate
+    private static int min = 600; //min coordinate
+    private static int minDistance = 500; //minimum distance between region centers.
+
     protected static void setup(){
-        //TODO Maybe randomize region locations?
-        //TODO Parameterizable/Configurable Region Sizes, announcement at game start of region size
+        //TODO announcement at game start of region size/location?
         //TODO Do something about ocean region spawns. Not ideal for a team to start entirely in the ocean.
 
         //Getting World
@@ -37,13 +47,19 @@ public class SetupRegions implements Listener
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
         RegionManager regions = container.get(BukkitAdapter.adapt(world));
 
+        //Get Points for random region locations
+        Point[] redBlueRegionArr = findRegionZones();
+        int redX = (int)redBlueRegionArr[0].getX();
+        int redZ = (int)redBlueRegionArr[0].getY();
+        int blueX = (int)redBlueRegionArr[1].getX();
+        int blueZ = (int)redBlueRegionArr[1].getY();
+
         //Red Team Region////////////
-        //TODO XYZ MUST BE POSITIVE FOR PARTICLES TO WORK, May be worth fixing (Negative messes up the >)
-        BlockVector3 minRed = BlockVector3.at(50, 0, 50);
-        BlockVector3 maxRed = BlockVector3.at(75, 80, 75);
+        BlockVector3 minRed = BlockVector3.at(redX, 0, redZ);
+        BlockVector3 maxRed = BlockVector3.at(redX+regionSize, 255, redZ + regionSize);
         ProtectedRegion regionRed = new ProtectedCuboidRegion("Team_Red", minRed, maxRed);
 
-        //Red Team DefaultDomain for owners/members //TODO Make this dynamic based on logged in players, should server be owner?
+        //Red Team DefaultDomain for owners/members //TODO should server be owner?
         DefaultDomain ownersRed = regionRed.getOwners();
         DefaultDomain membersRed = regionRed.getMembers();
         ownersRed.addPlayer("server");
@@ -57,12 +73,17 @@ public class SetupRegions implements Listener
         regions.addRegion(regionRed); //add region to RegionManager (saves it)
 
         //Blue Team Region//////////////
-        //TODO XYZ MUST BE POSITIVE FOR PARTICLES TO WORK, May be worth fixing (Negative messes up the >)
-        BlockVector3 minBlue = BlockVector3.at(100, 0, 100);
-        BlockVector3 maxBlue = BlockVector3.at(125, 80, 125);
+        BlockVector3 minBlue = BlockVector3.at(blueX, 0, blueZ);
+        BlockVector3 maxBlue = BlockVector3.at(blueX+regionSize, 255, blueZ+regionSize);
+
         ProtectedRegion regionBlue = new ProtectedCuboidRegion("Team_Blue", minBlue, maxBlue);
 
-        //Blue Team DefaultDomain for owners/members //TODO Make this dynamic based on logged in players, should server be owner?
+        //Tests to make sure the regions don't overlap.
+//        List<ProtectedRegion> candidates = new ArrayList<>();
+//        candidates.add(regionRed);
+//        LOGGER.info(regionBlue.getIntersectingRegions(candidates).toString());
+
+        //Blue Team DefaultDomain for owners/members //TODO should server be owner?
         DefaultDomain ownersBlue = regionBlue.getOwners();
         DefaultDomain membersBlue = regionBlue.getMembers();
         ownersBlue.addPlayer("server");
@@ -89,7 +110,7 @@ public class SetupRegions implements Listener
         World world = Bukkit.getWorld("world");
 
         //Create List of points for vertical particles at corners of region
-        List<Location> particleLocations = new ArrayList<Location>();
+        List<Location> particleLocations = new ArrayList<>();
         for(int maxBlueY=maxBlue.getBlockY();maxBlueY>minBlue.getBlockY();maxBlueY--){ //Blue Region Particles
             particleLocations.add(new Location(world,maxBlue.getBlockX(),maxBlueY,maxBlue.getBlockZ()));
             particleLocations.add(new Location(world,minBlue.getBlockX(),maxBlueY,maxBlue.getBlockZ()));
@@ -133,7 +154,7 @@ public class SetupRegions implements Listener
                 for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
                     world.spawnParticle(Particle.COMPOSTER,location.getBlockX(), location.getBlockY(), location.getBlockZ(), 10);
                 }
-            }}, 0, 100);
+            }}, 0, 100); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
         return id;
     }
 
@@ -227,6 +248,42 @@ public class SetupRegions implements Listener
                 Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
 
             }}, 20*60*1L);
+    }
+
+    private static Point[] findRegionZones(){ //find zones for region
+
+        int rX = new Random().nextInt(max - min + 1) + min; //red points
+        int rZ = new Random().nextInt(max - min + 1) + min;
+
+        int bX = new Random().nextInt(max - min + 1) + min; //blue points
+        int bZ = new Random().nextInt(max - min + 1) + min;
+
+        Point r = new Point(rX,rZ); //create center points for red and blue
+        Point b = new Point(bX,bZ);
+
+        while((r.distance(b) < minDistance)){ //get new points while the regions are too close together as is defined by minDistance
+            rX = new Random().nextInt(max - min + 1) + min;
+            rZ = new Random().nextInt(max - min + 1) + min;
+
+            bX = new Random().nextInt(max - min + 1) + min;
+            bZ = new Random().nextInt(max - min + 1) + min;
+
+            r = new Point(rX,rZ);
+            b = new Point(bX,bZ);
+        }
+
+        LOGGER.info("Red Region Center: "+rX+","+rZ);
+        LOGGER.info("Blue Region Center: "+bX+","+bZ);
+
+        LOGGER.info("Distance between regions: " + r.distance(b));
+
+        Point teamPointArray[];    //declaring array
+        teamPointArray = new Point[2];  // allocating memory to array
+
+        teamPointArray[0] = r;
+        teamPointArray[1] = b;
+
+        return teamPointArray;
     }
 
 
