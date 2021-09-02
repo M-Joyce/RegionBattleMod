@@ -112,40 +112,46 @@ public class SetupRegions implements Listener
         //Create List of points for vertical particles at corners of region
         List<Location> particleLocations = new ArrayList<>();
         for(int maxBlueY=maxBlue.getBlockY();maxBlueY>minBlue.getBlockY();maxBlueY--){ //Blue Region Particles
+            //Vertical corners
             particleLocations.add(new Location(world,maxBlue.getBlockX(),maxBlueY,maxBlue.getBlockZ()));
             particleLocations.add(new Location(world,minBlue.getBlockX(),maxBlueY,maxBlue.getBlockZ()));
             particleLocations.add(new Location(world,maxBlue.getBlockX(),maxBlueY,minBlue.getBlockZ()));
             particleLocations.add(new Location(world,minBlue.getBlockX(),maxBlueY,minBlue.getBlockZ()));
         }
         for(int maxRedY=maxRed.getBlockY();maxRedY>minRed.getBlockY();maxRedY--) { //Red Region Particles
+            //vertical corners
             particleLocations.add(new Location(world,maxRed.getBlockX(),maxRedY,maxRed.getBlockZ()));
             particleLocations.add(new Location(world,minRed.getBlockX(),maxRedY,maxRed.getBlockZ()));
             particleLocations.add(new Location(world,maxRed.getBlockX(),maxRedY,minRed.getBlockZ()));
             particleLocations.add(new Location(world,minRed.getBlockX(),maxRedY,minRed.getBlockZ()));
         }
         for(int maxRedX=maxRed.getBlockX();maxRedX>minRed.getBlockX();maxRedX--) { //Red Region Particles
-            particleLocations.add(new Location(world,maxRedX,maxRed.getBlockY(),maxRed.getBlockZ()));
-            particleLocations.add(new Location(world,maxRedX,minRed.getBlockY(),maxRed.getBlockZ()));
-            particleLocations.add(new Location(world,maxRedX,maxRed.getBlockY(),minRed.getBlockZ()));
-            particleLocations.add(new Location(world,maxRedX,minRed.getBlockY(),minRed.getBlockZ()));
+            //Ground
+            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,maxRed.getBlockZ())+1,maxRed.getBlockZ()));
+            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,maxRed.getBlockZ())+1,maxRed.getBlockZ()));
+            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
+            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
         }
         for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX--) { //Blue Region Particles
-            particleLocations.add(new Location(world,maxBlueX,maxBlue.getBlockY(),maxBlue.getBlockZ()));
-            particleLocations.add(new Location(world,maxBlueX,minBlue.getBlockY(),maxBlue.getBlockZ()));
-            particleLocations.add(new Location(world,maxBlueX,maxBlue.getBlockY(),minBlue.getBlockZ()));
-            particleLocations.add(new Location(world,maxBlueX,minBlue.getBlockY(),minBlue.getBlockZ()));
+            //Ground
+            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
+            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
+            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,minBlue.getBlockZ())+1,minBlue.getBlockZ()));
+            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,minBlue.getBlockZ())+1,minBlue.getBlockZ()));
         }
         for(int maxRedZ=maxRed.getBlockZ();maxRedZ>minRed.getBlockZ();maxRedZ--) { //Red Region Particles
-            particleLocations.add(new Location(world,maxRed.getBlockX(),maxRed.getBlockY(),maxRedZ));
-            particleLocations.add(new Location(world,maxRed.getBlockX(),minRed.getBlockY(),maxRedZ));
-            particleLocations.add(new Location(world,minRed.getBlockX(),maxRed.getBlockY(),maxRedZ));
-            particleLocations.add(new Location(world,minRed.getBlockX(),minRed.getBlockY(),maxRedZ));
+            //Ground
+            particleLocations.add(new Location(world,maxRed.getBlockX(),world.getHighestBlockYAt(maxRed.getBlockX(),maxRedZ)+1,maxRedZ));
+            particleLocations.add(new Location(world,maxRed.getBlockX(),world.getHighestBlockYAt(maxRed.getBlockX(),maxRedZ)+1,maxRedZ));
+            particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
+            particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
         }
         for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ--) { //Blue Region Particles
-            particleLocations.add(new Location(world,maxBlue.getBlockX(),maxBlue.getBlockY(),maxBlueZ));
-            particleLocations.add(new Location(world,maxBlue.getBlockX(),minBlue.getBlockY(),maxBlueZ));
-            particleLocations.add(new Location(world,minBlue.getBlockX(),maxBlue.getBlockY(),maxBlueZ));
-            particleLocations.add(new Location(world,minBlue.getBlockX(),minBlue.getBlockY(),maxBlueZ));
+            //Ground
+            particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
+            particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
+            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
+            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
         }
 
         RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
@@ -154,7 +160,7 @@ public class SetupRegions implements Listener
                 for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
                     world.spawnParticle(Particle.COMPOSTER,location.getBlockX(), location.getBlockY(), location.getBlockZ(), 10);
                 }
-            }}, 0, 100); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
+            }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
         return id;
     }
 
