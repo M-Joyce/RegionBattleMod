@@ -32,7 +32,7 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
-        Bukkit.broadcastMessage("A block was placed!");
+        //Bukkit.broadcastMessage("A block was placed!");
     }
 
 }

@@ -12,12 +12,12 @@ import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class SetupRegions implements Listener
@@ -27,6 +27,8 @@ public class SetupRegions implements Listener
 
     protected static void setup(){
         //TODO Maybe randomize region locations?
+        //TODO Parameterizable/Configurable Region Sizes, announcement at game start of region size
+        //TODO Do something about ocean region spawns. Not ideal for a team to start entirely in the ocean.
 
         //Getting World
         World world = Bukkit.getWorld("world");
@@ -72,14 +74,15 @@ public class SetupRegions implements Listener
         regionBlue.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL); //don't let members leave the region for now
 
         regions.addRegion(regionBlue); //add region to RegionManager (saves it)
-        regionParticles(minBlue,maxBlue,minRed,maxRed);
+        int particleRunnerID = regionParticles(minBlue,maxBlue,minRed,maxRed);
 
         assignRegionMembers(regionRed,regionBlue);
         teleportTeamsToRegions(regionRed,regionBlue);
+        battleTimer(regionRed,regionBlue,particleRunnerID);
     }
 
     //Generate the region particles on a schedule as a way of showing the border of the region.
-    public static void regionParticles(BlockVector3 minBlue, BlockVector3 maxBlue, BlockVector3 minRed, BlockVector3 maxRed)
+    public static int regionParticles(BlockVector3 minBlue, BlockVector3 maxBlue, BlockVector3 minRed, BlockVector3 maxRed)
     {
 
         LOGGER.info("Initiating Particles..");
@@ -131,6 +134,7 @@ public class SetupRegions implements Listener
                     world.spawnParticle(Particle.COMPOSTER,location.getBlockX(), location.getBlockY(), location.getBlockZ(), 10);
                 }
             }}, 0, 100);
+        return id;
     }
 
     public static void assignRegionMembers(ProtectedRegion regionRed, ProtectedRegion regionBlue){
@@ -174,7 +178,7 @@ public class SetupRegions implements Listener
         int rminZ = regionRed.getMinimumPoint().getBlockZ();
 
         Location redMidPoint = new Location(Bukkit.getWorld("world"),(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
-        redMidPoint.setY(Bukkit.getWorld("world").getHighestBlockYAt(redMidPoint));
+        redMidPoint.setY(Bukkit.getWorld("world").getHighestBlockYAt(redMidPoint)+1);
         LOGGER.info("Teleporting Red Team to: "+redMidPoint);
         for(String name : regionRed.getMembers().getPlayers()){
             Bukkit.getPlayer(name).teleport(redMidPoint);
@@ -190,13 +194,39 @@ public class SetupRegions implements Listener
         int bminZ = regionBlue.getMinimumPoint().getBlockZ();
 
         Location blueMidPoint = new Location(Bukkit.getWorld("world"),(bmaxX+bminX)/2,(bmaxY+bminY )/2,(bmaxZ+bminZ )/2);
-        blueMidPoint.setY(Bukkit.getWorld("world").getHighestBlockYAt(blueMidPoint));
+        blueMidPoint.setY(Bukkit.getWorld("world").getHighestBlockYAt(blueMidPoint)+1);
         LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
 
         for(String name : regionBlue.getMembers().getPlayers()){
             Bukkit.getPlayer(name).teleport(blueMidPoint);
         }
 
+    }
+
+    public static void battleTimer(ProtectedRegion regionRed, ProtectedRegion regionBlue, int particleRunnerID){
+        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+        Bukkit.broadcastMessage("Prepare for Battle! Gather Supplies!");
+        int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            public void run() {
+                Bukkit.broadcastMessage("Let the Battle Begin! Force fields have come down!");
+
+                //Remove Flags
+                regionBlue.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
+                regionBlue.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
+                regionBlue.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL);
+                regionBlue.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+                regionRed.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
+                regionRed.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
+                regionRed.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL);
+                regionRed.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
+
+                Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
+
+            }}, 20*60*1L);
     }
 
 
