@@ -32,9 +32,10 @@ public class SetupRegions implements Listener
 
     //for findRegionZones()
     //TODO X,Z(min/max) MUST BE POSITIVE FOR PARTICLES TO WORK, May be worth fixing (Negative messes up the > in particle location loop)
-    private static int max = 1800; //max coordinate
-    private static int min = 600; //min coordinate
+    private static int max = 2800; //max coordinate
+    private static int min = 800; //min coordinate
     private static int minDistance = 500; //minimum distance between region centers.
+    private static int maxDistance = 1200; //maximum distance between region centers.
 
     protected static void setup(){
         //TODO announcement at game start of region size/location?
@@ -228,6 +229,9 @@ public class SetupRegions implements Listener
             Bukkit.getPlayer(name).teleport(blueMidPoint);
         }
 
+        Bukkit.broadcastMessage(ChatColor.RED+"The Red Team is at: X="+redMidPoint.getBlockX()+" Z="+redMidPoint.getBlockZ());
+        Bukkit.broadcastMessage(ChatColor.BLUE+"The Blue Team is at: X="+blueMidPoint.getBlockX()+" Z="+blueMidPoint.getBlockZ());
+
     }
 
     public static void battleTimer(ProtectedRegion regionRed, ProtectedRegion regionBlue, int particleRunnerID){
@@ -258,16 +262,17 @@ public class SetupRegions implements Listener
 
     private static Point[] findRegionZones(){ //find zones for region
 
-        int rX = new Random().nextInt(max - min + 1) + min; //red points
-        int rZ = new Random().nextInt(max - min + 1) + min;
+        int rX = 0; //red points
+        int rZ = 0;
 
-        int bX = new Random().nextInt(max - min + 1) + min; //blue points
-        int bZ = new Random().nextInt(max - min + 1) + min;
+        int bX = 0; //blue points
+        int bZ = 0;
 
         Point r = new Point(rX,rZ); //create center points for red and blue
         Point b = new Point(bX,bZ);
 
-        while((r.distance(b) < minDistance)){ //get new points while the regions are too close together as is defined by minDistance
+        //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
+        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !Bukkit.getWorld("world").getHighestBlockAt(((bX+(bX+regionSize))/2),((bZ+(bZ+regionSize))/2)).getType().isSolid() || !Bukkit.getWorld("world").getHighestBlockAt(((rX+(rX+regionSize))/2),((rZ+(rZ+regionSize))/2)).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
             rX = new Random().nextInt(max - min + 1) + min;
             rZ = new Random().nextInt(max - min + 1) + min;
 
@@ -278,13 +283,12 @@ public class SetupRegions implements Listener
             b = new Point(bX,bZ);
         }
 
-        LOGGER.info("Red Region Center: "+rX+","+rZ);
-        LOGGER.info("Blue Region Center: "+bX+","+bZ);
+        //LOGGER.info("Distance between regions: " + r.distance(b));
+        //LOGGER.info("Red: " + Bukkit.getWorld("world").getHighestBlockAt(((rX+(rX+regionSize))/2),(rZ+(rZ+regionSize))/2).getType().isSolid() + " Block="+Bukkit.getWorld("world").getHighestBlockAt(((rX+(rX+regionSize))/2),(rZ+(rZ+regionSize))/2).getType());
+        //LOGGER.info("Blue: " + Bukkit.getWorld("world").getHighestBlockAt(((bX+(bX+regionSize))/2),(bZ+(bZ+regionSize))/2).getType().isSolid() + " Block="+Bukkit.getWorld("world").getHighestBlockAt(((bX+(bX+regionSize))/2),(bZ+(bZ+regionSize))/2).getType());
 
-        LOGGER.info("Distance between regions: " + r.distance(b));
-
-        Point teamPointArray[];    //declaring array
-        teamPointArray = new Point[2];  // allocating memory to array
+        Point teamPointArray[]; //declaring array
+        teamPointArray = new Point[2]; // allocating memory to array
 
         teamPointArray[0] = r;
         teamPointArray[1] = b;
