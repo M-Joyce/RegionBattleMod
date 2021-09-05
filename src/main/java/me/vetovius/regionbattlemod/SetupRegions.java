@@ -39,11 +39,19 @@ public class SetupRegions implements Listener
     private static int minDistance = 500; //minimum distance between region centers.
     private static int maxDistance = 1200; //maximum distance between region centers.
 
+    private static int prepareMinutes = 5;
+
+    private static RegionManager regions;
+
     private static ProtectedRegion regionRed;
     private static ProtectedRegion regionBlue;
 
+    private static Location spawn = new Location(Bukkit.getWorld("RegionBattle"), 0,79,0);
+
     private static ArrayList<Player> redPlayers = new ArrayList<>();
     private static ArrayList<Player> bluePlayers = new ArrayList<>();
+
+    private static int battleTimerID;
 
 //TODO use UUIDs throughout instead of names, particularly the toLowerCase() may cause issues if there can be players of the same name with different case letters?
     protected static void setup(){
@@ -53,7 +61,7 @@ public class SetupRegions implements Listener
 
         //Setting up RegionContainer and RegionManager
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
-        RegionManager regions = container.get(BukkitAdapter.adapt(world));
+        regions = container.get(BukkitAdapter.adapt(world));
 
         //Get Points for random region locations
         Point[] redBlueRegionArr = findRegionZones();
@@ -247,7 +255,46 @@ public class SetupRegions implements Listener
         Bukkit.broadcastMessage(ChatColor.BLUE+""+bluePlayers.size()+" players remain on Team Blue.");
 
 
-        int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+        battleTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+            int checkIfGameIsOverID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+                public void run() {
+
+                    if((redPlayers.size() <= 0 || bluePlayers.size() <= 0)){ //End game check
+
+                        if(redPlayers.size() <= 0){
+                            Bukkit.broadcastMessage(ChatColor.BLUE+"The Blue Team has won the battle! No players remain on the Red Team!");
+                        }
+
+                        if(bluePlayers.size() <= 0) {
+                            Bukkit.broadcastMessage(ChatColor.RED+"The Red Team has won the battle! No players remain on the Blue Team!");
+                        }
+
+                        //Do Tasks to end the game
+                        if(regions.getRegion("Team_Blue") != null) {
+                            LOGGER.info("Removing Team_Blue");
+                            regions.removeRegion("Team_Blue");
+                        }
+                        if(regions.getRegion("Team_Red") != null) {
+                            LOGGER.info("Removing Team_Red");
+                            regions.removeRegion("Team_Red");
+                        }
+
+                        //send players back
+                        for(Player p : redPlayers){
+                            p.teleport(spawn);
+                        }
+                        for(Player p : bluePlayers){
+                            p.teleport(spawn);
+                        }
+
+                        //cancel tasks
+                        Bukkit.getScheduler().cancelTask(battleTimerID);
+                        Bukkit.getScheduler().cancelTask(checkIfGameIsOverID);
+                    }
+
+                }}, 20*30, 200); //check if game should end every 10 seconds, delay start by 30 seconds.
+
             public void run() {
                 Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down! Last team standing wins!");
 
@@ -267,10 +314,7 @@ public class SetupRegions implements Listener
 
                 Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
 
-                //TODO Need to end the battle and declare winner if all the players on one team have died.
-                //TODO When the battle ends the regions should be deleted.
-
-            }}, 20*60*1L);
+            }}, 20*60L*prepareMinutes); //20 ticks per second * 60 seconds * # Minutes wanted from prepareMinutes
     }
 
     private static Point[] findRegionZones(){ //find zones for region
@@ -309,18 +353,21 @@ public class SetupRegions implements Listener
     public void onPlayerDeath (PlayerDeathEvent event){ // Send message of players death.
         Player p = event.getEntity().getPlayer();
         if(p.getWorld() == Bukkit.getWorld("RegionBattle")) {
+            if(regions.getRegion("Team_Red") != null){
+                if(regions.getRegion("Team_Blue") != null){
+                    LOGGER.info(regionRed.getMembers().getPlayers().toString());
+                    LOGGER.info(p.getDisplayName());
+                    if(regionRed.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                        redPlayers.remove(event.getEntity().getPlayer());
+                        Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+                    }
+                    if(regionBlue.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                        bluePlayers.remove(event.getEntity().getPlayer());
+                        Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
+                    }
+                }
+            }
             Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
-
-            LOGGER.info(regionRed.getMembers().getPlayers().toString());
-            LOGGER.info(p.getDisplayName());
-            if(regionRed.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
-                redPlayers.remove(event.getEntity().getPlayer());
-                Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
-            }
-            if(regionBlue.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
-                bluePlayers.remove(event.getEntity().getPlayer());
-                Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
-            }
 
         }
     }
