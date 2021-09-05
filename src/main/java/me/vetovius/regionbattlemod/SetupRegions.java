@@ -14,13 +14,15 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.Random;
 import java.util.logging.Logger;
 
 public class SetupRegions implements Listener
@@ -37,12 +39,17 @@ public class SetupRegions implements Listener
     private static int minDistance = 500; //minimum distance between region centers.
     private static int maxDistance = 1200; //maximum distance between region centers.
 
+    private static ProtectedRegion regionRed;
+    private static ProtectedRegion regionBlue;
+
+    private static ArrayList<Player> redPlayers = new ArrayList<>();
+    private static ArrayList<Player> bluePlayers = new ArrayList<>();
+
+//TODO use UUIDs throughout instead of names, particularly the toLowerCase() may cause issues if there can be players of the same name with different case letters?
     protected static void setup(){
-        //TODO announcement at game start of region size/location?
-        //TODO Do something about ocean region spawns. Not ideal for a team to start entirely in the ocean.
 
         //Getting World
-        World world = Bukkit.getWorld("world");
+        World world = Bukkit.getWorld("RegionBattle");
 
         //Setting up RegionContainer and RegionManager
         RegionContainer container = WorldGuard.getInstance().getPlatform().getRegionContainer();
@@ -58,7 +65,7 @@ public class SetupRegions implements Listener
         //Red Team Region////////////
         BlockVector3 minRed = BlockVector3.at(redX, 0, redZ);
         BlockVector3 maxRed = BlockVector3.at(redX+regionSize, 255, redZ + regionSize);
-        ProtectedRegion regionRed = new ProtectedCuboidRegion("Team_Red", minRed, maxRed);
+        regionRed = new ProtectedCuboidRegion("Team_Red", minRed, maxRed);
 
         //Red Team DefaultDomain for owners/members //TODO should server be owner?
         DefaultDomain ownersRed = regionRed.getOwners();
@@ -77,12 +84,8 @@ public class SetupRegions implements Listener
         BlockVector3 minBlue = BlockVector3.at(blueX, 0, blueZ);
         BlockVector3 maxBlue = BlockVector3.at(blueX+regionSize, 255, blueZ+regionSize);
 
-        ProtectedRegion regionBlue = new ProtectedCuboidRegion("Team_Blue", minBlue, maxBlue);
+        regionBlue = new ProtectedCuboidRegion("Team_Blue", minBlue, maxBlue);
 
-        //Tests to make sure the regions don't overlap.
-//        List<ProtectedRegion> candidates = new ArrayList<>();
-//        candidates.add(regionRed);
-//        LOGGER.info(regionBlue.getIntersectingRegions(candidates).toString());
 
         //Blue Team DefaultDomain for owners/members //TODO should server be owner?
         DefaultDomain ownersBlue = regionBlue.getOwners();
@@ -108,7 +111,7 @@ public class SetupRegions implements Listener
     {
 
         LOGGER.info("Initiating Particles..");
-        World world = Bukkit.getWorld("world");
+        World world = Bukkit.getWorld("RegionBattle");
 
         //Create List of points for vertical particles at corners of region
         List<Location> particleLocations = new ArrayList<>();
@@ -172,7 +175,7 @@ public class SetupRegions implements Listener
         DefaultDomain membersBlue = regionBlue.getMembers(); //blue team members
         DefaultDomain membersRed = regionRed.getMembers(); //red team members
 
-        List<Player> players = new ArrayList<>(Bukkit.getWorld("world").getPlayers());
+        List<Player> players = new ArrayList<>(Bukkit.getWorld("RegionBattle").getPlayers());
         Collections.shuffle(players); //randomize
 
         //Create two lists to hold the team members
@@ -185,10 +188,12 @@ public class SetupRegions implements Listener
 
         for(Player player : redPlayersList){ //add red players
             membersRed.addPlayer(player.getDisplayName());
+            redPlayers.add(player);
         }
 
         for(Player player : bluePlayersList){ //add blue players
             membersBlue.addPlayer(player.getDisplayName());
+            bluePlayers.add(player);
         }
 
     }
@@ -205,8 +210,8 @@ public class SetupRegions implements Listener
         int rminY = regionRed.getMinimumPoint().getBlockY();
         int rminZ = regionRed.getMinimumPoint().getBlockZ();
 
-        Location redMidPoint = new Location(Bukkit.getWorld("world"),(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
-        redMidPoint.setY(Bukkit.getWorld("world").getHighestBlockYAt(redMidPoint)+1);
+        Location redMidPoint = new Location(Bukkit.getWorld("RegionBattle"),(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
+        redMidPoint.setY(Bukkit.getWorld("RegionBattle").getHighestBlockYAt(redMidPoint)+1);
         LOGGER.info("Teleporting Red Team to: "+redMidPoint);
         for(String name : regionRed.getMembers().getPlayers()){
             Bukkit.getPlayer(name).teleport(redMidPoint);
@@ -221,8 +226,8 @@ public class SetupRegions implements Listener
         int bminY = regionBlue.getMinimumPoint().getBlockY();
         int bminZ = regionBlue.getMinimumPoint().getBlockZ();
 
-        Location blueMidPoint = new Location(Bukkit.getWorld("world"),(bmaxX+bminX)/2,(bmaxY+bminY )/2,(bmaxZ+bminZ )/2);
-        blueMidPoint.setY(Bukkit.getWorld("world").getHighestBlockYAt(blueMidPoint)+1);
+        Location blueMidPoint = new Location(Bukkit.getWorld("RegionBattle"),(bmaxX+bminX)/2,(bmaxY+bminY )/2,(bmaxZ+bminZ )/2);
+        blueMidPoint.setY(Bukkit.getWorld("RegionBattle").getHighestBlockYAt(blueMidPoint)+1);
         LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
 
         for(String name : regionBlue.getMembers().getPlayers()){
@@ -236,10 +241,15 @@ public class SetupRegions implements Listener
 
     public static void battleTimer(ProtectedRegion regionRed, ProtectedRegion regionBlue, int particleRunnerID){
         RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+
         Bukkit.broadcastMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies!");
+        Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+        Bukkit.broadcastMessage(ChatColor.BLUE+""+bluePlayers.size()+" players remain on Team Blue.");
+
+
         int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             public void run() {
-                Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down!");
+                Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down! Last team standing wins!");
 
                 //Remove Flags
                 regionBlue.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
@@ -257,6 +267,9 @@ public class SetupRegions implements Listener
 
                 Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
 
+                //TODO Need to end the battle and declare winner if all the players on one team have died.
+                //TODO When the battle ends the regions should be deleted.
+
             }}, 20*60*1L);
     }
 
@@ -272,7 +285,7 @@ public class SetupRegions implements Listener
         Point b = new Point(bX,bZ);
 
         //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
-        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !Bukkit.getWorld("world").getHighestBlockAt(((bX+(bX+regionSize))/2),((bZ+(bZ+regionSize))/2)).getType().isSolid() || !Bukkit.getWorld("world").getHighestBlockAt(((rX+(rX+regionSize))/2),((rZ+(rZ+regionSize))/2)).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
+        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !Bukkit.getWorld("RegionBattle").getHighestBlockAt(((bX+(bX+regionSize))/2),((bZ+(bZ+regionSize))/2)).getType().isSolid() || !Bukkit.getWorld("RegionBattle").getHighestBlockAt(((rX+(rX+regionSize))/2),((rZ+(rZ+regionSize))/2)).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
             rX = new Random().nextInt(max - min + 1) + min;
             rZ = new Random().nextInt(max - min + 1) + min;
 
@@ -283,10 +296,6 @@ public class SetupRegions implements Listener
             b = new Point(bX,bZ);
         }
 
-        //LOGGER.info("Distance between regions: " + r.distance(b));
-        //LOGGER.info("Red: " + Bukkit.getWorld("world").getHighestBlockAt(((rX+(rX+regionSize))/2),(rZ+(rZ+regionSize))/2).getType().isSolid() + " Block="+Bukkit.getWorld("world").getHighestBlockAt(((rX+(rX+regionSize))/2),(rZ+(rZ+regionSize))/2).getType());
-        //LOGGER.info("Blue: " + Bukkit.getWorld("world").getHighestBlockAt(((bX+(bX+regionSize))/2),(bZ+(bZ+regionSize))/2).getType().isSolid() + " Block="+Bukkit.getWorld("world").getHighestBlockAt(((bX+(bX+regionSize))/2),(bZ+(bZ+regionSize))/2).getType());
-
         Point teamPointArray[]; //declaring array
         teamPointArray = new Point[2]; // allocating memory to array
 
@@ -296,5 +305,48 @@ public class SetupRegions implements Listener
         return teamPointArray;
     }
 
+    @EventHandler
+    public void onPlayerDeath (PlayerDeathEvent event){ // Send message of players death.
+        Player p = event.getEntity().getPlayer();
+        if(p.getWorld() == Bukkit.getWorld("RegionBattle")) {
+            Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
+
+            LOGGER.info(regionRed.getMembers().getPlayers().toString());
+            LOGGER.info(p.getDisplayName());
+            if(regionRed.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                redPlayers.remove(event.getEntity().getPlayer());
+                Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+            }
+            if(regionBlue.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                bluePlayers.remove(event.getEntity().getPlayer());
+                Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
+            }
+
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLogOff (PlayerQuitEvent event) { //handle when players log off in the middle of battle
+        if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
+            if(regionRed.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                redPlayers.remove(event.getPlayer());
+            }
+            if(regionBlue.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                bluePlayers.remove(event.getPlayer());
+            }
+        }
+    }
+
+    @EventHandler
+    public void onPlayerLogOn (PlayerJoinEvent event) { //handle when players log off in the middle of battle, and then join back.
+        if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
+            if(regionRed.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                redPlayers.add(event.getPlayer());
+            }
+            if(regionBlue.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                bluePlayers.add(event.getPlayer());
+            }
+        }
+    }
 
 }
