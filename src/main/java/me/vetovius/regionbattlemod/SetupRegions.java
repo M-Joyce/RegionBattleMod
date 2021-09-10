@@ -1,7 +1,9 @@
 package me.vetovius.regionbattlemod;
 
+import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
+import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -271,6 +273,12 @@ public class SetupRegions implements Listener
                         }
 
                         //Do Tasks to end the game
+
+                        //Regen battle area
+                        LOGGER.info("-- Regenerating Area --");
+                        CuboidRegion r = new CuboidRegion(BlockVector3.at(min,0,min), BlockVector3.at(max,254,max));
+                        r.getWorld().regenerate(r, WorldEdit.getInstance().getEditSessionFactory().getEditSession(r.getWorld(), -1));
+
                         if(regions.getRegion("Team_Blue") != null) {
                             LOGGER.info("Removing Team_Blue");
                             regions.removeRegion("Team_Blue");
@@ -287,9 +295,6 @@ public class SetupRegions implements Listener
                         for(Player p : bluePlayers){
                             p.teleport(spawn);
                         }
-
-                        //TODO use worldedit //regen to revert zones! make sure to use that WE development build because //regen wont work in spigot due to a know issue
-                        //https://builds.enginehub.org/job/worldedit/last-successful?branch=version/7.2.x
 
                         //cancel tasks
                         Bukkit.getScheduler().cancelTask(battleTimerID);
