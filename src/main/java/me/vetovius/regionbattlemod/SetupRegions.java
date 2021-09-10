@@ -288,6 +288,9 @@ public class SetupRegions implements Listener
                             p.teleport(spawn);
                         }
 
+                        //TODO use worldedit //regen to revert zones! make sure to use that WE development build because //regen wont work in spigot due to a know issue
+                        //https://builds.enginehub.org/job/worldedit/last-successful?branch=version/7.2.x
+
                         //cancel tasks
                         Bukkit.getScheduler().cancelTask(battleTimerID);
                         Bukkit.getScheduler().cancelTask(checkIfGameIsOverID);
@@ -305,17 +308,21 @@ public class SetupRegions implements Listener
 
             public void run() {
                 Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down! Last team standing wins!");
+                //TODO give 5 minute warning
 
                 //Remove Flags
                 regionBlue.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
                 regionBlue.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
                 regionBlue.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL);
                 regionBlue.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+                regionBlue.setFlag(Flags.PVP, StateFlag.State.ALLOW);
+
 
                 regionRed.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
                 regionRed.setFlag(Flags.ENTRY, StateFlag.State.ALLOW);
                 regionRed.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL);
                 regionRed.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
+                regionRed.setFlag(Flags.PVP, StateFlag.State.ALLOW);
 
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
