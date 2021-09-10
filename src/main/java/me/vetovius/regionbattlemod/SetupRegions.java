@@ -39,7 +39,7 @@ public class SetupRegions implements Listener
     private static int minDistance = 500; //minimum distance between region centers.
     private static int maxDistance = 1200; //maximum distance between region centers.
 
-    private static int prepareMinutes = 5;
+    private static int prepareMinutes = 15;
 
     private static RegionManager regions;
 
@@ -250,7 +250,7 @@ public class SetupRegions implements Listener
     public static void battleTimer(ProtectedRegion regionRed, ProtectedRegion regionBlue, int particleRunnerID){
         RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
 
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies!");
+        Bukkit.broadcastMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies! You have "+prepareMinutes + " minutes!");
         Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
         Bukkit.broadcastMessage(ChatColor.BLUE+""+bluePlayers.size()+" players remain on Team Blue.");
 
