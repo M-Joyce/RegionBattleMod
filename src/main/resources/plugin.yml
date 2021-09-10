@@ -10,3 +10,7 @@ commands:
     description: Start the game!
     usage: /startregionbattle
     permission: RegionBattleMod.startregionbattle
+  seek:
+    description: Seek out a random enemy player, no one can hide!
+    usage: /seek while in a battle.
+    permission: RegionBattleMod.seek

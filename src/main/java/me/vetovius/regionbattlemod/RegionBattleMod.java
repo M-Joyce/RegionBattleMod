@@ -1,12 +1,9 @@
 package me.vetovius.regionbattlemod;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,6 +19,7 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this); //register events
         Bukkit.getPluginManager().registerEvents(new SetupRegions(), this);
         this.getCommand("startregionbattle").setExecutor(new CommandStartRegionBattle()); //register command
+        this.getCommand("seek").setExecutor(new CommandSeek()); //register command
 
     }
     @Override

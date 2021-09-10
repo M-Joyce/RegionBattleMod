@@ -291,6 +291,14 @@ public class SetupRegions implements Listener
                         //cancel tasks
                         Bukkit.getScheduler().cancelTask(battleTimerID);
                         Bukkit.getScheduler().cancelTask(checkIfGameIsOverID);
+
+                        Bukkit.broadcastMessage(ChatColor.GREEN+"A new battle will start in 5 minutes!");
+                        int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+                            public void run() {
+                                setup(); //call setup again to start a new match
+                            }
+                        }, 20*60L*5); //start a new game in 5 minutes
+
                     }
 
                 }}, 20*30, 200); //check if game should end every 10 seconds, delay start by 30 seconds.
@@ -394,6 +402,35 @@ public class SetupRegions implements Listener
                 bluePlayers.add(event.getPlayer());
             }
         }
+    }
+
+    public static void seekPlayers(String name){
+
+        if(Bukkit.getPlayer(name.toLowerCase()).getWorld() == Bukkit.getWorld("RegionBattle")){
+            Random rand = new Random();
+
+            if(bluePlayers.size() > 0 && redPlayers.size() > 0) {
+                if (redPlayers.contains(Bukkit.getPlayer(name.toLowerCase()))) {
+                    Player playerToSeek = bluePlayers.get(rand.nextInt(bluePlayers.size()));
+                    Location loc = playerToSeek.getLocation();
+                    Bukkit.getPlayer(name.toLowerCase()).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                }
+
+                if (bluePlayers.contains(Bukkit.getPlayer(name.toLowerCase()))) {
+
+                    Player playerToSeek = redPlayers.get(rand.nextInt(redPlayers.size()));
+                    Location loc = playerToSeek.getLocation();
+                    Bukkit.getPlayer(name.toLowerCase()).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                }
+            }
+            else{
+                Bukkit.getPlayer(name.toLowerCase()).sendMessage("There are no players to seek!");
+            }
+
+
+        }
+
+
     }
 
 }
