@@ -1,9 +1,7 @@
 package me.vetovius.regionbattlemod;
 
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
-import com.sk89q.worldedit.regions.CuboidRegion;
 import com.sk89q.worldguard.WorldGuard;
 import com.sk89q.worldguard.domains.DefaultDomain;
 import com.sk89q.worldguard.protection.flags.Flags;
@@ -21,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scoreboard.*;
 
 import java.awt.*;
 import java.util.*;
@@ -55,7 +54,15 @@ public class SetupRegions implements Listener
 
     private static int battleTimerID;
 
-//TODO use UUIDs throughout instead of names, particularly the toLowerCase() may cause issues if there can be players of the same name with different case letters?
+    private static ScoreboardManager manager = Bukkit.getScoreboardManager();
+    private static Scoreboard board = manager.getNewScoreboard();
+    private static Team Team_Red = board.registerNewTeam("Team_Red");
+    private static Team Team_Blue = board.registerNewTeam("Team_Blue");
+
+
+
+
+    //TODO use UUIDs throughout instead of names, particularly the toLowerCase() may cause issues if there can be players of the same name with different case letters?
     protected static void setup(){
 
         //Getting World
@@ -196,14 +203,23 @@ public class SetupRegions implements Listener
         // and the second half to Blue
         bluePlayersList.addAll(players.subList(players.size() / 2 + players.size()%2, players.size()));
 
+        Team_Blue.setColor(ChatColor.BLUE); //Set Colors for teams
+        Team_Red.setColor(ChatColor.RED);
+
         for(Player player : redPlayersList){ //add red players
+            player.getInventory().clear();
             membersRed.addPlayer(player.getDisplayName());
             redPlayers.add(player);
+            Team_Red.addEntry(player.getDisplayName()); //add player to team
+            player.setScoreboard(board);
         }
 
         for(Player player : bluePlayersList){ //add blue players
+            player.getInventory().clear();
             membersBlue.addPlayer(player.getDisplayName());
             bluePlayers.add(player);
+            Team_Blue.addEntry(player.getDisplayName()); //add player to team
+            player.setScoreboard(board);
         }
 
     }
@@ -274,11 +290,6 @@ public class SetupRegions implements Listener
 
                         //Do Tasks to end the game
 
-                        //Regen battle area
-                        LOGGER.info("-- Regenerating Area --");
-                        CuboidRegion r = new CuboidRegion(BlockVector3.at(min,0,min), BlockVector3.at(max,254,max));
-                        r.getWorld().regenerate(r, WorldEdit.getInstance().getEditSessionFactory().getEditSession(r.getWorld(), -1));
-
                         if(regions.getRegion("Team_Blue") != null) {
                             LOGGER.info("Removing Team_Blue");
                             regions.removeRegion("Team_Blue");
@@ -288,12 +299,17 @@ public class SetupRegions implements Listener
                             regions.removeRegion("Team_Red");
                         }
 
+                        Team_Blue.unregister(); //unregister teams at game end
+                        Team_Red.unregister();
+
                         //send players back
                         for(Player p : redPlayers){
                             p.teleport(spawn);
+                            p.getInventory().clear();
                         }
                         for(Player p : bluePlayers){
                             p.teleport(spawn);
+                            p.getInventory().clear();
                         }
 
                         //cancel tasks
@@ -394,24 +410,28 @@ public class SetupRegions implements Listener
 
     @EventHandler
     public void onPlayerLogOff (PlayerQuitEvent event) { //handle when players log off in the middle of battle
-        if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
-            if(regionRed.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
-                redPlayers.remove(event.getPlayer());
-            }
-            if(regionBlue.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
-                bluePlayers.remove(event.getPlayer());
+        if(regionRed != null){
+            if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
+                if(regionRed.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                    redPlayers.remove(event.getPlayer());
+                }
+                if(regionBlue.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                    bluePlayers.remove(event.getPlayer());
+                }
             }
         }
     }
 
     @EventHandler
     public void onPlayerLogOn (PlayerJoinEvent event) { //handle when players log off in the middle of battle, and then join back.
-        if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
-            if(regionRed.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
-                redPlayers.add(event.getPlayer());
-            }
-            if(regionBlue.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
-                bluePlayers.add(event.getPlayer());
+        if(regionRed != null){
+            if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
+                if(regionRed.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                    redPlayers.add(event.getPlayer());
+                }
+                if(regionBlue.getMembers().getPlayers().contains(event.getPlayer().getDisplayName().toLowerCase())){
+                    bluePlayers.add(event.getPlayer());
+                }
             }
         }
     }

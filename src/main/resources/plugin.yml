@@ -3,8 +3,8 @@ version: 0.1
 author: Vetovius
 main: me.vetovius.regionbattlemod.RegionBattleMod
 api-version: 1.17
-depend: [WorldGuard]
-depend: [WorldEdit]
+depend: [WorldGuard, WorldEdit]
+
 
 commands:
   startregionbattle:
