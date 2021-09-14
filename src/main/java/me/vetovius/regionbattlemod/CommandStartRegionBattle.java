@@ -14,8 +14,10 @@ public class CommandStartRegionBattle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        LOGGER.info("--Creating Regions...--");
-        SetupRegions.setup();
+        LOGGER.info("--Creating Battle--");
+        //Battle battle = new Battle(); Use this and remove the registerEvent and arg in the constructor in Battle.java to go back to using main for registering event
+        Battle battle = new Battle(RegionBattleMod.getPlugin(RegionBattleMod.class));
+        CommandSeek.battle = battle;
 
         return true;
     }
