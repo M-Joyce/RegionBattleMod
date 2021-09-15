@@ -200,7 +200,7 @@ public class Regions {
         Point b = new Point(bX,bZ);
 
         //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
-        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !Bukkit.getWorld("RegionBattle").getHighestBlockAt(((bX+(bX+regionSize))/2),((bZ+(bZ+regionSize))/2)).getType().isSolid() || !Bukkit.getWorld("RegionBattle").getHighestBlockAt(((rX+(rX+regionSize))/2),((rZ+(rZ+regionSize))/2)).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
+        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !world.getHighestBlockAt(((bX+(bX+regionSize))/2),((bZ+(bZ+regionSize))/2)).getType().isSolid() || !world.getHighestBlockAt(((rX+(rX+regionSize))/2),((rZ+(rZ+regionSize))/2)).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
             rX = new Random().nextInt(max - min + 1) + min;
             rZ = new Random().nextInt(max - min + 1) + min;
 
@@ -248,6 +248,8 @@ public class Regions {
             LOGGER.info("Removing Team_Red");
             regionManager.removeRegion("Team_Red");
         }
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+        Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
     }
 
 }

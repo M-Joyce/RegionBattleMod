@@ -178,13 +178,11 @@ public class Battle implements Listener {
                         Bukkit.getScheduler().cancelTask(battleTimerID);
                         Bukkit.getScheduler().cancelTask(checkIfGameIsOverID);
 
-                        //TODO reenable this message when a new game is starting automatically again.
-                        //Bukkit.broadcastMessage(ChatColor.GREEN+"A new battle will start in 5 minutes!");
-                        int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-                            public void run() {
-                                //TODO do something here to start a new game, or start a new game somewhere else and delete this runnable
-                            }
-                        }, 20*60L*5); //start a new game in 5 minutes
+                        Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
+
+                        CommandStartRegionBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
+                        battleRegions = null;
+
 
                     }
 
@@ -233,6 +231,7 @@ public class Battle implements Listener {
         if(p.getWorld() == Regions.world) {
 
             if(battleRegions != null){
+
                 Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
 
                 LOGGER.info("RED:" + redPlayers.toString());
