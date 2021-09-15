@@ -15,3 +15,7 @@ commands:
     description: Seek out a random enemy player, no one can hide!
     usage: /seek while in a battle.
     permission: RegionBattleMod.seek
+  tc:
+    description: Send a chat to your team only during a battle.
+    usage: /tc while in a battle.
+    permission: RegionBattleMod.tc

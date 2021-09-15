@@ -22,6 +22,7 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
         //Bukkit.getPluginManager().registerEvents(new Battle(), this); //register events //Using an alternate method by passing instance of this class to Battle in the start battle command
         this.getCommand("startregionbattle").setExecutor(new CommandStartRegionBattle()); //register command
         this.getCommand("seek").setExecutor(new CommandSeek()); //register command
+        this.getCommand("tc").setExecutor(new CommandSendTeamChat()); //register command
 
     }
     @Override

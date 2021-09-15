@@ -20,6 +20,7 @@ public class CommandStartRegionBattle implements CommandExecutor {
             LOGGER.info("--Creating Battle--");
             battle = new Battle(RegionBattleMod.getPlugin(RegionBattleMod.class));
             CommandSeek.battle = battle;
+            CommandSendTeamChat.battle = battle;
         }
         else{
             Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.RED + "There is already an ongoing battle! Wait until it ends!");
