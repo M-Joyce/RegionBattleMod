@@ -178,7 +178,8 @@ public class Battle implements Listener {
                         Bukkit.getScheduler().cancelTask(battleTimerID);
                         Bukkit.getScheduler().cancelTask(checkIfGameIsOverID);
 
-                        Bukkit.broadcastMessage(ChatColor.GREEN+"A new battle will start in 5 minutes!");
+                        //TODO reenable this message when a new game is starting automatically again.
+                        //Bukkit.broadcastMessage(ChatColor.GREEN+"A new battle will start in 5 minutes!");
                         int id = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
                             public void run() {
                                 //TODO do something here to start a new game, or start a new game somewhere else and delete this runnable
@@ -228,31 +229,30 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerDeath (PlayerDeathEvent event){ // Send message of players death.
 
-        LOGGER.info("onPlayerDeath redMembers: " + battleRegions.regionRed.getMembers().toString());
-        LOGGER.info("onPlayerDeath blueMembers: " + battleRegions.regionBlue.getMembers().toString());
-
         Player p = event.getEntity().getPlayer();
         if(p.getWorld() == Regions.world) {
-
-            LOGGER.info("In onPlayerDeath, after if p.getWorld.. : " + battleRegions.toString());
 
             if(battleRegions != null){
                 Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
 
                 LOGGER.info("RED:" + redPlayers.toString());
 
-                if(redPlayers.contains(p.getDisplayName().toLowerCase())){
-
-                    LOGGER.info("RED in if:" + redPlayers.toString());
-
-                    redPlayers.remove(event.getEntity().getPlayer());
-                    teamRed.removeEntry(event.getEntity().getPlayer().getDisplayName());
-                    Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+                //search teams for dead player.
+                //TODO there is definitely a more efficient way to do this if needed
+                for(Player player : redPlayers ){
+                    if(player == p){
+                        redPlayers.remove(event.getEntity().getPlayer());
+                        teamRed.removeEntry(event.getEntity().getPlayer().getDisplayName());
+                        Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+                    }
                 }
-                if(bluePlayers.contains(p.getDisplayName().toLowerCase())){
-                    bluePlayers.remove(event.getEntity().getPlayer());
-                    teamBlue.removeEntry(event.getEntity().getPlayer().getDisplayName());
-                    Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
+
+                for(Player player : bluePlayers){
+                    if(player == p){
+                        bluePlayers.remove(event.getEntity().getPlayer());
+                        teamBlue.removeEntry(event.getEntity().getPlayer().getDisplayName());
+                        Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
+                    }
                 }
 
             }
@@ -262,12 +262,21 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerLogOff (PlayerQuitEvent event) { //handle when players log off in the middle of battle
         if(battleRegions != null){
-            if(event.getPlayer().getWorld() == Bukkit.getWorld("RegionBattle")){
-                if(redPlayers.contains(event.getPlayer().getDisplayName().toLowerCase())){
-                    redPlayers.remove(event.getPlayer());
+            Player p = event.getPlayer();
+
+            //TODO not sure this event works
+
+            //TODO again, more efficient way to do this than for loop if needed
+            if(p.getWorld() == Regions.world){
+                for(Player player : redPlayers ) {
+                    if (player == p) {
+                        redPlayers.remove(p);
+                    }
                 }
-                if(bluePlayers.contains(event.getPlayer().getDisplayName().toLowerCase())){
-                    bluePlayers.remove(event.getPlayer());
+                for(Player player : bluePlayers ) {
+                    if (player == p) {
+                        bluePlayers.remove(p);
+                    }
                 }
             }
         }
@@ -276,14 +285,22 @@ public class Battle implements Listener {
     @EventHandler
     public void onPlayerLogOn (PlayerJoinEvent event) { //handle when players log off in the middle of battle, and then join back.
         if(battleRegions != null){
-            if(event.getPlayer().getWorld() == Regions.world){
-                if(redPlayers.contains(event.getPlayer().getDisplayName().toLowerCase())){
-                    redPlayers.add(event.getPlayer());
+
+            Player p = event.getPlayer();
+
+            if(p.getWorld() == Regions.world){
+                if(battleRegions.regionRed.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                    redPlayers.add(p);
+                    teamRed.addEntry(p.getDisplayName()); //add player to team
+                    p.setScoreboard(board); //set player scoreboard
                 }
-                if(bluePlayers.contains(event.getPlayer().getDisplayName().toLowerCase())){
-                    bluePlayers.add(event.getPlayer());
+                if(battleRegions.regionBlue.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                    bluePlayers.add(p);
+                    teamBlue.addEntry(p.getDisplayName()); //add player to team
+                    p.setScoreboard(board); //set player scoreboard
                 }
             }
+
         }
     }
 
