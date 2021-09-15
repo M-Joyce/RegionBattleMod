@@ -225,7 +225,7 @@ public class Battle implements Listener {
             }
         }
     }
-//TODO these events dont seem to be getting the real objects for redPlayers/bluePlayers, instead they get those objects with null
+
     @EventHandler
     public void onPlayerDeath (PlayerDeathEvent event){ // Send message of players death.
 
@@ -263,8 +263,6 @@ public class Battle implements Listener {
     public void onPlayerLogOff (PlayerQuitEvent event) { //handle when players log off in the middle of battle
         if(battleRegions != null){
             Player p = event.getPlayer();
-
-            //TODO not sure this event works
 
             //TODO again, more efficient way to do this than for loop if needed
             if(p.getWorld() == Regions.world){
