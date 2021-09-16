@@ -182,6 +182,8 @@ public class Battle implements Listener {
                         Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
 
                         CommandStartRegionBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
+                        CommandSeek.battle = null;
+                        CommandSendTeamChat.battle = null;
                         battleRegions = null;
 
                         //Trigger a new battle to start
