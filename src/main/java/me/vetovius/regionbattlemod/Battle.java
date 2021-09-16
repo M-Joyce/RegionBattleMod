@@ -9,16 +9,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+
+import java.util.*;
 import java.util.logging.Logger;
 
 public class Battle implements Listener {
@@ -85,13 +82,13 @@ public class Battle implements Listener {
 
         for(Player player : redPlayers){ //add red players
             player.getInventory().clear(); //clear inventory
-            teamRed.addEntry(player.getDisplayName()); //add player to team
+            teamRed.addEntry(player.getUniqueId().toString()); //add player to team
             player.setScoreboard(board); //set player scoreboard
         }
 
         for(Player player : bluePlayers){ //add blue players
             player.getInventory().clear(); //clear inventory
-            teamBlue.addEntry(player.getDisplayName()); //add player to team
+            teamBlue.addEntry(player.getUniqueId().toString()); //add player to team
             player.setScoreboard(board); //set player scoreboard
         }
 
@@ -112,8 +109,8 @@ public class Battle implements Listener {
         Location redMidPoint = new Location(Regions.world,(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
         redMidPoint.setY(Regions.world.getHighestBlockYAt(redMidPoint)+1);
         LOGGER.info("Teleporting Red Team to: "+redMidPoint);
-        for(String name : regionRed.getMembers().getPlayers()){
-            Bukkit.getPlayer(name).teleport(redMidPoint);
+        for(UUID uuid : regionRed.getMembers().getUniqueIds()){
+            Bukkit.getPlayer(uuid).teleport(redMidPoint);
         }
 
         //Blue Team
@@ -129,8 +126,8 @@ public class Battle implements Listener {
         blueMidPoint.setY(Regions.world.getHighestBlockYAt(blueMidPoint)+1);
         LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
 
-        for(String name : regionBlue.getMembers().getPlayers()){
-            Bukkit.getPlayer(name).teleport(blueMidPoint);
+        for(UUID uuid : regionBlue.getMembers().getUniqueIds()){
+            Bukkit.getPlayer(uuid).teleport(blueMidPoint);
         }
 
         Bukkit.broadcastMessage(ChatColor.RED+"The Red Team is at: X="+redMidPoint.getBlockX()+" Z="+redMidPoint.getBlockZ());
@@ -213,27 +210,27 @@ public class Battle implements Listener {
             }}, 20*60L*prepareMinutes); //20 ticks per second * 60 seconds * # Minutes wanted from prepareMinutes
     }
 
-    public void seekPlayers(String name){
+    public void seekPlayers(UUID uuid){
 
-        if(Bukkit.getPlayer(name.toLowerCase()).getWorld() == Regions.world){
+        if(Bukkit.getPlayer(uuid).getWorld() == Regions.world){
             Random rand = new Random();
 
             if(bluePlayers.size() > 0 && redPlayers.size() > 0) {
-                if (redPlayers.contains(Bukkit.getPlayer(name.toLowerCase()))) {
+                if (redPlayers.contains(Bukkit.getPlayer(uuid))) {
                     Player playerToSeek = bluePlayers.get(rand.nextInt(bluePlayers.size()));
                     Location loc = playerToSeek.getLocation();
-                    Bukkit.getPlayer(name.toLowerCase()).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
                 }
 
-                if (bluePlayers.contains(Bukkit.getPlayer(name.toLowerCase()))) {
+                if (bluePlayers.contains(Bukkit.getPlayer(uuid))) {
 
                     Player playerToSeek = redPlayers.get(rand.nextInt(redPlayers.size()));
                     Location loc = playerToSeek.getLocation();
-                    Bukkit.getPlayer(name.toLowerCase()).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
                 }
             }
             else{
-                Bukkit.getPlayer(name.toLowerCase()).sendMessage("There are no players to seek!");
+                Bukkit.getPlayer(uuid).sendMessage("There are no players to seek!");
             }
         }
     }
@@ -255,7 +252,7 @@ public class Battle implements Listener {
                 for(Player player : redPlayers ){
                     if(player == p){
                         redPlayers.remove(event.getEntity().getPlayer());
-                        teamRed.removeEntry(event.getEntity().getPlayer().getDisplayName());
+                        teamRed.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
                         Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
                     }
                 }
@@ -263,7 +260,7 @@ public class Battle implements Listener {
                 for(Player player : bluePlayers){
                     if(player == p){
                         bluePlayers.remove(event.getEntity().getPlayer());
-                        teamBlue.removeEntry(event.getEntity().getPlayer().getDisplayName());
+                        teamBlue.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
                         Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
                     }
                 }
@@ -300,14 +297,14 @@ public class Battle implements Listener {
             Player p = event.getPlayer();
 
             if(p.getWorld() == Regions.world){
-                if(battleRegions.regionRed.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                if(battleRegions.regionRed.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
                     redPlayers.add(p);
-                    teamRed.addEntry(p.getDisplayName()); //add player to team
+                    teamRed.addEntry(p.getUniqueId().toString()); //add player to team
                     p.setScoreboard(board); //set player scoreboard
                 }
-                if(battleRegions.regionBlue.getMembers().getPlayers().contains(p.getDisplayName().toLowerCase())){
+                if(battleRegions.regionBlue.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
                     bluePlayers.add(p);
-                    teamBlue.addEntry(p.getDisplayName()); //add player to team
+                    teamBlue.addEntry(p.getUniqueId().toString()); //add player to team
                     p.setScoreboard(board); //set player scoreboard
                 }
             }

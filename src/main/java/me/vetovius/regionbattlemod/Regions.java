@@ -174,11 +174,11 @@ public class Regions {
         membersBlue = regionBlue.getMembers();
 
         for(Player player : battle.redPlayers){ //add red players
-            membersRed.addPlayer(player.getDisplayName());
+            membersRed.addPlayer(player.getUniqueId());
         }
 
         for(Player player : battle.bluePlayers){ //add blue players
-            membersBlue.addPlayer(player.getDisplayName());
+            membersBlue.addPlayer(player.getUniqueId());
         }
 
         regionRed.setMembers(membersRed);

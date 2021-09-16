@@ -4,7 +4,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.UUID;
 import java.util.logging.Logger;
 
 public class CommandSeek implements CommandExecutor {
@@ -18,7 +20,12 @@ public class CommandSeek implements CommandExecutor {
 
         if(battle != null){
             LOGGER.info("--Seek Command Called...--");
-            battle.seekPlayers(sender.getName());
+
+            if(sender instanceof Player) {
+                Player player = (Player) sender;
+                UUID uuid = player.getUniqueId(); // this should work
+                battle.seekPlayers(uuid);
+            }
         }
         //TODO this wont work right for multiple battle objects?
         else{
