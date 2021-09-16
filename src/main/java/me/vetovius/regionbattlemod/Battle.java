@@ -4,6 +4,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -23,6 +24,8 @@ import java.util.logging.Logger;
 public class Battle implements Listener {
 
     private static final int prepareMinutes = 15;
+    private static final int newBattleDelay = 3;
+
     private static final Logger LOGGER = Logger.getLogger( Battle.class.getName() );
 
     private ScoreboardManager manager;
@@ -184,6 +187,16 @@ public class Battle implements Listener {
                         CommandStartRegionBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
                         battleRegions = null;
 
+                        //Trigger a new battle to start
+                        Bukkit.broadcastMessage(ChatColor.GREEN + "A new battle will begin in " + newBattleDelay + " minutes!");
+                        Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+                            public void run() {
+                                //Start a new battle.
+                                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                                Bukkit.dispatchCommand(console, "startregionbattle");
+                            }
+                        }, 20*60L*newBattleDelay); //20 ticks per second * 60 seconds * # Minutes
 
                     }
 
