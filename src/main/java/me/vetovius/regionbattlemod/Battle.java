@@ -14,7 +14,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
-
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -77,8 +76,8 @@ public class Battle implements Listener {
         teamRed.setColor(ChatColor.RED);
 
 
-        LOGGER.info("assignTeams() RED:" + redPlayers.toString());
-        LOGGER.info("assignTeams() BLUE:" + bluePlayers.toString());
+        //LOGGER.info("assignTeams() RED:" + redPlayers.toString());
+        //LOGGER.info("assignTeams() BLUE:" + bluePlayers.toString());
 
         for(Player player : redPlayers){ //add red players
             player.getInventory().clear(); //clear inventory
@@ -108,7 +107,7 @@ public class Battle implements Listener {
 
         Location redMidPoint = new Location(Regions.world,(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
         redMidPoint.setY(Regions.world.getHighestBlockYAt(redMidPoint)+1);
-        LOGGER.info("Teleporting Red Team to: "+redMidPoint);
+        //LOGGER.info("Teleporting Red Team to: "+redMidPoint);
         for(UUID uuid : regionRed.getMembers().getUniqueIds()){
             Bukkit.getPlayer(uuid).teleport(redMidPoint);
         }
@@ -124,7 +123,7 @@ public class Battle implements Listener {
 
         Location blueMidPoint = new Location(Regions.world,(bmaxX+bminX)/2,(bmaxY+bminY )/2,(bmaxZ+bminZ )/2);
         blueMidPoint.setY(Regions.world.getHighestBlockYAt(blueMidPoint)+1);
-        LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
+        //LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
 
         for(UUID uuid : regionBlue.getMembers().getUniqueIds()){
             Bukkit.getPlayer(uuid).teleport(blueMidPoint);
@@ -246,8 +245,6 @@ public class Battle implements Listener {
             if(battleRegions != null){
 
                 Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
-
-                LOGGER.info("RED:" + redPlayers.toString());
 
                 //search teams for dead player.
                 //TODO there is definitely a more efficient way to do this if needed

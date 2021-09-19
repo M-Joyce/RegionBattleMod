@@ -14,7 +14,6 @@ import com.sk89q.worldguard.protection.regions.RegionContainer;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Listener;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -184,8 +183,8 @@ public class Regions {
         regionRed.setMembers(membersRed);
         regionBlue.setMembers(membersBlue);
 
-        LOGGER.info("redMembers: " + regionRed.getMembers().toString());
-        LOGGER.info("blueMembers: " + regionBlue.getMembers().toString());
+        //LOGGER.info("redMembers: " + regionRed.getMembers().toString());
+        //LOGGER.info("blueMembers: " + regionBlue.getMembers().toString());
     }
 
     private Point[] findRegionZones(){ //find zones for region
@@ -240,12 +239,11 @@ public class Regions {
     }
 
     protected void removeRegions(){
+        LOGGER.info("Removing Teams");
         if(regionManager.getRegion("Team_Blue") != null) {
-            LOGGER.info("Removing Team_Blue");
             regionManager.removeRegion("Team_Blue");
         }
         if(regionManager.getRegion("Team_Red") != null) {
-            LOGGER.info("Removing Team_Red");
             regionManager.removeRegion("Team_Red");
         }
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
