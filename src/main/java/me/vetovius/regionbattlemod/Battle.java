@@ -70,7 +70,7 @@ public class Battle implements Listener {
         this.redPlayers = new ArrayList<>();
         this.bluePlayers = new ArrayList<>();
 
-        this.prepPhaseBossBar = Bukkit.createBossBar("Prepare for Battle!", BarColor.GREEN, BarStyle.SEGMENTED_10);
+        this.prepPhaseBossBar = Bukkit.createBossBar(ChatColor.GRAY+"Prepare for Battle!", BarColor.RED, BarStyle.SEGMENTED_10);
 
         this.assignTeams();
         this.battleRegions.assignRegionMembers(this);
