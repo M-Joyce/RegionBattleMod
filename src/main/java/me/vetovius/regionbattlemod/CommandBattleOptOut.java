@@ -21,9 +21,11 @@ public class CommandBattleOptOut implements CommandExecutor {
         //Used to toggle if this player will join battles or not.
 
         if(Battle.optOutPlayersList.contains(Bukkit.getPlayer(sender.getName()))){
+            Bukkit.getPlayer(sender.getName()).sendMessage("You are no longer opting out of battles!");
             Battle.optOutPlayersList.remove(Bukkit.getPlayer(sender.getName()));
         }
         else {
+            Bukkit.getPlayer(sender.getName()).sendMessage("You are now opting out of battles!");
             Battle.optOutPlayersList.add(Bukkit.getPlayer(sender.getName()));
         }
         return true;
