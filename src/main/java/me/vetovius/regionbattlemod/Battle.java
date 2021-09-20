@@ -19,6 +19,8 @@ import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
+
+import javax.imageio.plugins.jpeg.JPEGImageReadParam;
 import java.util.*;
 import java.util.logging.Logger;
 
@@ -347,7 +349,7 @@ public class Battle implements Listener {
                         prepCountdownTask.cancel();
                         prepPhaseBossBar.removeAll();
                     } else {
-                        prepPhaseBossBar.setProgress(seconds / 10D);
+                        prepPhaseBossBar.setProgress(seconds / 60D*prepareMinutes);
                     }
                 }
             }.runTaskTimer(plugin, 0, 20);
