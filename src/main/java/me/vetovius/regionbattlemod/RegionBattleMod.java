@@ -32,7 +32,7 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Bukkit.broadcastMessage("Welcome to the server, "+event.getPlayer().getDisplayName()+"!");
+
     }
 
     @EventHandler

@@ -81,13 +81,13 @@ public class Battle implements Listener {
 
         for(Player player : redPlayers){ //add red players
             player.getInventory().clear(); //clear inventory
-            teamRed.addEntry(player.getUniqueId().toString()); //add player to team
+            teamRed.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
         }
 
         for(Player player : bluePlayers){ //add blue players
             player.getInventory().clear(); //clear inventory
-            teamBlue.addEntry(player.getUniqueId().toString()); //add player to team
+            teamBlue.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
         }
 
