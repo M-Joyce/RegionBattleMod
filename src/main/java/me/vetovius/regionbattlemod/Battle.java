@@ -198,6 +198,10 @@ public class Battle implements Listener {
                         Bukkit.getScheduler().cancelTask(battleTimerID);
                         Bukkit.getScheduler().cancelTask(checkIfGameIsOverID);
 
+                        if (prepCountdownTask != null) {
+                            prepCountdownTask.cancel();
+                        }
+
                         Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
 
                         CommandStartRegionBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
