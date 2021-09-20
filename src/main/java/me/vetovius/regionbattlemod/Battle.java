@@ -349,7 +349,7 @@ public class Battle implements Listener {
                         prepCountdownTask.cancel();
                         prepPhaseBossBar.removeAll();
                     } else {
-                        prepPhaseBossBar.setProgress(seconds / 60D*prepareMinutes);
+                        prepPhaseBossBar.setProgress(seconds / (60D*prepareMinutes));
                     }
                 }
             }.runTaskTimer(plugin, 0, 20);
