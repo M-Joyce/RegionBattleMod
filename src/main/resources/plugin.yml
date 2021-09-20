@@ -19,3 +19,7 @@ commands:
     description: Send a chat to your team only during a battle.
     usage: /tc while in a battle.
     permission: RegionBattleMod.tc
+  battleoptout:
+    description: Temporarily opt out of battles. Toggleable.
+    usage: /battleoptout
+    permission: RegionBattleMod.battleoptout

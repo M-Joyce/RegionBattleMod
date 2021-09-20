@@ -38,7 +38,7 @@ public class Battle implements Listener {
 
     private Regions battleRegions; //Regions object containing region for each team, and region related functionality
 
-
+    public static ArrayList<Player> optOutPlayersList = new ArrayList<Player>();
     protected ArrayList<Player> redPlayers;
     protected ArrayList<Player> bluePlayers;
 
@@ -84,6 +84,12 @@ public class Battle implements Listener {
         LOGGER.info("Assigning Teams..");
 
         List<Player> players = new ArrayList<>(Regions.world.getPlayers());
+
+        //remove opted out players
+        for(Player p : optOutPlayersList){
+            players.remove(p);
+        }
+
         Collections.shuffle(players); //randomize
 
         // add the first half of players to Red
