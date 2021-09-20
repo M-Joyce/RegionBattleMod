@@ -22,7 +22,7 @@ public class CommandStartRegionBattle implements CommandExecutor {
         checkIfStartNewBattle = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
 
-                if(Regions.world.getPlayers().size() > 0){
+                if(Regions.world.getPlayers().size() - Battle.optOutPlayersList.size() > 0){
                     if(battle == null){
                         LOGGER.info("--Creating Battle--");
                         battle = new Battle(RegionBattleMod.getPlugin(RegionBattleMod.class));
