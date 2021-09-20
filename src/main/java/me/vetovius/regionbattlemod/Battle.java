@@ -4,6 +4,9 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +14,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
@@ -37,12 +42,21 @@ public class Battle implements Listener {
 
     private int battleTimerID;
 
+    private BukkitTask prepCountdownTask;
+
+    private BossBar prepPhaseBossBar;
+
+    private RegionBattleMod plugin;
+
+
 
     public Battle(RegionBattleMod pluginInstance){
 
         LOGGER.info("--Creating Battle--");
 
-        Bukkit.getPluginManager().registerEvents(this, pluginInstance); //register events
+        this.plugin = pluginInstance;
+
+        Bukkit.getPluginManager().registerEvents(this, plugin); //register events
 
         this.battleRegions = new Regions();
 
@@ -54,9 +68,12 @@ public class Battle implements Listener {
         this.redPlayers = new ArrayList<>();
         this.bluePlayers = new ArrayList<>();
 
+        this.prepPhaseBossBar = Bukkit.createBossBar("Preparare for Battle!", BarColor.GREEN, BarStyle.SEGMENTED_10);
+
         this.assignTeams();
         this.battleRegions.assignRegionMembers(this);
         this.teleportTeams(battleRegions.regionRed,battleRegions.regionBlue);
+        this.startPrepPhaseBossBarTimer();
         this.battleTimer(battleRegions.particleRunnerID);
 
     }
@@ -83,12 +100,14 @@ public class Battle implements Listener {
             player.getInventory().clear(); //clear inventory
             teamRed.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
+            prepPhaseBossBar.addPlayer(player); //display prep timer
         }
 
         for(Player player : bluePlayers){ //add blue players
             player.getInventory().clear(); //clear inventory
             teamBlue.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
+            prepPhaseBossBar.addPlayer(player); //display prep timer
         }
 
     }
@@ -135,12 +154,10 @@ public class Battle implements Listener {
     }
 
     public void battleTimer(int particleRunnerID){
-        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
 
         Bukkit.broadcastMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies! You have "+prepareMinutes + " minutes!");
         Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
         Bukkit.broadcastMessage(ChatColor.BLUE+""+bluePlayers.size()+" players remain on Team Blue.");
-
 
         battleTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
@@ -158,6 +175,7 @@ public class Battle implements Listener {
                         }
 
                         //Do Tasks to end the game
+                        prepPhaseBossBar.removeAll();
 
                         battleRegions.removeRegions(); //remove regions at game end
 
@@ -202,7 +220,6 @@ public class Battle implements Listener {
 
             public void run() {
                 Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down! Last team standing wins!");
-                //TODO give 5 minute warning
 
                 battleRegions.removeFlagsForBattle(); //remove flags in regions to allow for battle
 
@@ -246,6 +263,8 @@ public class Battle implements Listener {
 
                 Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
 
+                prepPhaseBossBar.removePlayer(p);
+
                 //search teams for dead player.
                 //TODO there is definitely a more efficient way to do this if needed
                 for(Player player : redPlayers ){
@@ -278,11 +297,13 @@ public class Battle implements Listener {
                 for(Player player : redPlayers ) {
                     if (player == p) {
                         redPlayers.remove(p);
+                        prepPhaseBossBar.removePlayer(p);
                     }
                 }
                 for(Player player : bluePlayers ) {
                     if (player == p) {
                         bluePlayers.remove(p);
+                        prepPhaseBossBar.removePlayer(p);
                     }
                 }
             }
@@ -300,16 +321,38 @@ public class Battle implements Listener {
                     redPlayers.add(p);
                     teamRed.addEntry(p.getUniqueId().toString()); //add player to team
                     p.setScoreboard(board); //set player scoreboard
+                    prepPhaseBossBar.addPlayer(p);
                 }
                 if(battleRegions.regionBlue.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
                     bluePlayers.add(p);
                     teamBlue.addEntry(p.getUniqueId().toString()); //add player to team
                     p.setScoreboard(board); //set player scoreboard
+                    prepPhaseBossBar.addPlayer(p);
                 }
             }
 
         }
 
+    }
+
+    private void startPrepPhaseBossBarTimer(){
+        //Timer for preparation phase
+
+        if (prepCountdownTask == null) {
+            this.prepCountdownTask = new BukkitRunnable() {
+                int seconds = 60*prepareMinutes;
+                @Override
+                public void run() {
+                    if ((seconds -= 1) == 0) {
+                        prepCountdownTask.cancel();
+                        prepPhaseBossBar.removeAll();
+                    } else {
+                        prepPhaseBossBar.setProgress(seconds / 10D);
+                    }
+                }
+            }.runTaskTimer(plugin, 0, 20);
+        }
+        prepPhaseBossBar.setVisible(true);
     }
 
 }
