@@ -11,6 +11,8 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.ArrayList;
+
 
 public class RegionBattleMod extends JavaPlugin implements Listener {
 
@@ -53,21 +55,27 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent e){
         Player p = e.getPlayer();
         if(CommandChat.survivalChatPlayers.contains(p)){
+            ArrayList<Player> toRemove = new ArrayList<Player>();
             //Chat to survival chat
             for(Player player : e.getRecipients()){ //modify recipients
                 if(!CommandChat.survivalChatPlayers.contains(player)){
-                    e.getRecipients().remove(player);
+                    toRemove.add(player);
                 }
             }
+            e.getRecipients().removeAll(toRemove);
+            toRemove.clear();
             e.setMessage(ChatColor.YELLOW +"[Survival] "+ChatColor.WHITE+e.getMessage());
         }
         else if(CommandChat.battleChatPlayers.contains(p)){
+            ArrayList<Player> toRemove = new ArrayList<Player>();
             //Chat to battle chat
             for(Player player : e.getRecipients()){ //modify recipients
                 if(!CommandChat.battleChatPlayers.contains(player)){
-                    e.getRecipients().remove(player);
+                    toRemove.add(player);
                 }
             }
+            e.getRecipients().removeAll(toRemove);
+            toRemove.clear();
             e.setMessage(ChatColor.RED+"[Battle] "+ChatColor.WHITE+e.getMessage());
 
         }

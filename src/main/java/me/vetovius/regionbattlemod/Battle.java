@@ -299,25 +299,30 @@ public class Battle implements Listener {
 
                 //search teams for dead player.
                 //TODO there is definitely a more efficient way to do this if needed
+                ArrayList<Player> toRemove = new ArrayList<Player>();
                 for(Player player : redPlayers ){
                     if(player == p){
-                        redPlayers.remove(event.getEntity().getPlayer());
+                        toRemove.add(event.getEntity().getPlayer());
                         teamRed.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
                         for(Player worldPlayer : Regions.world.getPlayers()){
                             worldPlayer.sendMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
                         }
                     }
                 }
+                redPlayers.removeAll(toRemove);
+                toRemove.clear();
 
                 for(Player player : bluePlayers){
                     if(player == p){
-                        bluePlayers.remove(event.getEntity().getPlayer());
+                        toRemove.add(event.getEntity().getPlayer());
                         teamBlue.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
                         for(Player worldPlayer : Regions.world.getPlayers()){
                             worldPlayer.sendMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
                         }
                     }
                 }
+                bluePlayers.removeAll(toRemove);
+                toRemove.clear();
 
             }
         }
