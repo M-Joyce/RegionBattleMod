@@ -21,7 +21,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.ScoreboardManager;
 import org.bukkit.scoreboard.Team;
 
-import javax.imageio.plugins.jpeg.JPEGImageReadParam;
 import java.util.*;
 import java.util.logging.Logger;
 

@@ -1,9 +1,13 @@
 package me.vetovius.regionbattlemod;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,6 +28,7 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
         this.getCommand("seek").setExecutor(new CommandSeek()); //register command
         this.getCommand("tc").setExecutor(new CommandSendTeamChat()); //register command
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command
+        this.getCommand("chat").setExecutor(new CommandChat()); //register command
 
     }
     @Override
@@ -39,6 +44,36 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
         //Bukkit.broadcastMessage("A block was placed!");
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent e){
+        Player p = e.getPlayer();
+        if(CommandChat.survivalChatPlayers.contains(p)){
+            //Chat to survival chat
+            for(Player player : e.getRecipients()){ //modify recipients
+                if(!CommandChat.survivalChatPlayers.contains(player)){
+                    e.getRecipients().remove(player);
+                }
+            }
+            e.setMessage(ChatColor.YELLOW +"[Survival] "+ChatColor.WHITE+e.getMessage());
+        }
+        else if(CommandChat.battleChatPlayers.contains(p)){
+            //Chat to battle chat
+            for(Player player : e.getRecipients()){ //modify recipients
+                if(!CommandChat.battleChatPlayers.contains(player)){
+                    e.getRecipients().remove(player);
+                }
+            }
+            e.setMessage(ChatColor.RED+"[Battle] "+ChatColor.WHITE+e.getMessage());
+
+        }
+        else {
+            //do nothing, continue regular global chat.
+            e.setMessage("[Global] "+e.getMessage());
+        }
+
+
     }
 
 }
