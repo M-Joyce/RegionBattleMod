@@ -157,16 +157,25 @@ public class Battle implements Listener {
             Bukkit.getPlayer(uuid).teleport(blueMidPoint);
         }
 
-        Bukkit.broadcastMessage(ChatColor.RED+"The Red Team is at: X="+redMidPoint.getBlockX()+" Z="+redMidPoint.getBlockZ());
-        Bukkit.broadcastMessage(ChatColor.BLUE+"The Blue Team is at: X="+blueMidPoint.getBlockX()+" Z="+blueMidPoint.getBlockZ());
+        for(Player p : redPlayers){
+            p.sendMessage(ChatColor.BLUE+"The Blue Team is at: X="+blueMidPoint.getBlockX()+" Z="+blueMidPoint.getBlockZ());
+        }
+        for(Player p : bluePlayers){
+            p.sendMessage(ChatColor.RED+"The Red Team is at: X="+redMidPoint.getBlockX()+" Z="+redMidPoint.getBlockZ());
+        }
+
+
 
     }
 
     public void battleTimer(int particleRunnerID){
 
-        Bukkit.broadcastMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies! You have "+prepareMinutes + " minutes!");
-        Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
-        Bukkit.broadcastMessage(ChatColor.BLUE+""+bluePlayers.size()+" players remain on Team Blue.");
+        for(Player p : Regions.world.getPlayers()){
+            p.sendMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies! You have "+prepareMinutes + " minutes!");
+            p.sendMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+            p.sendMessage(ChatColor.BLUE+""+bluePlayers.size()+" players remain on Team Blue.");
+        }
+
 
         battleTimerID = Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
@@ -176,11 +185,15 @@ public class Battle implements Listener {
                     if((redPlayers.size() <= 0 || bluePlayers.size() <= 0)){ //End game check
 
                         if(redPlayers.size() <= 0){
-                            Bukkit.broadcastMessage(ChatColor.BLUE+"The Blue Team has won the battle! No players remain on the Red Team!");
+                            for(Player p : Regions.world.getPlayers()){
+                                p.sendMessage(ChatColor.BLUE+"The Blue Team has won the battle! No players remain on the Red Team!");
+                            }
                         }
 
                         if(bluePlayers.size() <= 0) {
-                            Bukkit.broadcastMessage(ChatColor.RED+"The Red Team has won the battle! No players remain on the Blue Team!");
+                            for(Player p : Regions.world.getPlayers()) {
+                                p.sendMessage(ChatColor.RED + "The Red Team has won the battle! No players remain on the Blue Team!");
+                            }
                         }
 
                         //Do Tasks to end the game
@@ -217,7 +230,9 @@ public class Battle implements Listener {
                         battleRegions = null;
 
                         //Trigger a new battle to start
-                        Bukkit.broadcastMessage(ChatColor.GREEN + "A new battle will begin in " + newBattleDelay + " minutes!");
+                        for(Player p : Regions.world.getPlayers()){
+                            p.sendMessage(ChatColor.GREEN + "A new battle will begin in " + newBattleDelay + " minutes!");
+                        }
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 
                             public void run() {
@@ -232,7 +247,10 @@ public class Battle implements Listener {
                 }}, 20*30, 200); //check if game should end every 10 seconds, delay start by 30 seconds.
 
             public void run() {
-                Bukkit.broadcastMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down! Last team standing wins!");
+
+                for(Player p : Regions.world.getPlayers()){
+                    p.sendMessage(ChatColor.RED + "Let the Battle Begin! Force fields have come down! Last team standing wins!");
+                }
 
                 battleRegions.removeFlagsForBattle(); //remove flags in regions to allow for battle
 
@@ -274,7 +292,9 @@ public class Battle implements Listener {
 
             if(battleRegions != null){
 
-                Bukkit.broadcastMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
+                for(Player player : Regions.world.getPlayers()){
+                    player.sendMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
+                }
 
                 prepPhaseBossBar.removePlayer(p);
 
@@ -284,7 +304,9 @@ public class Battle implements Listener {
                     if(player == p){
                         redPlayers.remove(event.getEntity().getPlayer());
                         teamRed.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
-                        Bukkit.broadcastMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+                        for(Player worldPlayer : Regions.world.getPlayers()){
+                            worldPlayer.sendMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
+                        }
                     }
                 }
 
@@ -292,7 +314,9 @@ public class Battle implements Listener {
                     if(player == p){
                         bluePlayers.remove(event.getEntity().getPlayer());
                         teamBlue.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
-                        Bukkit.broadcastMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
+                        for(Player worldPlayer : Regions.world.getPlayers()){
+                            worldPlayer.sendMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
+                        }
                     }
                 }
 
