@@ -30,6 +30,9 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command
         this.getCommand("chat").setExecutor(new CommandChat()); //register command
 
+        //Start first battle.
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+        Bukkit.dispatchCommand(console, "startregionbattle");
     }
     @Override
     public void onDisable() {
