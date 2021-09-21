@@ -14,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.Scoreboard;
@@ -342,10 +343,29 @@ public class Battle implements Listener {
                     prepPhaseBossBar.addPlayer(p);
                 }
             }
-
         }
-
     }
+    @EventHandler
+    public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if the teleport.
+
+        if (battleRegions != null) {
+            Player p = event.getPlayer();
+            if (p.getWorld() == Regions.world) {
+
+                if (battleRegions.regionRed.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())) {
+                    redPlayers.remove(p);
+                    teamRed.removeEntry(p.getDisplayName());
+                    prepPhaseBossBar.removePlayer(p);
+                }
+                if (battleRegions.regionBlue.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())) {
+                    bluePlayers.remove(p);
+                    teamBlue.removeEntry(p.getDisplayName());
+                    prepPhaseBossBar.removePlayer(p);
+                }
+            }
+        }
+    }
+
 
     private void startPrepPhaseBossBarTimer(){
         //Timer for preparation phase
