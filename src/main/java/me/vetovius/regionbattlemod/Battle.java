@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class Battle implements Listener {
 
     private static final int prepareMinutes = 15;
-    private static final int newBattleDelay = 3;
+    private static final int newBattleDelay = 5;
 
     private static final Logger LOGGER = Logger.getLogger( Battle.class.getName() );
 
@@ -169,6 +169,8 @@ public class Battle implements Listener {
 
     public void battleTimer(int particleRunnerID){
 
+        Regions.world.setTime(0); //set time to day
+
         for(Player p : Regions.world.getPlayers()){
             p.sendMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies! You have "+prepareMinutes + " minutes!");
             p.sendMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
@@ -303,7 +305,7 @@ public class Battle implements Listener {
                 for(Player player : redPlayers ){
                     if(player == p){
                         toRemove.add(event.getEntity().getPlayer());
-                        teamRed.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
+                        teamRed.removeEntry(event.getEntity().getDisplayName());
                         for(Player worldPlayer : Regions.world.getPlayers()){
                             worldPlayer.sendMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
                         }
@@ -315,7 +317,7 @@ public class Battle implements Listener {
                 for(Player player : bluePlayers){
                     if(player == p){
                         toRemove.add(event.getEntity().getPlayer());
-                        teamBlue.removeEntry(event.getEntity().getPlayer().getUniqueId().toString());
+                        teamBlue.removeEntry(event.getEntity().getDisplayName());
                         for(Player worldPlayer : Regions.world.getPlayers()){
                             worldPlayer.sendMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
                         }
@@ -338,12 +340,14 @@ public class Battle implements Listener {
                 for(Player player : redPlayers ) {
                     if (player == p) {
                         redPlayers.remove(p);
+                        teamRed.removeEntry(p.getDisplayName());
                         prepPhaseBossBar.removePlayer(p);
                     }
                 }
                 for(Player player : bluePlayers ) {
                     if (player == p) {
                         bluePlayers.remove(p);
+                        teamBlue.removeEntry(p.getDisplayName());
                         prepPhaseBossBar.removePlayer(p);
                     }
                 }
@@ -360,13 +364,13 @@ public class Battle implements Listener {
             if(p.getWorld() == Regions.world){
                 if(battleRegions.regionRed.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
                     redPlayers.add(p);
-                    teamRed.addEntry(p.getUniqueId().toString()); //add player to team
+                    teamRed.addEntry(p.getDisplayName()); //add player to team
                     p.setScoreboard(board); //set player scoreboard
                     prepPhaseBossBar.addPlayer(p);
                 }
                 if(battleRegions.regionBlue.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
                     bluePlayers.add(p);
-                    teamBlue.addEntry(p.getUniqueId().toString()); //add player to team
+                    teamBlue.addEntry(p.getDisplayName()); //add player to team
                     p.setScoreboard(board); //set player scoreboard
                     prepPhaseBossBar.addPlayer(p);
                 }
