@@ -27,7 +27,7 @@ import java.util.logging.Logger;
 public class Battle implements Listener {
 
     private static final int prepareMinutes = 15;
-    private static final int newBattleDelay = 5;
+    public static final int newBattleDelay = 5;
 
     private static final Logger LOGGER = Logger.getLogger( Battle.class.getName() );
 

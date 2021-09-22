@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.logging.Logger;
 
@@ -36,11 +37,14 @@ public class CommandStartRegionBattle implements CommandExecutor {
                 }
                 else{
                     //Do things if a game doesn't start due to not enough players
+                    for(Player p : Regions.world.getPlayers()){
+                        p.sendMessage(ChatColor.GREEN + "Not enough players! A new battle will begin in " + Battle.newBattleDelay + " minutes!");
+                    }
 
 
                 }
 
-            }}, 20, 20*60); //repeat task, delay = 1s, repeat every minute.
+            }}, 20, 20*Battle.newBattleDelay); //repeat task, delay = 1s, repeat every minute.
 
         return true;
     }
