@@ -13,11 +13,12 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 
 public class RegionBattleMod extends JavaPlugin implements Listener {
 
-
+private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.getName() );
 
     @Override
     public void onEnable() {
@@ -96,9 +97,15 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
         if(event.getVote().getUsername() != null){
 
             Player player = Bukkit.getPlayer(event.getVote().getUsername());
-            player.sendMessage("Thanks for voting!");
-            Bukkit.dispatchCommand(console, "eco give "+player.getName()+" 25"); //give $25 for voting!
 
+            if(player != null){
+                player.sendMessage("Thanks for voting!");
+                Bukkit.dispatchCommand(console, "eco give "+player.getName()+" 25"); //give $25 for voting!
+            }
+            else{
+                LOGGER.info("VOTIFIER: INVALID PLAYER NAME!" + event.getVote().toString());
+            }
+            
         }
 
 
