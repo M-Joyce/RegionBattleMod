@@ -44,7 +44,7 @@ public class CommandStartRegionBattle implements CommandExecutor {
 
                 }
 
-            }}, 20, 20*Battle.newBattleDelay); //repeat task, delay = 1s, repeat every minute.
+            }}, 20, 20*60*Battle.newBattleDelay); //repeat task, delay = 1s, repeat every 5 minutes.
 
         return true;
     }

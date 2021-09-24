@@ -1,5 +1,6 @@
 package me.vetovius.regionbattlemod;
 
+import com.vexsoftware.votifier.model.VotifierEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
@@ -83,6 +84,23 @@ public class RegionBattleMod extends JavaPlugin implements Listener {
             //do nothing, continue regular global chat.
             e.setMessage("[Global] "+e.getMessage());
         }
+
+
+    }
+
+    //VOTE HANDLING
+    @EventHandler
+    public void onVoteEvent(VotifierEvent event){
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+
+        if(event.getVote().getUsername() != null){
+
+            Player player = Bukkit.getPlayer(event.getVote().getUsername());
+            player.sendMessage("Thanks for voting!");
+            Bukkit.dispatchCommand(console, "eco give "+player.getName()+" 25"); //give $25 for voting!
+
+        }
+
 
 
     }
