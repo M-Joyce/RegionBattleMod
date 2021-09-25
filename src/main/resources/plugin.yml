@@ -27,3 +27,7 @@ commands:
     description: Toggle which chat channel you are in.
     usage: /chat s for survival or /chat b for battle. Toggling both chats off will return you to global.
     permission: RegionBattleMod.chat
+  vote:
+    description: Vote for our server.
+    usage: /vote
+    permission: RegionBattleMod.vote

@@ -33,6 +33,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("tc").setExecutor(new CommandSendTeamChat()); //register command
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command
         this.getCommand("chat").setExecutor(new CommandChat()); //register command
+        this.getCommand("vote").setExecutor(new CommandVote()); //register command
 
         //Start first battle.
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
@@ -105,10 +106,8 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
             else{
                 LOGGER.info("VOTIFIER: INVALID PLAYER NAME!" + event.getVote().toString());
             }
-            
+
         }
-
-
 
     }
 
