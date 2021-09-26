@@ -20,7 +20,8 @@ public class CommandVote implements CommandExecutor {
                 "https://minecraftservers.org/server/624356\n" +
                 "https://minecraft-server-list.com/server/481756/vote/\n" +
                 "https://minecraft-mp.com/server/293346/vote/\n" +
-                "https://www.planetminecraft.com/server/regionbattle/\n");
+                "https://www.planetminecraft.com/server/regionbattle/\n" +
+                "https://topminecraftservers.org/server/21394\n");
 
         return true;
     }
