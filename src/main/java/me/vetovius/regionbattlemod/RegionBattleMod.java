@@ -35,9 +35,16 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("chat").setExecutor(new CommandChat()); //register command
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
 
-        //Start first battle.
-        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-        Bukkit.dispatchCommand(console, "startregionbattle");
+
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            @Override
+            public void run() {
+                //Start first battle.
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console, "startregionbattle");
+            }
+        }, 20*60*2L); //20 Tick (1 Second) delay before run() is called
+
     }
     @Override
     public void onDisable() {
