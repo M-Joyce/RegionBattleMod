@@ -23,16 +23,16 @@ public class CommandStartRegionBattle implements CommandExecutor {
         checkIfStartNewBattle = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
 
-
                 for(Player p : Battle.optOutPlayersList){
-                    if(p.getWorld() == Regions.world){
+                    if(p.isOnline()){
+                        if(p.getWorld() == Regions.world){
 
-                    }
-                    else{
-                        Battle.optOutPlayersList.remove(p);
+                        }
+                        else{
+                            Battle.optOutPlayersList.remove(p);
+                        }
                     }
                 }
-                LOGGER.info(Regions.world.getPlayers().size() - Battle.optOutPlayersList.size() + "Players ready");
 
                 if(Regions.world.getPlayers().size() - Battle.optOutPlayersList.size() > 1){
                     if(battle == null){

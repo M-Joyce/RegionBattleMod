@@ -28,6 +28,7 @@ public class CommandBattleOptOut implements CommandExecutor {
             Bukkit.getPlayer(sender.getName()).sendMessage("You are now opting out of battles!");
             Battle.optOutPlayersList.add(Bukkit.getPlayer(sender.getName()));
         }
+        LOGGER.info(Regions.world.getPlayers().size() - Battle.optOutPlayersList.size() + " Players ready (battleworld players on - optoutlist)");
         return true;
     }
 

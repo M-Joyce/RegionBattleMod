@@ -10,6 +10,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
@@ -114,6 +115,15 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
                 LOGGER.info("VOTIFIER: INVALID PLAYER NAME!" + event.getVote().toString());
             }
 
+        }
+
+    }
+
+    @EventHandler
+    public void onPlayerLogOff (PlayerQuitEvent event) { //handle when players log off in the middle of battle
+
+        if(Battle.optOutPlayersList.contains(event.getPlayer())){ //remove disconnected players from optout list.
+            Battle.optOutPlayersList.remove(event.getPlayer());
         }
 
     }
