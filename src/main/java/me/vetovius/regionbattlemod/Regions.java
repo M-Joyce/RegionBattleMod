@@ -135,7 +135,7 @@ public class Regions {
             particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
             particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
         }
-        for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX--) { //Blue Region Particles
+        for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX--) { //Blue Region Particles - North and South Boundary
             //Ground
             particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
             particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
@@ -149,12 +149,12 @@ public class Regions {
             particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
             particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
         }
-        for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ--) { //Blue Region Particles
+        for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ--) { //Blue Region Particles - West and East Boundary
             //Ground
             particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
             particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
-            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
-            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
+            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(minBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
+            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(minBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
         }
 
         RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);

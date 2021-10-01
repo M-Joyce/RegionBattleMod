@@ -324,6 +324,7 @@ public class Battle implements Listener {
                 ArrayList<Player> toRemove = new ArrayList<Player>();
                 for(Player player : redPlayers ){
                     if(player == p){
+                        p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         toRemove.add(event.getEntity().getPlayer());
                         teamRed.removeEntry(event.getEntity().getDisplayName());
                         for(Player worldPlayer : Regions.world.getPlayers()){
@@ -336,6 +337,7 @@ public class Battle implements Listener {
 
                 for(Player player : bluePlayers){
                     if(player == p){
+                        p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         toRemove.add(event.getEntity().getPlayer());
                         teamBlue.removeEntry(event.getEntity().getDisplayName());
                         for(Player worldPlayer : Regions.world.getPlayers()){
@@ -359,6 +361,7 @@ public class Battle implements Listener {
             if(p.getWorld() == Regions.world){
                 for(Player player : redPlayers ) {
                     if (player == p) {
+                        p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         redPlayers.remove(p);
                         teamRed.removeEntry(p.getDisplayName());
                         prepPhaseBossBar.removePlayer(p);
@@ -366,6 +369,7 @@ public class Battle implements Listener {
                 }
                 for(Player player : bluePlayers ) {
                     if (player == p) {
+                        p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         bluePlayers.remove(p);
                         teamBlue.removeEntry(p.getDisplayName());
                         prepPhaseBossBar.removePlayer(p);
