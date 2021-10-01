@@ -169,7 +169,7 @@ public class Battle implements Listener {
 
     public void battleTimer(int particleRunnerID){
 
-        Regions.world.setTime(0); //set time to day
+        Regions.world.setTime(23200); //set time to Morning
 
         for(Player p : Regions.world.getPlayers()){
             p.sendMessage(ChatColor.GREEN + "Prepare for Battle! Gather Supplies! You have "+prepareMinutes + " minutes!");
