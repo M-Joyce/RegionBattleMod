@@ -4,6 +4,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -15,11 +16,10 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.ScoreboardManager;
-import org.bukkit.scoreboard.Team;
+import org.bukkit.scoreboard.*;
 
 import java.util.*;
 import java.util.logging.Logger;
@@ -100,23 +100,37 @@ public class Battle implements Listener {
         teamBlue.setColor(ChatColor.BLUE); //Set Colors for teams
         teamRed.setColor(ChatColor.RED);
 
+        //TODO needs work, but does display!
+        Objective objective = board.registerNewObjective("battleObjective", "playerKillCount","Player Kills");
+        objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
 
         //LOGGER.info("assignTeams() RED:" + redPlayers.toString());
         //LOGGER.info("assignTeams() BLUE:" + bluePlayers.toString());
 
+        ItemStack compass = new ItemStack(Material.COMPASS,1);
+
+
         for(Player player : redPlayers){ //add red players
             player.getInventory().clear(); //clear inventory
+            player.getInventory().addItem(compass); //give player a compass for seek
             teamRed.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
+            Score score = objective.getScore(player.getDisplayName());
+            score.setScore(score.getScore());
         }
 
         for(Player player : bluePlayers){ //add blue players
             player.getInventory().clear(); //clear inventory
+            player.getInventory().addItem(compass); //give player a compass for seek
             teamBlue.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
+            Score score = objective.getScore(player.getDisplayName());
+            score.setScore(score.getScore());
         }
+
 
     }
 
@@ -207,10 +221,12 @@ public class Battle implements Listener {
 
                         //send players back
                         for(Player p : redPlayers){
+                            p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                             p.teleport(Regions.spawn);
                             p.getInventory().clear();
                         }
                         for(Player p : bluePlayers){
+                            p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                             p.teleport(Regions.spawn);
                             p.getInventory().clear();
                         }
@@ -270,6 +286,8 @@ public class Battle implements Listener {
                     Player playerToSeek = bluePlayers.get(rand.nextInt(bluePlayers.size()));
                     Location loc = playerToSeek.getLocation();
                     Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).setCompassTarget(playerToSeek.getLocation());
+                    Bukkit.getPlayer(uuid).sendMessage("Your compass is now pointing at their last known location.");
                 }
 
                 if (bluePlayers.contains(Bukkit.getPlayer(uuid))) {
@@ -277,6 +295,8 @@ public class Battle implements Listener {
                     Player playerToSeek = redPlayers.get(rand.nextInt(redPlayers.size()));
                     Location loc = playerToSeek.getLocation();
                     Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).setCompassTarget(playerToSeek.getLocation());
+                    Bukkit.getPlayer(uuid).sendMessage("Your compass is now pointing at their last known location.");
                 }
             }
             else{
