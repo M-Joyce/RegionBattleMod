@@ -3,6 +3,7 @@ package me.vetovius.regionbattlemod;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -65,36 +66,36 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent e){
         Player p = e.getPlayer();
-        if(CommandChat.survivalChatPlayers.contains(p)){
-            ArrayList<Player> toRemove = new ArrayList<Player>();
-            //Chat to survival chat
-            for(Player player : e.getRecipients()){ //modify recipients
-                if(!CommandChat.survivalChatPlayers.contains(player)){
-                    toRemove.add(player);
-                }
-            }
-            e.getRecipients().removeAll(toRemove);
-            toRemove.clear();
-            e.setMessage(ChatColor.YELLOW +"[Survival] "+ChatColor.WHITE+e.getMessage());
-        }
-        else if(CommandChat.battleChatPlayers.contains(p)){
-            ArrayList<Player> toRemove = new ArrayList<Player>();
-            //Chat to battle chat
-            for(Player player : e.getRecipients()){ //modify recipients
-                if(!CommandChat.battleChatPlayers.contains(player)){
-                    toRemove.add(player);
-                }
-            }
-            e.getRecipients().removeAll(toRemove);
-            toRemove.clear();
-            e.setMessage(ChatColor.RED+"[Battle] "+ChatColor.WHITE+e.getMessage());
+        ArrayList<Player> toRemove = new ArrayList<Player>();
 
+        if(!CommandChat.playerChatChannels.containsKey(p)){ //always ensure player is default in global chat
+            CommandChat.playerChatChannels.put(p,"g");
         }
-        else {
+
+        if(CommandChat.playerChatChannels.get(p).equals("g")){ //global
             //do nothing, continue regular global chat.
             e.setMessage("[Global] "+e.getMessage());
         }
+        else if(CommandChat.playerChatChannels.get(p).equals("s")){ //survival
 
+            for(Player player : Regions.world.getPlayers()){
+                toRemove.add(player); //add players not in SMP worlds to a removal list
+            }
+            e.getRecipients().removeAll(toRemove); //remove players not in an SMP world
+            toRemove.clear(); //clear list
+            e.setMessage(ChatColor.YELLOW +"[SMP] "+ChatColor.WHITE+e.getMessage());
+
+        }
+        else if(CommandChat.playerChatChannels.get(p).equals("b")){ //battle
+
+            e.getRecipients().clear(); //remove all players
+            e.getRecipients().addAll(Regions.world.getPlayers()); //add all players in RB world.
+            e.setMessage(ChatColor.RED+"[Battle] "+ChatColor.WHITE+e.getMessage());
+
+        }
+        else{
+            p.sendMessage("Something went terribly wrong, tell an admin.");
+        }
 
     }
 

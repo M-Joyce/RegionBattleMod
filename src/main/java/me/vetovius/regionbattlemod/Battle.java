@@ -100,10 +100,9 @@ public class Battle implements Listener {
         teamBlue.setColor(ChatColor.BLUE); //Set Colors for teams
         teamRed.setColor(ChatColor.RED);
 
-        //TODO needs work, but does display!
+        //create objective for score board
         Objective objective = board.registerNewObjective("battleObjective", "playerKillCount","Player Kills");
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
-
 
         //LOGGER.info("assignTeams() RED:" + redPlayers.toString());
         //LOGGER.info("assignTeams() BLUE:" + bluePlayers.toString());

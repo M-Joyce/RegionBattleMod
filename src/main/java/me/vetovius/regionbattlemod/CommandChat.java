@@ -8,12 +8,13 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class CommandChat implements CommandExecutor {
 
-    protected static ArrayList<Player> battleChatPlayers = new ArrayList<Player>();
-    protected static ArrayList<Player> survivalChatPlayers = new ArrayList<Player>();
+    protected static HashMap<Player,String> playerChatChannels = new HashMap();
+
 
     private static final Logger LOGGER = Logger.getLogger( CommandChat.class.getName() );
 
@@ -25,31 +26,24 @@ public class CommandChat implements CommandExecutor {
 
         if(args.length > 0) {
 
-            if (args[0].equalsIgnoreCase("s")) {
-                if (battleChatPlayers.contains(p)) { //remove players from other chat, only allow one chat at a time.
-                    battleChatPlayers.remove(p);
-                }
-                if (survivalChatPlayers.contains(p)) {
-                    survivalChatPlayers.remove(p);
-                    p.sendMessage("You have been removed from "+ChatColor.YELLOW+"[Survival]");
-                } else {
-                    survivalChatPlayers.add(p);
-                    p.sendMessage("You are now chatting in "+ChatColor.YELLOW+"[Survival]");
-                }
-            } else if (args[0].equalsIgnoreCase("b")) {
-                if (survivalChatPlayers.contains(p)) { //remove players from other chat, only allow one chat at a time.
-                    survivalChatPlayers.remove(p);
-                }
-                if (battleChatPlayers.contains(p)) {
-                    battleChatPlayers.remove(p);
-                    p.sendMessage("You have been removed from "+ChatColor.RED+"[Battle]");
-                } else {
-                    battleChatPlayers.add(p);
-                    p.sendMessage("You are now chatting in "+ChatColor.RED+"[Battle]");
-                }
-            } else {
-                p.sendMessage("Invalid chat! use /chat then s or b.");
+            if (args[0].equalsIgnoreCase("g")) { //global chat
+                CommandChat.playerChatChannels.put(p,"g");
+                p.sendMessage("You are now chatting in [Global]. Everyone can hear you.");
             }
+            else if (args[0].equalsIgnoreCase("s")) { //survival chat
+                CommandChat.playerChatChannels.put(p,"s");
+                p.sendMessage("You are now chatting in [" + ChatColor.YELLOW + "SMP" + ChatColor.WHITE + "]. Only the SMP worlds can hear you.");
+            }
+            else if (args[0].equalsIgnoreCase("b")) { //battle chat
+                CommandChat.playerChatChannels.put(p,"b");
+                p.sendMessage("You are now chatting in [" + ChatColor.RED + "Battle" + ChatColor.WHITE + "]. Only the RegionBattle world can hear you.");
+            }
+            else { //global chat
+                p.sendMessage("Invalid chat! use /chat then g, s, or b.");
+            }
+        }
+        else{
+            p.sendMessage("Invalid chat! use /chat then g, s, or b.");
         }
 
         return true;
