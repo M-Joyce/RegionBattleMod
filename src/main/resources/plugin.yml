@@ -31,3 +31,23 @@ commands:
     description: Vote for our server.
     usage: /vote
     permission: RegionBattleMod.vote
+  startpersistentbattle:
+    description: Start a persistent battle.
+    usage: /startpersistentbattle
+    permission: RegionBattleMod.startpersistentbattle
+  joinbattle:
+    description: Join the battle!
+    usage: /joinbattle
+    permission: RegionBattleMod.joinbattle
+  leavebattle:
+    description: Leave the battle!
+    usage: /leavebattle
+    permission: RegionBattleMod.vote
+  pseek:
+    description: Seek out enemy players in a battle.
+    usage: /pseek
+    permission: RegionBattleMod.pseek
+  ct:
+    description: Chat privately with your team during a battle.
+    usage: /ct <message> while in a battle
+    permission: RegionBattleMod.ct

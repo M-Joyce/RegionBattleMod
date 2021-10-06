@@ -36,15 +36,23 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("chat").setExecutor(new CommandChat()); //register command
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
 
+        //persistent battle commands
+        this.getCommand("startpersistentbattle").setExecutor(new CommandStartPersistentBattle()); //register command
+        this.getCommand("joinbattle").setExecutor(new CommandJoinBattle()); //register command
+        this.getCommand("leavebattle").setExecutor(new CommandLeaveBattle()); //register command
+        this.getCommand("pseek").setExecutor(new CommandPSeek()); //register command
+        this.getCommand("ct").setExecutor(new CommandSendTeamChatPersistentBattle()); //register command
 
-        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-            @Override
-            public void run() {
-                //Start first battle.
-                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-                Bukkit.dispatchCommand(console, "startregionbattle");
-            }
-        }, 20*60*2L); //20 Tick (1 Second) delay before run() is called
+
+        //Commenting this out due to persistent region battle refactor.
+//        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+//            @Override
+//            public void run() {
+//                //Start first battle.
+//                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+//                Bukkit.dispatchCommand(console, "startregionbattle");
+//            }
+//        }, 20*60*2L); //20 Tick (1 Second) delay before run() is called
 
     }
     @Override
