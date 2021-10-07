@@ -42,7 +42,7 @@ commands:
   leavebattle:
     description: Leave the battle!
     usage: /leavebattle
-    permission: RegionBattleMod.vote
+    permission: RegionBattleMod.leavebattle
   pseek:
     description: Seek out enemy players in a battle.
     usage: /pseek
