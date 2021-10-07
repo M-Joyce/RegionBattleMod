@@ -1,21 +1,13 @@
 package me.vetovius.regionbattlemod;
 
-import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.*;
 
 import java.awt.*;
@@ -40,8 +32,9 @@ public class PersistentBattle implements Listener {
     Location redSpawn;
     Location blueSpawn;
 
+    protected static World world = Bukkit.getWorld("Battle");
 
-    private static final int max = 5800; //max coordinate //TODO update these for persistent battle map and update them in Regions.java as well
+    private static final int max = 5800; //max coordinate
     private static final int min = 600; //min coordinate
     private static final int minDistance = 400; //minimum distance between region centers.
     private static final int maxDistance = 1200; //maximum distance between region centers.
@@ -70,9 +63,9 @@ public class PersistentBattle implements Listener {
         this.redPlayers = new ArrayList<>();
         this.bluePlayers = new ArrayList<>();
 
-        spawn = new Location(Regions.world, -72, 89, 3103); //location of battle spawn
+        spawn = new Location(world, -72, 89, 3103); //location of battle spawn
 
-        Regions.world.setTime(23200); //set time to Morning
+        world.setTime(23200); //set time to Morning
 
         Point[] spawnPoints = findTeamSpawns();
         int redX = (int)spawnPoints[0].getX();
@@ -80,8 +73,8 @@ public class PersistentBattle implements Listener {
         int blueX = (int)spawnPoints[1].getX();
         int blueZ = (int)spawnPoints[1].getY();
 
-        redSpawn = new Location(Regions.world,redX,Regions.world.getHighestBlockYAt(redX,redZ)+1,redZ);
-        blueSpawn = new Location(Regions.world,blueX,Regions.world.getHighestBlockYAt(blueX,blueZ)+1,blueZ);
+        redSpawn = new Location(world,redX,world.getHighestBlockYAt(redX,redZ)+1,redZ);
+        blueSpawn = new Location(world,blueX,world.getHighestBlockYAt(blueX,blueZ)+1,blueZ);
 
     }
 
@@ -124,6 +117,13 @@ public class PersistentBattle implements Listener {
                 player.setScoreboard(board); //set player scoreboard
                 Score score = objective.getScore(player.getDisplayName());
                 score.setScore(score.getScore());
+
+                for(Player p : redPlayers){
+                    p.sendMessage(ChatColor.RED+player.getDisplayName() + " has joined the Red Team!");
+                }
+                for(Player p : bluePlayers){
+                    p.sendMessage(ChatColor.RED+player.getDisplayName() + " has joined the Red Team!");
+                }
             }
 
             if (team.equals("blue")) {
@@ -135,6 +135,13 @@ public class PersistentBattle implements Listener {
                 player.setScoreboard(board); //set player scoreboard
                 Score score = objective.getScore(player.getDisplayName());
                 score.setScore(score.getScore());
+
+                for(Player p : redPlayers){
+                    p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has joined the Blue Team!");
+                }
+                for(Player p : bluePlayers){
+                    p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has joined the Blue Team!");
+                }
             }
         }
 
@@ -142,7 +149,7 @@ public class PersistentBattle implements Listener {
 
     public void seekPlayers(UUID uuid){
 
-        if(Bukkit.getPlayer(uuid).getWorld() == Regions.world){
+        if(Bukkit.getPlayer(uuid).getWorld() == world){
             Random rand = new Random();
 
             if(bluePlayers.size() > 0 && redPlayers.size() > 0) {
@@ -166,6 +173,9 @@ public class PersistentBattle implements Listener {
             else{
                 Bukkit.getPlayer(uuid).sendMessage("There are no players to seek!");
             }
+        }
+        else{
+            Bukkit.getPlayer(uuid).sendMessage("You aren't in the battle world.");
         }
     }
 
@@ -211,7 +221,7 @@ public class PersistentBattle implements Listener {
         Point b = new Point(bX,bZ);
 
         //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
-        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !Regions.world.getHighestBlockAt(bX,bZ).getType().isSolid() || !Regions.world.getHighestBlockAt(rX,rZ).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
+        while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !world.getHighestBlockAt(bX,bZ).getType().isSolid() || !world.getHighestBlockAt(rX,rZ).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
             rX = new Random().nextInt(max - min + 1) + min;
             rZ = new Random().nextInt(max - min + 1) + min;
 
@@ -240,6 +250,13 @@ public class PersistentBattle implements Listener {
             player.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
             player.teleport(spawn);
             player.getInventory().clear(); //clear inventory
+
+            for(Player p : redPlayers){
+                p.sendMessage(ChatColor.RED+player.getDisplayName() + " has been removed from the Red Team!");
+            }
+            for(Player p : bluePlayers){
+                p.sendMessage(ChatColor.RED+player.getDisplayName() + " has been removed from the Red Team!");
+            }
         }
         else if(bluePlayers.contains(player)){
             bluePlayers.remove(player);
@@ -247,6 +264,13 @@ public class PersistentBattle implements Listener {
             player.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
             player.teleport(spawn);
             player.getInventory().clear(); //clear inventory
+
+            for(Player p : redPlayers){
+                p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has been removed from the Blue Team!");
+            }
+            for(Player p : bluePlayers){
+                p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has been removed from the Blue Team!");
+            }
         }
         else{
             LOGGER.info("Something went wrong, player needed to be removed from battle but was not on a team!");

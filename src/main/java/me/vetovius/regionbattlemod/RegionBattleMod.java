@@ -44,15 +44,15 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("ct").setExecutor(new CommandSendTeamChatPersistentBattle()); //register command
 
 
-        //Commenting this out due to persistent region battle refactor.
-//        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
-//            @Override
-//            public void run() {
-//                //Start first battle.
-//                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-//                Bukkit.dispatchCommand(console, "startregionbattle");
-//            }
-//        }, 20*60*2L); //20 Tick (1 Second) delay before run() is called
+        Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            @Override
+            public void run() {
+                //Start first battle.
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console, "startregionbattle");
+                Bukkit.dispatchCommand(console, "startpersistentbattle");
+            }
+        }, 20*60*2L); //20 Tick (1 Second) * 60 * 2 delay before run() is called
 
     }
     @Override
@@ -93,7 +93,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
             e.setMessage(ChatColor.YELLOW +"[SMP] "+ChatColor.WHITE+e.getMessage());
 
         }
-        else if(CommandChat.playerChatChannels.get(p).equals("b")){ //battle
+        else if(CommandChat.playerChatChannels.get(p).equals("b")){ //battle TODO FIX THIS FOR PERSISTENTBATTLES!
 
             e.getRecipients().clear(); //remove all players
             e.getRecipients().addAll(Regions.world.getPlayers()); //add all players in RB world.

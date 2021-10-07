@@ -18,16 +18,22 @@ public class CommandLeaveBattle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(Bukkit.getPlayer(sender.getName()) instanceof Player){
-            Player player = Bukkit.getPlayer(sender.getName());
-            if(player.getWorld() == Regions.world){
-                //remove from team
-                battle.removePlayerFromBattle(player);
-            }
-            else{
-                player.sendMessage("You aren't even in the RegionBattle world, why would you leave?");
+        if(battle != null) {
+            if(Bukkit.getPlayer(sender.getName()) instanceof Player){
+                Player player = Bukkit.getPlayer(sender.getName());
+                if(player.getWorld() == PersistentBattle.world){
+                    //remove from team
+                    battle.removePlayerFromBattle(player);
+                }
+                else{
+                    player.sendMessage("You aren't even in the RegionBattle world, why would you leave?");
+                }
             }
         }
+        else{
+            sender.sendMessage("There is no battle.");
+        }
+
 
         return true;
     }

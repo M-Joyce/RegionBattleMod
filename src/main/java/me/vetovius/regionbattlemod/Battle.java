@@ -302,6 +302,9 @@ public class Battle implements Listener {
                 Bukkit.getPlayer(uuid).sendMessage("There are no players to seek!");
             }
         }
+        else{
+            Bukkit.getPlayer(uuid).sendMessage("You aren't in the battle world.");
+        }
     }
 
     @EventHandler

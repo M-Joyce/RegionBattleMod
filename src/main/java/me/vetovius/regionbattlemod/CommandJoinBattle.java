@@ -18,16 +18,21 @@ public class CommandJoinBattle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        if(Bukkit.getPlayer(sender.getName()) instanceof Player){
-         Player player = Bukkit.getPlayer(sender.getName());
-         if(player.getWorld() == Regions.world){
-             battle.assignPlayerToTeam(player);
-         }
-         else{
-             player.sendMessage("You need to join the RegionBattle world to play.");
-         }
+
+        if(battle != null) {
+            if (Bukkit.getPlayer(sender.getName()) instanceof Player) {
+                Player player = Bukkit.getPlayer(sender.getName());
+                if (player.getWorld() == PersistentBattle.world) {
+                    battle.assignPlayerToTeam(player);
+                } else {
+                    player.sendMessage("You need to join the RegionBattle world to play.");
+                }
 
 
+            }
+        }
+        else{
+            sender.sendMessage("There is no battle.");
         }
 
 
