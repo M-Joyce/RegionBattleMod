@@ -41,11 +41,10 @@ public class PersistentBattle implements Listener {
     Location blueSpawn;
 
 
-    private static final int max = 2800; //max coordinate //TODO update these for persistent battle map and update them in Regions.java as well
-    private static final int min = 800; //min coordinate
-    private static final int minDistance = 500; //minimum distance between region centers.
+    private static final int max = 5800; //max coordinate //TODO update these for persistent battle map and update them in Regions.java as well
+    private static final int min = 600; //min coordinate
+    private static final int minDistance = 400; //minimum distance between region centers.
     private static final int maxDistance = 1200; //maximum distance between region centers.
-    private static final int regionSize = 200;
 
 
     public PersistentBattle(RegionBattleMod pluginInstance){
@@ -71,7 +70,7 @@ public class PersistentBattle implements Listener {
         this.redPlayers = new ArrayList<>();
         this.bluePlayers = new ArrayList<>();
 
-        spawn = new Location(Regions.world, 0, 95, 0); //TODO update this with actual spawn location
+        spawn = new Location(Regions.world, -72, 89, 3103); //location of battle spawn
 
         Regions.world.setTime(23200); //set time to Morning
 
