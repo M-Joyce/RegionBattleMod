@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.regionbattle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -7,13 +7,12 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.logging.Logger;
 
 public class CommandChat implements CommandExecutor {
 
-    protected static HashMap<Player,String> playerChatChannels = new HashMap();
+    public static HashMap<Player,String> playerChatChannels = new HashMap();
 
 
     private static final Logger LOGGER = Logger.getLogger( CommandChat.class.getName() );

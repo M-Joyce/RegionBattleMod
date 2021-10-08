@@ -1,6 +1,12 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.persistentbattle;
 
+import me.vetovius.regionbattlemod.RegionBattleMod;
+import me.vetovius.regionbattlemod.regionbattle.Regions;
 import org.bukkit.*;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -9,6 +15,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.*;
+import org.flywaydb.core.internal.util.logging.Log;
 
 import java.awt.*;
 import java.util.*;
@@ -39,6 +46,12 @@ public class PersistentBattle implements Listener {
     private static final int minDistance = 400; //minimum distance between region centers.
     private static final int maxDistance = 1200; //maximum distance between region centers.
 
+    private long hourTime; //system time when its been 1 hour from battle start.
+    private long startTime;
+
+    private BossBar battleTimerBar;
+    protected int timerTaskId;
+
 
     public PersistentBattle(RegionBattleMod pluginInstance){
 
@@ -60,6 +73,10 @@ public class PersistentBattle implements Listener {
         teamBlue.setColor(ChatColor.BLUE); //Set Colors for teams
         teamRed.setColor(ChatColor.RED);
 
+        teamBlue.setAllowFriendlyFire(false);
+        teamRed.setAllowFriendlyFire(false);
+
+
         this.redPlayers = new ArrayList<>();
         this.bluePlayers = new ArrayList<>();
 
@@ -76,6 +93,63 @@ public class PersistentBattle implements Listener {
         redSpawn = new Location(world,redX,world.getHighestBlockYAt(redX,redZ)+1,redZ);
         blueSpawn = new Location(world,blueX,world.getHighestBlockYAt(blueX,blueZ)+1,blueZ);
 
+        //1 hour = 3600000 miliseconds
+        startTime = System.currentTimeMillis();
+        hourTime =  System.currentTimeMillis() + 3600000; //1 hour from now
+
+        this.battleTimerBar = Bukkit.createBossBar(ChatColor.GRAY+"The battle is on!", BarColor.RED, BarStyle.SEGMENTED_10);
+        battleTimerBar.setProgress(1);
+        battleTimer(); //keep track of time
+
+    }
+
+    protected void battleTimer(){
+
+        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+        timerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+            public void run() {
+
+                if (System.currentTimeMillis() >= hourTime){ //Hour is up, end the battle and start a new one.
+
+                    Bukkit.getScheduler().cancelTask(timerTaskId);
+                    //remove players, avoiding comodification exception
+                    ArrayList<Player> toRemove = new ArrayList<>();
+                    for(Player p : redPlayers){
+                        toRemove.add(p);
+                    }
+                    for(Player p : bluePlayers){
+                        toRemove.add(p);
+                    }
+                    for(Player p : toRemove){
+                        p.sendMessage("The battle has ended!"); //TODO log announce winning team, maybe reward winning players?
+                        removePlayerFromBattle(p);
+                    }
+
+                    CommandStartPersistentBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
+                    CommandPSeek.battle = null;
+                    CommandSendTeamChatPersistentBattle.battle = null;
+
+                    //Trigger a new battle to start
+                    for(Player p : world.getPlayers()){
+                        p.sendMessage(ChatColor.GREEN + "A new battle will begin in " + 3 + " minutes!");
+                    }
+                    Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+
+                        public void run() {
+                            //Start a new battle.
+                            ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                            Bukkit.dispatchCommand(console, "startpersistentbattle");
+                        }
+                    }, 20*60L*3); //20 ticks per second * 60 seconds * # Minutes
+
+                }
+
+                double currPerc = (100 - ((System.currentTimeMillis() - startTime) * 100) / (hourTime - startTime)) * 0.01;
+
+                battleTimerBar.setProgress(currPerc);
+                battleTimerBar.setVisible(true);
+
+            }}, 20, 20*30); //repeat task every 30 seconds
     }
 
     protected void assignPlayerToTeam(Player player){
@@ -104,6 +178,7 @@ public class PersistentBattle implements Listener {
             }
             LOGGER.info("Assigning " + player.getDisplayName() + " to Team " + team + ".");
 
+            battleTimerBar.addPlayer(player); //display battle timer to player
 
             ItemStack compass = new ItemStack(Material.COMPASS, 1);
 
@@ -156,7 +231,7 @@ public class PersistentBattle implements Listener {
                 if (redPlayers.contains(Bukkit.getPlayer(uuid))) {
                     Player playerToSeek = bluePlayers.get(rand.nextInt(bluePlayers.size()));
                     Location loc = playerToSeek.getLocation();
-                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player " + (int) Math.round(Bukkit.getPlayer(uuid).getLocation().distance(loc)) + " blocks away.");
                     Bukkit.getPlayer(uuid).setCompassTarget(playerToSeek.getLocation());
                     Bukkit.getPlayer(uuid).sendMessage("Your compass is now pointing at their last known location.");
                 }
@@ -165,7 +240,7 @@ public class PersistentBattle implements Listener {
 
                     Player playerToSeek = redPlayers.get(rand.nextInt(redPlayers.size()));
                     Location loc = playerToSeek.getLocation();
-                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player " + (int) Math.round(Bukkit.getPlayer(uuid).getLocation().distance(loc)) + " blocks away.");
                     Bukkit.getPlayer(uuid).setCompassTarget(playerToSeek.getLocation());
                     Bukkit.getPlayer(uuid).sendMessage("Your compass is now pointing at their last known location.");
                 }
@@ -203,6 +278,8 @@ public class PersistentBattle implements Listener {
 
         if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY){ //the specific cause we set earlier for a valid TP by this plugin.
             Player p = event.getPlayer();
+            p.sendMessage("You were removed from battle for teleporting.");
+            LOGGER.info("Removing player from battle because they teleported: " + p.getDisplayName() +" Teleport Cause: " + event.getCause());
             if(redPlayers.contains(p) || bluePlayers.contains(p)){
                 removePlayerFromBattle(p);
             }
@@ -244,6 +321,8 @@ public class PersistentBattle implements Listener {
     protected void removePlayerFromBattle(Player player){
 
         LOGGER.info("Removing from battle: " + player.getDisplayName());
+
+        battleTimerBar.removePlayer(player); //display prep timer
         if(redPlayers.contains(player)){
             redPlayers.remove(player);
             teamRed.removeEntry(player.getDisplayName());

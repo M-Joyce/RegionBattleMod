@@ -1,6 +1,7 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.regionbattle;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import me.vetovius.regionbattlemod.RegionBattleMod;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -99,6 +100,9 @@ public class Battle implements Listener {
 
         teamBlue.setColor(ChatColor.BLUE); //Set Colors for teams
         teamRed.setColor(ChatColor.RED);
+
+        teamBlue.setAllowFriendlyFire(false);
+        teamRed.setAllowFriendlyFire(false);
 
         //create objective for score board
         Objective objective = board.registerNewObjective("battleObjective", "playerKillCount","Player Kills");
@@ -284,7 +288,7 @@ public class Battle implements Listener {
                 if (redPlayers.contains(Bukkit.getPlayer(uuid))) {
                     Player playerToSeek = bluePlayers.get(rand.nextInt(bluePlayers.size()));
                     Location loc = playerToSeek.getLocation();
-                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player " + (int) Math.round(Bukkit.getPlayer(uuid).getLocation().distance(loc)) + " blocks away.");
                     Bukkit.getPlayer(uuid).setCompassTarget(playerToSeek.getLocation());
                     Bukkit.getPlayer(uuid).sendMessage("Your compass is now pointing at their last known location.");
                 }
@@ -293,7 +297,7 @@ public class Battle implements Listener {
 
                     Player playerToSeek = redPlayers.get(rand.nextInt(redPlayers.size()));
                     Location loc = playerToSeek.getLocation();
-                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player at X: " + loc.getBlockX() + " Y: " + loc.getBlockY() + " Z: " + loc.getBlockZ());
+                    Bukkit.getPlayer(uuid).sendMessage("There is an enemy player " + (int) Math.round(Bukkit.getPlayer(uuid).getLocation().distance(loc)) + " blocks away.");
                     Bukkit.getPlayer(uuid).setCompassTarget(playerToSeek.getLocation());
                     Bukkit.getPlayer(uuid).sendMessage("Your compass is now pointing at their last known location.");
                 }

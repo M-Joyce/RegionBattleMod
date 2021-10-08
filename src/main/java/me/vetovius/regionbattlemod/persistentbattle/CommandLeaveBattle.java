@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.persistentbattle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -22,8 +22,16 @@ public class CommandLeaveBattle implements CommandExecutor {
             if(Bukkit.getPlayer(sender.getName()) instanceof Player){
                 Player player = Bukkit.getPlayer(sender.getName());
                 if(player.getWorld() == PersistentBattle.world){
-                    //remove from team
-                    battle.removePlayerFromBattle(player);
+
+
+                    if(battle.bluePlayers.contains(player) || battle.redPlayers.contains(player)){
+                        //remove from team
+                        battle.removePlayerFromBattle(player);
+                    }
+                    else{
+                        player.sendMessage("You aren't in a battle.");
+                    }
+
                 }
                 else{
                     player.sendMessage("You aren't even in the RegionBattle world, why would you leave?");

@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.regionbattle;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -11,6 +11,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
+import me.vetovius.regionbattlemod.RegionBattleMod;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class Regions {
     private static final int maxDistance = 1200; //maximum distance between region centers.
 
     //Getting World
-    protected static final World world = Bukkit.getWorld("RegionBattle");
+    public static final World world = Bukkit.getWorld("RegionBattle");
     protected static final Location spawn = new Location(world, 0,79,0);
 
     private RegionManager regionManager;

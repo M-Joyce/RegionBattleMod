@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.persistentbattle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -23,7 +23,12 @@ public class CommandJoinBattle implements CommandExecutor {
             if (Bukkit.getPlayer(sender.getName()) instanceof Player) {
                 Player player = Bukkit.getPlayer(sender.getName());
                 if (player.getWorld() == PersistentBattle.world) {
-                    battle.assignPlayerToTeam(player);
+                    if(!battle.bluePlayers.contains(player) || !battle.redPlayers.contains(player)) {
+                        battle.assignPlayerToTeam(player);
+                    }
+                    else{
+                        player.sendMessage("You are already in a battle.");
+                    }
                 } else {
                     player.sendMessage("You need to join the RegionBattle world to play.");
                 }

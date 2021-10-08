@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattlemod.regionbattle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -9,17 +9,17 @@ import org.bukkit.entity.Player;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-public class CommandPSeek implements CommandExecutor {
+public class CommandSeek implements CommandExecutor {
 
-    private static final Logger LOGGER = Logger.getLogger( CommandPSeek.class.getName() );
-    public static PersistentBattle battle;
+    private static final Logger LOGGER = Logger.getLogger( CommandSeek.class.getName() );
+    public static Battle battle;
 
     // This method is called, when somebody uses our command
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         if(battle != null){
-            LOGGER.info("--PSeek Command Called...--");
+            LOGGER.info("--Seek Command Called...--");
 
             if(sender instanceof Player) {
                 Player player = (Player) sender;

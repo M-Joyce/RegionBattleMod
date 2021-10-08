@@ -1,6 +1,8 @@
 package me.vetovius.regionbattlemod;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
+import me.vetovius.regionbattlemod.persistentbattle.*;
+import me.vetovius.regionbattlemod.regionbattle.*;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
