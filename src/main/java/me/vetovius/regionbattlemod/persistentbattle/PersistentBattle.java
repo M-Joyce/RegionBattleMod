@@ -278,9 +278,9 @@ public class PersistentBattle implements Listener {
 
         if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY){ //the specific cause we set earlier for a valid TP by this plugin.
             Player p = event.getPlayer();
-            p.sendMessage("You were removed from battle for teleporting.");
-            LOGGER.info("Removing player from battle because they teleported: " + p.getDisplayName() +" Teleport Cause: " + event.getCause());
             if(redPlayers.contains(p) || bluePlayers.contains(p)){
+                p.sendMessage("You were removed from battle for teleporting.");
+                LOGGER.info("Removing player from battle because they teleported: " + p.getDisplayName() +" Teleport Cause: " + event.getCause());
                 removePlayerFromBattle(p);
             }
         }
