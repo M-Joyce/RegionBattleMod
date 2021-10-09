@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -28,15 +29,16 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         getLogger().info("onEnable is called!");
 
 
-        //TODO registering events with class() is calling the constructor, and I think not working for events since Battle gets instantiated elsewhere.
         Bukkit.getPluginManager().registerEvents(this, this); //register events
-        //Bukkit.getPluginManager().registerEvents(new Battle(), this); //register events //Using an alternate method by passing instance of this class to Battle in the start battle command
+
         this.getCommand("startregionbattle").setExecutor(new CommandStartRegionBattle()); //register command
         this.getCommand("seek").setExecutor(new CommandSeek()); //register command
         this.getCommand("tc").setExecutor(new CommandSendTeamChat()); //register command
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command
         this.getCommand("chat").setExecutor(new CommandChat()); //register command
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
+
+        this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
 
         //persistent battle commands
         this.getCommand("startpersistentbattle").setExecutor(new CommandStartPersistentBattle()); //register command

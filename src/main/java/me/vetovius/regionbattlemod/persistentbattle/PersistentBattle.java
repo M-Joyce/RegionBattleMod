@@ -1,7 +1,7 @@
 package me.vetovius.regionbattlemod.persistentbattle;
 
+import me.vetovius.regionbattlemod.ChestLoot;
 import me.vetovius.regionbattlemod.RegionBattleMod;
-import me.vetovius.regionbattlemod.regionbattle.Regions;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -15,8 +15,8 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.*;
-import org.flywaydb.core.internal.util.logging.Log;
 
+import javax.swing.plaf.synth.Region;
 import java.awt.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -39,7 +39,7 @@ public class PersistentBattle implements Listener {
     Location redSpawn;
     Location blueSpawn;
 
-    protected static World world = Bukkit.getWorld("Battle");
+    public static World world = Bukkit.getWorld("Battle");
 
     private static final int max = 5800; //max coordinate
     private static final int min = 600; //min coordinate
@@ -93,6 +93,9 @@ public class PersistentBattle implements Listener {
         redSpawn = new Location(world,redX,world.getHighestBlockYAt(redX,redZ)+1,redZ);
         blueSpawn = new Location(world,blueX,world.getHighestBlockYAt(blueX,blueZ)+1,blueZ);
 
+
+        ChestLoot chestLoot = new ChestLoot(4000, new Location(world, 3000, 80, 3000), plugin); //init chestLoot feature to generate loot in unopened chestLoot chests each game (only if pdc value is set)
+
         //1 hour = 3600000 miliseconds
         startTime = System.currentTimeMillis();
         hourTime =  System.currentTimeMillis() + 3600000; //1 hour from now
@@ -100,6 +103,7 @@ public class PersistentBattle implements Listener {
         this.battleTimerBar = Bukkit.createBossBar(ChatColor.GRAY+"The battle is on!", BarColor.RED, BarStyle.SEGMENTED_10);
         battleTimerBar.setProgress(1);
         battleTimer(); //keep track of time
+
 
     }
 

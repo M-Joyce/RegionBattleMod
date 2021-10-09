@@ -18,7 +18,6 @@ public class CommandJoinBattle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-
         if(battle != null) {
             if (Bukkit.getPlayer(sender.getName()) instanceof Player) {
                 Player player = Bukkit.getPlayer(sender.getName());

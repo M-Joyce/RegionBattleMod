@@ -51,3 +51,7 @@ commands:
     description: Chat privately with your team during a battle.
     usage: /ct <message> while in a battle
     permission: RegionBattleMod.ct
+  createlootchest:
+    description: Admin only, for use creating loot chests in battle worlds.
+    usage: /createlootchest
+    permission: RegionBattleMod.createlootchest
