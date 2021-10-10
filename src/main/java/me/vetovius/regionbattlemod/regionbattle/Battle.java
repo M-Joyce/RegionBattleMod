@@ -1,6 +1,8 @@
 package me.vetovius.regionbattlemod.regionbattle;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
+import me.vetovius.regionbattlemod.CommandSeek;
+import me.vetovius.regionbattlemod.CommandSendTeamChat;
 import me.vetovius.regionbattlemod.RegionBattleMod;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -40,8 +42,8 @@ public class Battle implements Listener {
     private Regions battleRegions; //Regions object containing region for each team, and region related functionality
 
     public static ArrayList<Player> optOutPlayersList = new ArrayList<Player>();
-    protected ArrayList<Player> redPlayers;
-    protected ArrayList<Player> bluePlayers;
+    public ArrayList<Player> redPlayers;
+    public ArrayList<Player> bluePlayers;
 
     private int battleTimerID;
 

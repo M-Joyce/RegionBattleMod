@@ -43,14 +43,6 @@ commands:
     description: Leave the battle!
     usage: /leavebattle
     permission: RegionBattleMod.leavebattle
-  pseek:
-    description: Seek out enemy players in a battle.
-    usage: /pseek
-    permission: RegionBattleMod.pseek
-  ct:
-    description: Chat privately with your team during a battle.
-    usage: /ct <message> while in a battle
-    permission: RegionBattleMod.ct
   createlootchest:
     description: Admin only, for use creating loot chests in battle worlds.
     usage: /createlootchest

@@ -1,5 +1,7 @@
 package me.vetovius.regionbattlemod.regionbattle;
 
+import me.vetovius.regionbattlemod.CommandSeek;
+import me.vetovius.regionbattlemod.CommandSendTeamChat;
 import me.vetovius.regionbattlemod.RegionBattleMod;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

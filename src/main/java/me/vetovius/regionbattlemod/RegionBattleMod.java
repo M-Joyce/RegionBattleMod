@@ -10,7 +10,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -44,8 +43,6 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("startpersistentbattle").setExecutor(new CommandStartPersistentBattle()); //register command
         this.getCommand("joinbattle").setExecutor(new CommandJoinBattle()); //register command
         this.getCommand("leavebattle").setExecutor(new CommandLeaveBattle()); //register command
-        this.getCommand("pseek").setExecutor(new CommandPSeek()); //register command
-        this.getCommand("ct").setExecutor(new CommandSendTeamChatPersistentBattle()); //register command
 
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {

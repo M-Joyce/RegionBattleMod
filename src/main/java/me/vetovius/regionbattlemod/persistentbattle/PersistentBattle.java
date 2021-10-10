@@ -1,6 +1,8 @@
 package me.vetovius.regionbattlemod.persistentbattle;
 
 import me.vetovius.regionbattlemod.ChestLoot;
+import me.vetovius.regionbattlemod.CommandSeek;
+import me.vetovius.regionbattlemod.CommandSendTeamChat;
 import me.vetovius.regionbattlemod.RegionBattleMod;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
@@ -31,8 +33,8 @@ public class PersistentBattle implements Listener {
     private Team teamBlue;
     private Objective objective;
 
-    protected ArrayList<Player> redPlayers;
-    protected ArrayList<Player> bluePlayers;
+    public ArrayList<Player> redPlayers;
+    public ArrayList<Player> bluePlayers;
 
     private RegionBattleMod plugin;
     Location spawn;
@@ -130,8 +132,8 @@ public class PersistentBattle implements Listener {
                     }
 
                     CommandStartPersistentBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
-                    CommandPSeek.battle = null;
-                    CommandSendTeamChatPersistentBattle.battle = null;
+                    CommandSeek.pbattle = null;
+                    CommandSendTeamChat.pbattle = null;
 
                     //Trigger a new battle to start
                     for(Player p : world.getPlayers()){

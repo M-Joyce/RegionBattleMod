@@ -1,16 +1,12 @@
 package me.vetovius.regionbattlemod.persistentbattle;
 
+import me.vetovius.regionbattlemod.CommandSeek;
+import me.vetovius.regionbattlemod.CommandSendTeamChat;
 import me.vetovius.regionbattlemod.RegionBattleMod;
-import me.vetovius.regionbattlemod.regionbattle.Battle;
-import me.vetovius.regionbattlemod.regionbattle.CommandSeek;
-import me.vetovius.regionbattlemod.regionbattle.CommandSendTeamChat;
-import me.vetovius.regionbattlemod.regionbattle.Regions;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.logging.Logger;
 
@@ -33,8 +29,8 @@ public class CommandStartPersistentBattle implements CommandExecutor {
                     battle = new PersistentBattle(RegionBattleMod.getPlugin(RegionBattleMod.class));
                     CommandLeaveBattle.battle = battle;
                     CommandJoinBattle.battle = battle;
-                    CommandPSeek.battle = battle;
-                    CommandSendTeamChatPersistentBattle.battle = battle;
+                    CommandSeek.pbattle = battle;
+                    CommandSendTeamChat.pbattle = battle;
                 }
 
             }}, 20, 20*60*3); //repeat task, delay = 1s, repeat every 3 minutes.
