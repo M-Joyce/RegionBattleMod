@@ -2,9 +2,6 @@ package me.vetovius.regionbattlemod;
 
 import me.vetovius.regionbattlemod.persistentbattle.PersistentBattle;
 import me.vetovius.regionbattlemod.regionbattle.Battle;
-import me.vetovius.regionbattlemod.regionbattle.Regions;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

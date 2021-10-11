@@ -118,6 +118,8 @@ public class Battle implements Listener {
 
         for(Player player : redPlayers){ //add red players
             player.getInventory().clear(); //clear inventory
+            player.setHealth(20); //heal
+            player.setFoodLevel(20); //feed
             player.getInventory().addItem(compass); //give player a compass for seek
             teamRed.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard
@@ -128,6 +130,8 @@ public class Battle implements Listener {
 
         for(Player player : bluePlayers){ //add blue players
             player.getInventory().clear(); //clear inventory
+            player.setHealth(20); //heal
+            player.setFoodLevel(20); //feed
             player.getInventory().addItem(compass); //give player a compass for seek
             teamBlue.addEntry(player.getDisplayName()); //add player to team
             player.setScoreboard(board); //set player scoreboard

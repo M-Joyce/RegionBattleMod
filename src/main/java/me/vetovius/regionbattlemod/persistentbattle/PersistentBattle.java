@@ -188,6 +188,10 @@ public class PersistentBattle implements Listener {
 
             ItemStack compass = new ItemStack(Material.COMPASS, 1);
 
+            //heal and feed the player
+            player.setHealth(20);
+            player.setFoodLevel(20);
+
             //TODO assign teams a random location as "home base" and send them there
             if (team.equals("red")) {
                 player.teleport(redSpawn, PlayerTeleportEvent.TeleportCause.END_GATEWAY); //set the cause the end gateway, since this likely will never naturally happen
@@ -265,9 +269,13 @@ public class PersistentBattle implements Listener {
         Player p = event.getPlayer();
         if(redPlayers.contains(p)){
             event.setRespawnLocation(redSpawn);
+            ItemStack compass = new ItemStack(Material.COMPASS, 1);
+            p.getInventory().addItem(compass); //give player a compass for seek
         }
         if(bluePlayers.contains(p)){
             event.setRespawnLocation(blueSpawn);
+            ItemStack compass = new ItemStack(Material.COMPASS, 1);
+            p.getInventory().addItem(compass); //give player a compass for seek
         }
     }
 
@@ -282,7 +290,11 @@ public class PersistentBattle implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if they teleport.
 
-        if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY){ //the specific cause we set earlier for a valid TP by this plugin.
+
+        if(event.getCause() == PlayerTeleportEvent.TeleportCause.END_GATEWAY || event.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN){ //the specific cause we set earlier for a valid TP by this plugin.
+
+        }
+        else{
             Player p = event.getPlayer();
             if(redPlayers.contains(p) || bluePlayers.contains(p)){
                 p.sendMessage("You were removed from battle for teleporting.");
