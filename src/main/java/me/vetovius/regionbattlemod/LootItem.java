@@ -28,7 +28,12 @@ public enum LootItem{
     Arrow(Material.ARROW,5,12),
     Diamond_Axe(Material.DIAMOND_AXE,0.8,1),
     Shield(Material.SHIELD,2,1),
-    Bread(Material.BREAD,10,4);
+    Bread(Material.BREAD,10,4),
+    Cooked_Porkchop(Material.COOKED_PORKCHOP,10,4),
+    Golden_Axe(Material.GOLDEN_AXE,2,1),
+    Raw_Iron(Material.RAW_IRON,7,4),
+    Bookshelf(Material.BOOKSHELF,5,3),
+    Enchanting_Table(Material.ENCHANTING_TABLE,3,1);
 
     private Material material;
     private double chance;
@@ -46,21 +51,18 @@ public enum LootItem{
         //This arraylist will hold all the item stacks to add to a chest.
         ArrayList<ItemStack> itemStacks = new ArrayList();
 
-        for(LootItem lootItem : LootItem.values()){
-            //Determine if itemStack will be present in itemStacks
 
-            int i = random.nextInt(100);
-            if(i < lootItem.chance){
-                int quantity = 1 + random.nextInt(lootItem.maxQuantity);
-                itemStacks.add(new ItemStack(lootItem.material,quantity));
+        while(itemStacks.size() == 0){ //dont return an empty itemStacks, chest should always have at least 1 thing.
+            for(LootItem lootItem : LootItem.values()){
+                //Determine if itemStack will be present in itemStacks
+
+                int i = random.nextInt(100);
+                if(i < lootItem.chance){
+                    int quantity = 1 + random.nextInt(lootItem.maxQuantity);
+                    itemStacks.add(new ItemStack(lootItem.material,quantity));
+                }
             }
         }
-
-        LootItem[] values = LootItem.values();
-        int length = values.length;
-        int randIndex = random.nextInt(length);
-        LootItem item = values[randIndex];
-
 
         return itemStacks;
     }
