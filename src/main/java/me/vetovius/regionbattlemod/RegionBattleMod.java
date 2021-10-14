@@ -34,7 +34,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("seek").setExecutor(new CommandSeek()); //register command
         this.getCommand("tc").setExecutor(new CommandSendTeamChat()); //register command
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command
-        this.getCommand("chat").setExecutor(new CommandChat()); //register command
+        //this.getCommand("chat").setExecutor(new CommandChat()); //register command
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
@@ -71,41 +71,41 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         //Bukkit.broadcastMessage("A block was placed!");
     }
 
-    @EventHandler
-    public void onPlayerChat(AsyncPlayerChatEvent e){
-        Player p = e.getPlayer();
-        ArrayList<Player> toRemove = new ArrayList<Player>();
-
-        if(!CommandChat.playerChatChannels.containsKey(p)){ //always ensure player is default in global chat
-            CommandChat.playerChatChannels.put(p,"g");
-        }
-
-        if(CommandChat.playerChatChannels.get(p).equals("g")){ //global
-            //do nothing, continue regular global chat.
-            e.setMessage("[Global] "+e.getMessage());
-        }
-        else if(CommandChat.playerChatChannels.get(p).equals("s")){ //survival
-
-            for(Player player : Regions.world.getPlayers()){
-                toRemove.add(player); //add players not in SMP worlds to a removal list
-            }
-            e.getRecipients().removeAll(toRemove); //remove players not in an SMP world
-            toRemove.clear(); //clear list
-            e.setMessage(ChatColor.YELLOW +"[SMP] "+ChatColor.WHITE+e.getMessage());
-
-        }
-        else if(CommandChat.playerChatChannels.get(p).equals("b")){ //battle TODO FIX THIS FOR PERSISTENTBATTLES!
-
-            e.getRecipients().clear(); //remove all players
-            e.getRecipients().addAll(Regions.world.getPlayers()); //add all players in RB world.
-            e.setMessage(ChatColor.RED+"[Battle] "+ChatColor.WHITE+e.getMessage());
-
-        }
-        else{
-            p.sendMessage("Something went terribly wrong, tell an admin.");
-        }
-
-    }
+//    @EventHandler
+//    public void onPlayerChat(AsyncPlayerChatEvent e){
+//        Player p = e.getPlayer();
+//        ArrayList<Player> toRemove = new ArrayList<Player>();
+//
+//        if(!CommandChat.playerChatChannels.containsKey(p)){ //always ensure player is default in global chat
+//            CommandChat.playerChatChannels.put(p,"g");
+//        }
+//
+//        if(CommandChat.playerChatChannels.get(p).equals("g")){ //global
+//            //do nothing, continue regular global chat.
+//            e.setMessage("[Global] "+e.getMessage());
+//        }
+//        else if(CommandChat.playerChatChannels.get(p).equals("s")){ //survival
+//
+//            for(Player player : Regions.world.getPlayers()){
+//                toRemove.add(player); //add players not in SMP worlds to a removal list
+//            }
+//            e.getRecipients().removeAll(toRemove); //remove players not in an SMP world
+//            toRemove.clear(); //clear list
+//            e.setMessage(ChatColor.YELLOW +"[SMP] "+ChatColor.WHITE+e.getMessage());
+//
+//        }
+//        else if(CommandChat.playerChatChannels.get(p).equals("b")){ //battle TODO FIX THIS FOR PERSISTENTBATTLES!
+//
+//            e.getRecipients().clear(); //remove all players
+//            e.getRecipients().addAll(Regions.world.getPlayers()); //add all players in RB world.
+//            e.setMessage(ChatColor.RED+"[Battle] "+ChatColor.WHITE+e.getMessage());
+//
+//        }
+//        else{
+//            p.sendMessage("Something went terribly wrong, tell an admin.");
+//        }
+//
+//    }
 
     //VOTE HANDLING
     @EventHandler

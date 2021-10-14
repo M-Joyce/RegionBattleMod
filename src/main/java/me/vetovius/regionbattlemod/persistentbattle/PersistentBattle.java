@@ -29,6 +29,7 @@ public class PersistentBattle implements Listener {
 
     private ScoreboardManager manager;
     private Scoreboard board;
+
     private Team teamRed;
     private Team teamBlue;
     private Objective objective;
@@ -65,6 +66,8 @@ public class PersistentBattle implements Listener {
 
         this.manager = Bukkit.getScoreboardManager();
         this.board = manager.getNewScoreboard();
+
+
         this.teamRed = board.registerNewTeam("Team_Red");
         this.teamBlue = board.registerNewTeam("Team_Blue");
 
@@ -100,7 +103,7 @@ public class PersistentBattle implements Listener {
 
         //1 hour = 3600000 miliseconds
         startTime = System.currentTimeMillis();
-        hourTime =  System.currentTimeMillis() + 3600000; //1 hour from now
+        hourTime =  System.currentTimeMillis() + 3600000 * 2; //1 hour from now * 2
 
         this.battleTimerBar = Bukkit.createBossBar(ChatColor.GRAY+"The battle is on!", BarColor.RED, BarStyle.SEGMENTED_10);
         battleTimerBar.setProgress(1);
