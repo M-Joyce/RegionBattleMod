@@ -4,6 +4,10 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import me.vetovius.regionbattlemod.CommandSeek;
 import me.vetovius.regionbattlemod.CommandSendTeamChat;
 import me.vetovius.regionbattlemod.RegionBattleMod;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -107,7 +111,9 @@ public class Battle implements Listener {
         teamRed.setAllowFriendlyFire(false);
 
         //create objective for score board
-        Objective objective = board.registerNewObjective("battleObjective", "playerKillCount","Player Kills");
+        TextComponent objectiveName = Component.text("Player Kills").color(TextColor.color(0x9C8A));
+
+        Objective objective = board.registerNewObjective("battleObjective", "playerKillCount",objectiveName);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         //LOGGER.info("assignTeams() RED:" + redPlayers.toString());
@@ -121,10 +127,10 @@ public class Battle implements Listener {
             player.setHealth(20); //heal
             player.setFoodLevel(20); //feed
             player.getInventory().addItem(compass); //give player a compass for seek
-            teamRed.addEntry(player.getDisplayName()); //add player to team
+            teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
-            Score score = objective.getScore(player.getDisplayName());
+            Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
             score.setScore(score.getScore());
         }
 
@@ -133,10 +139,10 @@ public class Battle implements Listener {
             player.setHealth(20); //heal
             player.setFoodLevel(20); //feed
             player.getInventory().addItem(compass); //give player a compass for seek
-            teamBlue.addEntry(player.getDisplayName()); //add player to team
+            teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
-            Score score = objective.getScore(player.getDisplayName());
+            Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
             score.setScore(score.getScore());
         }
 
@@ -159,7 +165,7 @@ public class Battle implements Listener {
         redMidPoint.setY(Regions.world.getHighestBlockYAt(redMidPoint)+1);
         //LOGGER.info("Teleporting Red Team to: "+redMidPoint);
         for(UUID uuid : regionRed.getMembers().getUniqueIds()){
-            Bukkit.getPlayer(uuid).teleport(redMidPoint);
+            Bukkit.getPlayer(uuid).teleport(redMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
         }
 
         //Blue Team
@@ -176,7 +182,7 @@ public class Battle implements Listener {
         //LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
 
         for(UUID uuid : regionBlue.getMembers().getUniqueIds()){
-            Bukkit.getPlayer(uuid).teleport(blueMidPoint);
+            Bukkit.getPlayer(uuid).teleport(blueMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
         }
 
         for(Player p : redPlayers){
@@ -326,7 +332,7 @@ public class Battle implements Listener {
             if(battleRegions != null){
 
                 for(Player player : Regions.world.getPlayers()){
-                    player.sendMessage(ChatColor.DARK_RED + p.getDisplayName() + " has died!");
+                    player.sendMessage(ChatColor.DARK_RED + PlainTextComponentSerializer.plainText().serialize(p.displayName()) + " has died!");
                 }
 
                 prepPhaseBossBar.removePlayer(p);
@@ -338,7 +344,7 @@ public class Battle implements Listener {
                     if(player == p){
                         p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         toRemove.add(event.getEntity().getPlayer());
-                        teamRed.removeEntry(event.getEntity().getDisplayName());
+                        teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(event.getEntity().displayName()));
                         for(Player worldPlayer : Regions.world.getPlayers()){
                             worldPlayer.sendMessage(ChatColor.RED+""+redPlayers.size()+" players remain on Team Red.");
                         }
@@ -351,7 +357,7 @@ public class Battle implements Listener {
                     if(player == p){
                         p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         toRemove.add(event.getEntity().getPlayer());
-                        teamBlue.removeEntry(event.getEntity().getDisplayName());
+                        teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(event.getEntity().displayName()));
                         for(Player worldPlayer : Regions.world.getPlayers()){
                             worldPlayer.sendMessage(ChatColor.BLUE+""+ bluePlayers.size()+" players remain on Team Blue.");
                         }
@@ -375,7 +381,7 @@ public class Battle implements Listener {
                     if (player == p) {
                         p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         redPlayers.remove(p);
-                        teamRed.removeEntry(p.getDisplayName());
+                        teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
                         prepPhaseBossBar.removePlayer(p);
                     }
                 }
@@ -383,7 +389,7 @@ public class Battle implements Listener {
                     if (player == p) {
                         p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
                         bluePlayers.remove(p);
-                        teamBlue.removeEntry(p.getDisplayName());
+                        teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
                         prepPhaseBossBar.removePlayer(p);
                     }
                 }
@@ -396,39 +402,59 @@ public class Battle implements Listener {
         if(battleRegions != null){
 
             Player p = event.getPlayer();
+            String playerUUID = p.getUniqueId().toString();
 
-            if(p.getWorld() == Regions.world){
-                if(battleRegions.regionRed.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
-                    redPlayers.add(p);
-                    teamRed.addEntry(p.getDisplayName()); //add player to team
-                    p.setScoreboard(board); //set player scoreboard
-                    prepPhaseBossBar.addPlayer(p);
+            if(p.getWorld() == Regions.world) {
+                for (UUID uuid : battleRegions.regionRed.getMembers().getUniqueIds()) {
+                    if (uuid.toString().equalsIgnoreCase(playerUUID)) {
+                        redPlayers.add(p);
+                        teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName())); //add player to team
+                        p.setScoreboard(board); //set player scoreboard
+                        prepPhaseBossBar.addPlayer(p);
+                    }
                 }
-                if(battleRegions.regionBlue.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())){
-                    bluePlayers.add(p);
-                    teamBlue.addEntry(p.getDisplayName()); //add player to team
-                    p.setScoreboard(board); //set player scoreboard
-                    prepPhaseBossBar.addPlayer(p);
+
+                for (UUID uuid : battleRegions.regionBlue.getMembers().getUniqueIds()) {
+                    if (uuid.toString().equalsIgnoreCase(playerUUID)) {
+                        bluePlayers.add(p);
+                        teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName())); //add player to team
+                        p.setScoreboard(board); //set player scoreboard
+                        prepPhaseBossBar.addPlayer(p);
+                    }
                 }
             }
+
         }
     }
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if the teleport.
 
         if (battleRegions != null) {
-            Player p = event.getPlayer();
-            if (p.getWorld() == Regions.world) {
+            if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY){
+                Player p = event.getPlayer();
+                if (p.getWorld() == Regions.world) {
+                    String playerUUID = p.getUniqueId().toString();
 
-                if (battleRegions.regionRed.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())) {
-                    redPlayers.remove(p);
-                    teamRed.removeEntry(p.getDisplayName());
-                    prepPhaseBossBar.removePlayer(p);
-                }
-                if (battleRegions.regionBlue.getMembers().getPlayers().contains(p.getUniqueId().toString().toLowerCase())) {
-                    bluePlayers.remove(p);
-                    teamBlue.removeEntry(p.getDisplayName());
-                    prepPhaseBossBar.removePlayer(p);
+                    for(UUID uuid : battleRegions.regionRed.getMembers().getUniqueIds()){
+                        if(uuid.toString().equalsIgnoreCase(playerUUID)){
+                            redPlayers.remove(p);
+                            teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
+                            prepPhaseBossBar.removePlayer(p);
+                            p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
+                            p.sendMessage("You have been removed from the RegionBattle.");
+                        }
+                    }
+
+                    for(UUID uuid : battleRegions.regionBlue.getMembers().getUniqueIds()){
+                        if(uuid.toString().equalsIgnoreCase(playerUUID)){
+                            bluePlayers.remove(p);
+                            teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
+                            prepPhaseBossBar.removePlayer(p);
+                            p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
+                            p.sendMessage("You have been removed from the RegionBattle.");
+                        }
+                    }
+
                 }
             }
         }

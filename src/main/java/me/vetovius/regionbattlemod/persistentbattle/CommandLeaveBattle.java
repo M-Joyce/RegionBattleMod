@@ -34,7 +34,7 @@ public class CommandLeaveBattle implements CommandExecutor {
 
                 }
                 else{
-                    player.sendMessage("You aren't even in the RegionBattle world, why would you leave?");
+                    player.sendMessage("You aren't even in the Battle world, why would you leave?");
                 }
             }
         }

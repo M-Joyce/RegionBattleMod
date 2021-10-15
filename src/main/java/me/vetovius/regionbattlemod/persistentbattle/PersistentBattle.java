@@ -4,6 +4,11 @@ import me.vetovius.regionbattlemod.ChestLoot;
 import me.vetovius.regionbattlemod.CommandSeek;
 import me.vetovius.regionbattlemod.CommandSendTeamChat;
 import me.vetovius.regionbattlemod.RegionBattleMod;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -18,7 +23,6 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scoreboard.*;
 
-import javax.swing.plaf.synth.Region;
 import java.awt.*;
 import java.util.*;
 import java.util.logging.Logger;
@@ -71,12 +75,14 @@ public class PersistentBattle implements Listener {
         this.teamRed = board.registerNewTeam("Team_Red");
         this.teamBlue = board.registerNewTeam("Team_Blue");
 
+        TextComponent objectiveName = Component.text("Player Kills").color(TextColor.color(0x9C8A));
+
         //create objective for score board
-        objective = board.registerNewObjective("battleObjective", "playerKillCount","Player Kills");
+        objective = board.registerNewObjective("battleObjective", "playerKillCount",objectiveName);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
-        teamBlue.setColor(ChatColor.BLUE); //Set Colors for teams
-        teamRed.setColor(ChatColor.RED);
+        teamBlue.color(NamedTextColor.BLUE); //Set Colors for teams
+        teamRed.color(NamedTextColor.RED);
 
         teamBlue.setAllowFriendlyFire(false);
         teamRed.setAllowFriendlyFire(false);
@@ -185,7 +191,7 @@ public class PersistentBattle implements Listener {
             } else if (redPlayers.size() < bluePlayers.size()) { //blue bigger, assign player to red
                 team = "red";
             }
-            LOGGER.info("Assigning " + player.getDisplayName() + " to Team " + team + ".");
+            LOGGER.info("Assigning " + PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " to Team " + team + ".");
 
             battleTimerBar.addPlayer(player); //display battle timer to player
 
@@ -201,16 +207,16 @@ public class PersistentBattle implements Listener {
                 player.getInventory().clear(); //clear inventory
                 player.getInventory().addItem(compass); //give player a compass for seek
                 redPlayers.add(player);
-                teamRed.addEntry(player.getDisplayName()); //add player to team
+                teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
                 player.setScoreboard(board); //set player scoreboard
-                Score score = objective.getScore(player.getDisplayName());
+                Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
                 score.setScore(score.getScore());
 
                 for(Player p : redPlayers){
-                    p.sendMessage(ChatColor.RED+player.getDisplayName() + " has joined the Red Team!");
+                    p.sendMessage(ChatColor.RED+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has joined the Red Team!");
                 }
                 for(Player p : bluePlayers){
-                    p.sendMessage(ChatColor.RED+player.getDisplayName() + " has joined the Red Team!");
+                    p.sendMessage(ChatColor.RED+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has joined the Red Team!");
                 }
             }
 
@@ -219,16 +225,16 @@ public class PersistentBattle implements Listener {
                 player.getInventory().clear(); //clear inventory
                 player.getInventory().addItem(compass); //give player a compass for seek
                 bluePlayers.add(player);
-                teamBlue.addEntry(player.getDisplayName()); //add player to team
+                teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
                 player.setScoreboard(board); //set player scoreboard
-                Score score = objective.getScore(player.getDisplayName());
+                Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
                 score.setScore(score.getScore());
 
                 for(Player p : redPlayers){
-                    p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has joined the Blue Team!");
+                    p.sendMessage(ChatColor.BLUE+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has joined the Blue Team!");
                 }
                 for(Player p : bluePlayers){
-                    p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has joined the Blue Team!");
+                    p.sendMessage(ChatColor.BLUE+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has joined the Blue Team!");
                 }
             }
         }
@@ -301,7 +307,7 @@ public class PersistentBattle implements Listener {
             Player p = event.getPlayer();
             if(redPlayers.contains(p) || bluePlayers.contains(p)){
                 p.sendMessage("You were removed from battle for teleporting.");
-                LOGGER.info("Removing player from battle because they teleported: " + p.getDisplayName() +" Teleport Cause: " + event.getCause());
+                LOGGER.info("Removing player from battle because they teleported: " + PlainTextComponentSerializer.plainText().serialize(p.displayName()) +" Teleport Cause: " + event.getCause());
                 removePlayerFromBattle(p);
             }
         }
@@ -341,35 +347,35 @@ public class PersistentBattle implements Listener {
 
     protected void removePlayerFromBattle(Player player){
 
-        LOGGER.info("Removing from battle: " + player.getDisplayName());
+        LOGGER.info("Removing from battle: " + PlainTextComponentSerializer.plainText().serialize(player.displayName()));
 
         battleTimerBar.removePlayer(player); //display prep timer
         if(redPlayers.contains(player)){
             redPlayers.remove(player);
-            teamRed.removeEntry(player.getDisplayName());
+            teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
             player.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
             player.teleport(spawn);
             player.getInventory().clear(); //clear inventory
 
             for(Player p : redPlayers){
-                p.sendMessage(ChatColor.RED+player.getDisplayName() + " has been removed from the Red Team!");
+                p.sendMessage(ChatColor.RED+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has been removed from the Red Team!");
             }
             for(Player p : bluePlayers){
-                p.sendMessage(ChatColor.RED+player.getDisplayName() + " has been removed from the Red Team!");
+                p.sendMessage(ChatColor.RED+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has been removed from the Red Team!");
             }
         }
         else if(bluePlayers.contains(player)){
             bluePlayers.remove(player);
-            teamBlue.removeEntry(player.getDisplayName());
+            teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
             player.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
             player.teleport(spawn);
             player.getInventory().clear(); //clear inventory
 
             for(Player p : redPlayers){
-                p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has been removed from the Blue Team!");
+                p.sendMessage(ChatColor.BLUE+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has been removed from the Blue Team!");
             }
             for(Player p : bluePlayers){
-                p.sendMessage(ChatColor.BLUE+player.getDisplayName() + " has been removed from the Blue Team!");
+                p.sendMessage(ChatColor.BLUE+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has been removed from the Blue Team!");
             }
         }
         else{
