@@ -47,3 +47,7 @@ commands:
     description: Admin only, for use creating loot chests in battle worlds.
     usage: /createlootchest
     permission: RegionBattleMod.createlootchest
+  giveplayertoken:
+    description: Admin/Server only. Give the specified player a token.
+    usage: /giveplayertoken playername
+    permission: RegionBattleMod.giveplayertoken

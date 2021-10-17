@@ -4,18 +4,15 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattlemod.persistentbattle.*;
 import me.vetovius.regionbattlemod.regionbattle.*;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.logging.Logger;
 
 
@@ -38,6 +35,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
+        this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
 
         //persistent battle commands
         this.getCommand("startpersistentbattle").setExecutor(new CommandStartPersistentBattle()); //register command
@@ -117,8 +115,9 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
             Player player = Bukkit.getPlayer(event.getVote().getUsername());
 
             if(player != null){
-                player.sendMessage("Thanks for voting!");
+                player.sendMessage("Thanks for voting! Have a reward!");
                 Bukkit.dispatchCommand(console, "eco give "+player.getName()+" 25"); //give $25 for voting!
+                player.getInventory().addItem(Token.getTokenItemStack()); //give player a Token
             }
             else{
                 LOGGER.info("VOTIFIER: INVALID PLAYER NAME!" + event.getVote().toString());
