@@ -48,8 +48,29 @@ public class TokenShop implements Listener {
         ArrayList spawnerLoreList = new ArrayList<Component>();
         spawnerLoreList.add(Component.text("A mob spawner.").color(TextColor.color(0xFFFF)));
         spawnerLoreList.add(Component.text("Right click with a spawn egg once placed to determine type.").color(TextColor.color(0xFFFF)));
-        spawnerLoreList.add(Component.text("Cost: 50 Tokens").color(TextColor.color(0xFFC900)));
+        spawnerLoreList.add(Component.text("Cost: 30 Tokens").color(TextColor.color(0xFFC900)));
         inv.setItem(0,createGuiItem(Material.SPAWNER, spawnerName, spawnerLoreList));
+
+        TextComponent zombieEggName = Component.text("Zombie Spawn Egg").color(TextColor.color(0xC29D));
+        ArrayList zombieEggLoreList = new ArrayList<Component>();
+        zombieEggLoreList.add(Component.text("A zombie spawn egg.").color(TextColor.color(0xFFFF)));
+        zombieEggLoreList.add(Component.text("Right click your spawner with this to change its type.").color(TextColor.color(0xFFFF)));
+        zombieEggLoreList.add(Component.text("Cost: 30 Tokens").color(TextColor.color(0xFFC900)));
+        inv.setItem(1,createGuiItem(Material.ZOMBIE_SPAWN_EGG, zombieEggName, zombieEggLoreList));
+
+        TextComponent skeletonEggName = Component.text("Skeleton Spawn Egg").color(TextColor.color(0xC29D));
+        ArrayList skeletonEggLoreList = new ArrayList<Component>();
+        skeletonEggLoreList.add(Component.text("A skeleton spawn egg.").color(TextColor.color(0xFFFF)));
+        skeletonEggLoreList.add(Component.text("Right click your spawner with this to change its type.").color(TextColor.color(0xFFFF)));
+        skeletonEggLoreList.add(Component.text("Cost: 35 Tokens").color(TextColor.color(0xFFC900)));
+        inv.setItem(2,createGuiItem(Material.SKELETON_SPAWN_EGG, skeletonEggName, skeletonEggLoreList));
+
+        TextComponent creeperEggName = Component.text("Creeper Spawn Egg").color(TextColor.color(0xC29D));
+        ArrayList creeperEggLoreList = new ArrayList<Component>();
+        creeperEggLoreList.add(Component.text("A creeper spawn egg.").color(TextColor.color(0xFFFF)));
+        creeperEggLoreList.add(Component.text("Right click your spawner with this to change its type.").color(TextColor.color(0xFFFF)));
+        creeperEggLoreList.add(Component.text("Cost: 40 Tokens").color(TextColor.color(0xFFC900)));
+        inv.setItem(3,createGuiItem(Material.CREEPER_SPAWN_EGG, creeperEggName, creeperEggLoreList));
 
 
     }
@@ -95,7 +116,13 @@ public class TokenShop implements Listener {
 
         //Switch for what to do based on slotClicked
         switch (slotClicked) {
-            case 0: purchaseItem(p, clickedItem,50);
+            case 0: purchaseItem(p, clickedItem,30); //spawner
+                break;
+            case 1: purchaseItem(p, clickedItem,30); //zomb egg
+                break;
+            case 2: purchaseItem(p, clickedItem,35); //skelly egg
+                break;
+            case 3: purchaseItem(p, clickedItem,40); //creeper egg
                 break;
         }
 
