@@ -3,6 +3,7 @@ package me.vetovius.regionbattle;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.persistentbattle.*;
+import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
 import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
@@ -22,6 +23,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import sh.okx.rankup.events.RankupRegisterEvent;
+import sh.okx.rankup.requirements.requirement.MoneyDeductibleRequirement;
 
 import java.util.logging.Logger;
 
@@ -169,6 +172,13 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
             Battle.optOutPlayersList.remove(event.getPlayer());
         }
 
+    }
+
+    //Register Rankup requirement
+
+    @EventHandler
+    public void rankupRegisterEvent (RankupRegisterEvent event) { //handle when players log off in the middle of battle
+        event.addRequirement(new RBTokenDeductibleRequirement(JavaPlugin.getPlugin(sh.okx.rankup.RankupPlugin.class), "RBTokenRequirement"));
     }
 
 }

@@ -27,7 +27,7 @@ public class Token {
 
         ArrayList loreList = new ArrayList<Component>();
         loreList.add(Component.text("A special token.").color(TextColor.color(0xFFC900)));
-        loreList.add(Component.text("More uses coming soon..").color(TextColor.color(0xFFC900)));
+        loreList.add(Component.text("Spend in the Token shop at SMP spawn.").color(TextColor.color(0xFFC900)));
 
         tokenMeta.lore(loreList);
 
