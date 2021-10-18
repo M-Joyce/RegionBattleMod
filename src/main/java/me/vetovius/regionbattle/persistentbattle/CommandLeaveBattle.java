@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod.persistentbattle;
+package me.vetovius.regionbattle.persistentbattle;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;

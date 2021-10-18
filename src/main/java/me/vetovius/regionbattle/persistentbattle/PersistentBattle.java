@@ -1,9 +1,9 @@
-package me.vetovius.regionbattlemod.persistentbattle;
+package me.vetovius.regionbattle.persistentbattle;
 
-import me.vetovius.regionbattlemod.ChestLoot;
-import me.vetovius.regionbattlemod.CommandSeek;
-import me.vetovius.regionbattlemod.CommandSendTeamChat;
-import me.vetovius.regionbattlemod.RegionBattleMod;
+import me.vetovius.regionbattle.chestloot.ChestLoot;
+import me.vetovius.regionbattle.CommandSeek;
+import me.vetovius.regionbattle.CommandSendTeamChat;
+import me.vetovius.regionbattle.RegionBattle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -41,7 +41,7 @@ public class PersistentBattle implements Listener {
     public ArrayList<Player> redPlayers;
     public ArrayList<Player> bluePlayers;
 
-    private RegionBattleMod plugin;
+    private RegionBattle plugin;
     Location spawn;
     Location redSpawn;
     Location blueSpawn;
@@ -60,7 +60,7 @@ public class PersistentBattle implements Listener {
     protected int timerTaskId;
 
 
-    public PersistentBattle(RegionBattleMod pluginInstance){
+    public PersistentBattle(RegionBattle pluginInstance){
 
         LOGGER.info("--Creating Battle--");
 
@@ -120,7 +120,7 @@ public class PersistentBattle implements Listener {
 
     protected void battleTimer(){
 
-        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+        RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
         timerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
 

@@ -1,5 +1,6 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle.chestloot;
 
+import me.vetovius.regionbattle.RegionBattle;
 import org.bukkit.*;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -10,11 +11,9 @@ import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.loot.LootContext;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import javax.swing.plaf.synth.Region;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
@@ -26,7 +25,7 @@ public class ChestLoot implements Listener {
     public int radius;
     public ArrayList<InventoryHolder> openedChestsList;
 
-    public ChestLoot(int radius, Location center, RegionBattleMod plugin){
+    public ChestLoot(int radius, Location center, RegionBattle plugin){
 
         Bukkit.getPluginManager().registerEvents(this, plugin); //register events
 
@@ -53,7 +52,7 @@ public class ChestLoot implements Listener {
                         BlockState blockState = ((BlockState) e.getInventory().getHolder()).getBlock().getState();
                         if(blockState instanceof Chest chest) {
 
-                            RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+                            RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
 
                             PersistentDataContainer chestPersistentDataContainer = chest.getPersistentDataContainer();
 

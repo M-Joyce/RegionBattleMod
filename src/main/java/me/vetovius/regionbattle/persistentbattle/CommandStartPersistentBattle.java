@@ -1,8 +1,8 @@
-package me.vetovius.regionbattlemod.persistentbattle;
+package me.vetovius.regionbattle.persistentbattle;
 
-import me.vetovius.regionbattlemod.CommandSeek;
-import me.vetovius.regionbattlemod.CommandSendTeamChat;
-import me.vetovius.regionbattlemod.RegionBattleMod;
+import me.vetovius.regionbattle.CommandSeek;
+import me.vetovius.regionbattle.CommandSendTeamChat;
+import me.vetovius.regionbattle.RegionBattle;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -20,13 +20,13 @@ public class CommandStartPersistentBattle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+        RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
         checkIfStartNewBattle = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
 
                 if(battle == null){
                     LOGGER.info("--Creating Persistent Battle--");
-                    battle = new PersistentBattle(RegionBattleMod.getPlugin(RegionBattleMod.class));
+                    battle = new PersistentBattle(RegionBattle.getPlugin(RegionBattle.class));
                     CommandLeaveBattle.battle = battle;
                     CommandJoinBattle.battle = battle;
                     CommandSeek.pbattle = battle;

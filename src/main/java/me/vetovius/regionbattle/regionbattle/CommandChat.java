@@ -1,4 +1,4 @@
-//package me.vetovius.regionbattlemod.regionbattle;
+//package me.vetovius.regionbattle.regionbattle;
 //
 //import org.bukkit.Bukkit;
 //import org.bukkit.ChatColor;

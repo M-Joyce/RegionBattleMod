@@ -1,5 +1,6 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle.tokenshop;
 
+import me.vetovius.regionbattle.RegionBattle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 
 public class Token {
 
-    public static RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+    public static RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
 
     public static ItemStack getTokenItemStack(){
 
@@ -34,7 +35,7 @@ public class Token {
 
         byte t = 1;
         if(!tokenPDC.has(new NamespacedKey(plugin,"isToken"), PersistentDataType.BYTE)) {
-            tokenPDC.set(new NamespacedKey(plugin, "chestLoot"), PersistentDataType.BYTE, t);
+            tokenPDC.set(new NamespacedKey(plugin, "isToken"), PersistentDataType.BYTE, t);
         }
         tokenItemStack.setItemMeta(tokenMeta);
 

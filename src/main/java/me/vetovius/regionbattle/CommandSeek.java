@@ -1,7 +1,7 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle;
 
-import me.vetovius.regionbattlemod.persistentbattle.PersistentBattle;
-import me.vetovius.regionbattlemod.regionbattle.Battle;
+import me.vetovius.regionbattle.persistentbattle.PersistentBattle;
+import me.vetovius.regionbattle.regionbattle.Battle;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

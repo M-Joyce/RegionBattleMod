@@ -1,8 +1,8 @@
-package me.vetovius.regionbattlemod.regionbattle;
+package me.vetovius.regionbattle.regionbattle;
 
-import me.vetovius.regionbattlemod.CommandSeek;
-import me.vetovius.regionbattlemod.CommandSendTeamChat;
-import me.vetovius.regionbattlemod.RegionBattleMod;
+import me.vetovius.regionbattle.CommandSeek;
+import me.vetovius.regionbattle.CommandSendTeamChat;
+import me.vetovius.regionbattle.RegionBattle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -22,7 +22,7 @@ public class CommandStartRegionBattle implements CommandExecutor {
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+        RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
         checkIfStartNewBattle = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
 
@@ -40,7 +40,7 @@ public class CommandStartRegionBattle implements CommandExecutor {
                 if(Regions.world.getPlayers().size() - Battle.optOutPlayersList.size() > 1){
                     if(battle == null){
                         LOGGER.info("--Creating Battle--");
-                        battle = new Battle(RegionBattleMod.getPlugin(RegionBattleMod.class));
+                        battle = new Battle(RegionBattle.getPlugin(RegionBattle.class));
                         CommandSeek.battle = battle;
                         CommandSendTeamChat.battle = battle;
                         Bukkit.getScheduler().cancelTask(checkIfStartNewBattle);

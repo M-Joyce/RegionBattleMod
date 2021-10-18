@@ -1,24 +1,34 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
-import me.vetovius.regionbattlemod.persistentbattle.*;
-import me.vetovius.regionbattlemod.regionbattle.*;
+import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
+import me.vetovius.regionbattle.persistentbattle.*;
+import me.vetovius.regionbattle.regionbattle.*;
+import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
+import org.bukkit.NamespacedKey;
+import org.bukkit.block.BlockState;
+import org.bukkit.block.Chest;
+import org.bukkit.block.EnderChest;
+import org.bukkit.block.ShulkerBox;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.logging.Logger;
 
 
-public class RegionBattleMod extends JavaPlugin implements Listener {
+public class RegionBattle extends JavaPlugin implements Listener {
 
-private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.getName() );
+private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getName() );
 
     @Override
     public void onEnable() {
@@ -36,6 +46,8 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
         this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
+        this.getCommand("opentokenshop").setExecutor(new CommandOpenTokenShop()); //register command
+        this.getCommand("createtokenshop").setExecutor(new CommandCreateTokenShop()); //register command
 
         //persistent battle commands
         this.getCommand("startpersistentbattle").setExecutor(new CommandStartPersistentBattle()); //register command
@@ -67,6 +79,29 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattleMod.class.get
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
         //Bukkit.broadcastMessage("A block was placed!");
+    }
+
+    @EventHandler
+    public void onChestOpenEvent(InventoryOpenEvent e){ //Event for tokenshop
+
+        if (e.getInventory().getHolder() instanceof ShulkerBox){
+
+            BlockState blockState = ((BlockState) e.getInventory().getHolder()).getBlock().getState();
+            if(blockState instanceof ShulkerBox sbox) {
+
+                PersistentDataContainer chestPersistentDataContainer = sbox.getPersistentDataContainer();
+
+                if(chestPersistentDataContainer.has(new NamespacedKey(this,"isTokenShop"), PersistentDataType.BYTE)){
+                    Byte b = 1;
+                    if(chestPersistentDataContainer.get(new NamespacedKey(this,"isTokenShop"), PersistentDataType.BYTE) == b){
+                        e.setCancelled(true); //cancel shulker open
+                        TokenShop ts = new TokenShop();
+                        ts.openInventory(e.getPlayer());
+                    }
+                }
+            }
+        }
+
     }
 
 //    @EventHandler

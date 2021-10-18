@@ -1,9 +1,9 @@
-package me.vetovius.regionbattlemod.regionbattle;
+package me.vetovius.regionbattle.regionbattle;
 
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
-import me.vetovius.regionbattlemod.CommandSeek;
-import me.vetovius.regionbattlemod.CommandSendTeamChat;
-import me.vetovius.regionbattlemod.RegionBattleMod;
+import me.vetovius.regionbattle.CommandSeek;
+import me.vetovius.regionbattle.CommandSendTeamChat;
+import me.vetovius.regionbattle.RegionBattle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
@@ -55,11 +55,11 @@ public class Battle implements Listener {
 
     private BossBar prepPhaseBossBar;
 
-    private RegionBattleMod plugin;
+    private RegionBattle plugin;
 
 
 
-    public Battle(RegionBattleMod pluginInstance){
+    public Battle(RegionBattle pluginInstance){
 
         LOGGER.info("--Creating Battle--");
 
@@ -332,6 +332,7 @@ public class Battle implements Listener {
             if(battleRegions != null){
 
                 for(Player player : Regions.world.getPlayers()){
+                    //TODO Ideally should replace all the sendMessages using PlainTextComponentSerializer with something like player.sendMessage(p.displayName())
                     player.sendMessage(ChatColor.DARK_RED + PlainTextComponentSerializer.plainText().serialize(p.displayName()) + " has died!");
                 }
 

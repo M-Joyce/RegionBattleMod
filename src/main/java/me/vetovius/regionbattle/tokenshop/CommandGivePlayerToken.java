@@ -1,11 +1,6 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle.tokenshop;
 
-import me.vetovius.regionbattlemod.persistentbattle.PersistentBattle;
-import me.vetovius.regionbattlemod.regionbattle.Battle;
-import me.vetovius.regionbattlemod.regionbattle.Regions;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

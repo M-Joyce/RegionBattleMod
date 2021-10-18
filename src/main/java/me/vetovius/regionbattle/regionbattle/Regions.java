@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod.regionbattle;
+package me.vetovius.regionbattle.regionbattle;
 
 import com.sk89q.worldedit.bukkit.BukkitAdapter;
 import com.sk89q.worldedit.math.BlockVector3;
@@ -11,7 +11,7 @@ import com.sk89q.worldguard.protection.managers.RegionManager;
 import com.sk89q.worldguard.protection.regions.ProtectedCuboidRegion;
 import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
-import me.vetovius.regionbattlemod.RegionBattleMod;
+import me.vetovius.regionbattle.RegionBattle;
 import org.bukkit.*;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
@@ -158,7 +158,7 @@ public class Regions {
             particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(minBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
         }
 
-        RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+        RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
         int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
                 for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List

@@ -1,8 +1,8 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle;
 
-import me.vetovius.regionbattlemod.persistentbattle.PersistentBattle;
-import me.vetovius.regionbattlemod.regionbattle.Battle;
-import me.vetovius.regionbattlemod.regionbattle.Regions;
+import me.vetovius.regionbattle.persistentbattle.PersistentBattle;
+import me.vetovius.regionbattle.regionbattle.Battle;
+import me.vetovius.regionbattle.regionbattle.Regions;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;

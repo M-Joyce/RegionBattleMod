@@ -1,7 +1,7 @@
-name: RegionBattleMod
+name: RegionBattle
 version: 0.1
 author: Vetovius
-main: me.vetovius.regionbattlemod.RegionBattleMod
+main: me.vetovius.regionbattle.RegionBattle
 api-version: 1.17
 depend: [WorldGuard,Votifier]
 
@@ -10,44 +10,52 @@ commands:
   startregionbattle:
     description: Start the game!
     usage: /startregionbattle
-    permission: RegionBattleMod.startregionbattle
+    permission: RegionBattle.startregionbattle
   seek:
     description: Seek out a random enemy player, no one can hide!
     usage: /seek while in a battle.
-    permission: RegionBattleMod.seek
+    permission: RegionBattle.seek
   tc:
     description: Send a chat to your team only during a battle.
     usage: /tc while in a battle.
-    permission: RegionBattleMod.tc
+    permission: RegionBattle.tc
   battleoptout:
     description: Temporarily opt out of battles. Toggleable.
     usage: /battleoptout
-    permission: RegionBattleMod.battleoptout
+    permission: RegionBattle.battleoptout
 #  chat:
 #    description: Toggle which chat channel you are in.
 #    usage: /chat s for survival or /chat b for battle. Toggling both chats off will return you to global.
-#    permission: RegionBattleMod.chat
+#    permission: RegionBattle.chat
   vote:
     description: Vote for our server.
     usage: /vote
-    permission: RegionBattleMod.vote
+    permission: RegionBattle.vote
   startpersistentbattle:
     description: Start a persistent battle.
     usage: /startpersistentbattle
-    permission: RegionBattleMod.startpersistentbattle
+    permission: RegionBattle.startpersistentbattle
   joinbattle:
     description: Join the battle!
     usage: /joinbattle
-    permission: RegionBattleMod.joinbattle
+    permission: RegionBattle.joinbattle
   leavebattle:
     description: Leave the battle!
     usage: /leavebattle
-    permission: RegionBattleMod.leavebattle
+    permission: RegionBattle.leavebattle
   createlootchest:
     description: Admin only, for use creating loot chests in battle worlds.
     usage: /createlootchest
-    permission: RegionBattleMod.createlootchest
+    permission: RegionBattle.createlootchest
   giveplayertoken:
     description: Admin/Server only. Give the specified player a token.
     usage: /giveplayertoken playername
-    permission: RegionBattleMod.giveplayertoken
+    permission: RegionBattle.giveplayertoken
+  opentokenshop:
+    description: debugging token shop.
+    usage: /opentokenshop
+    permission: RegionBattle.opentokenshop
+  createtokenshop:
+    description: Used for admins to spawn a token shop chest.
+    usage: /createtokenshop
+    permission: RegionBattle.createtokenshop

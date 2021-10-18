@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="RegionBattle:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/RegionBattle_jar</output-path>
+    <root id="archive" name="RegionBattle.jar">
+      <element id="module-output" name="RegionBattleMod" />
+    </root>
+  </artifact>
+</component>

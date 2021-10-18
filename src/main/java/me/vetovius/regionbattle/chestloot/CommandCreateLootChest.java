@@ -1,7 +1,8 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle.chestloot;
 
-import me.vetovius.regionbattlemod.persistentbattle.PersistentBattle;
-import me.vetovius.regionbattlemod.regionbattle.Regions;
+import me.vetovius.regionbattle.RegionBattle;
+import me.vetovius.regionbattle.persistentbattle.PersistentBattle;
+import me.vetovius.regionbattle.regionbattle.Regions;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
@@ -34,7 +35,7 @@ public class CommandCreateLootChest implements CommandExecutor {
                  BlockState blockState = player.getLocation().getBlock().getState();
                  if(blockState instanceof Chest chest){
 
-                     RegionBattleMod plugin = RegionBattleMod.getPlugin(RegionBattleMod.class);
+                     RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
 
                      //add chestLoot tag to PDC of the chest
                      PersistentDataContainer chestPersistentDataContainer = chest.getPersistentDataContainer();

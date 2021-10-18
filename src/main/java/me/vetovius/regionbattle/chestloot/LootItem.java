@@ -1,4 +1,4 @@
-package me.vetovius.regionbattlemod;
+package me.vetovius.regionbattle.chestloot;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
