@@ -24,7 +24,6 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.okx.rankup.events.RankupRegisterEvent;
-import sh.okx.rankup.requirements.requirement.MoneyDeductibleRequirement;
 
 import java.util.logging.Logger;
 

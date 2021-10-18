@@ -43,7 +43,7 @@ public class RBTokenDeductibleRequirement extends ProgressiveRequirement impleme
             }
         });
 
-        double totalTokensInPlayerInventory = 0;
+        double totalTokensInPlayerInventory = 0L;
         for(ItemStack tokenStacks : tokenItemStacks){
             totalTokensInPlayerInventory += tokenStacks.getAmount();
         }
