@@ -237,12 +237,12 @@ public class Battle implements Listener {
                         //send players back
                         for(Player p : redPlayers){
                             p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
-                            p.teleport(Regions.spawn);
+                            p.teleport(Regions.spawn, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
                             p.getInventory().clear();
                         }
                         for(Player p : bluePlayers){
                             p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
-                            p.teleport(Regions.spawn);
+                            p.teleport(Regions.spawn, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
                             p.getInventory().clear();
                         }
 
