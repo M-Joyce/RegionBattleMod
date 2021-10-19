@@ -39,8 +39,9 @@ public class CommandCreateLootChest implements CommandExecutor {
 
                      //add chestLoot tag to PDC of the chest
                      PersistentDataContainer chestPersistentDataContainer = chest.getPersistentDataContainer();
-                     if(!chestPersistentDataContainer.has(new NamespacedKey(plugin,"chestLoot"), PersistentDataType.INTEGER)) {
-                         chestPersistentDataContainer.set(new NamespacedKey(plugin, "chestLoot"), PersistentDataType.INTEGER, 1);
+                     //have to do NamespacedKey.fromString("regionbattlemod:chestloot",plugin because PDC chests were created when plugin was named regionbattlemod
+                     if(!chestPersistentDataContainer.has(NamespacedKey.fromString("regionbattlemod:chestloot",plugin), PersistentDataType.INTEGER)) {
+                         chestPersistentDataContainer.set(NamespacedKey.fromString("regionbattlemod:chestloot",plugin), PersistentDataType.INTEGER, 1);
                      }
 
                      //update blockstate

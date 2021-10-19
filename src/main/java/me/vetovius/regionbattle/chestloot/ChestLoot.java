@@ -56,8 +56,9 @@ public class ChestLoot implements Listener {
 
                             PersistentDataContainer chestPersistentDataContainer = chest.getPersistentDataContainer();
 
-                            if(chestPersistentDataContainer.has(new NamespacedKey(plugin,"chestLoot"), PersistentDataType.INTEGER)){
-                                if(chestPersistentDataContainer.get(new NamespacedKey(plugin,"chestLoot"), PersistentDataType.INTEGER) == 1){
+                            //have to do NamespacedKey.fromString("regionbattlemod:chestloot",plugin because PDC chests were created when plugin was named regionbattlemod
+                            if(chestPersistentDataContainer.has(NamespacedKey.fromString("regionbattlemod:chestloot",plugin), PersistentDataType.INTEGER)){
+                                if(chestPersistentDataContainer.get(NamespacedKey.fromString("regionbattlemod:chestloot",plugin), PersistentDataType.INTEGER) == 1){
 
                                     //Need to clear this chest of items so that they don't stack up with new items each match.
                                     e.getInventory().clear();
