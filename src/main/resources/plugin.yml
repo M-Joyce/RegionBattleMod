@@ -59,3 +59,7 @@ commands:
     description: Used for admins to spawn a token shop chest.
     usage: /createtokenshop
     permission: RegionBattle.createtokenshop
+  map:
+    description: Get the link to dynmap.
+    usage: /map
+    permission: RegionBattle.map

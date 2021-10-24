@@ -23,7 +23,7 @@ public class CommandVote implements CommandExecutor {
                 "https://www.planetminecraft.com/server/regionbattle/\n" +
                 "https://topminecraftservers.org/server/21394\n" +
                 "https://minebrowse.com/server/3550\n" +
-                "https://craft-list.net/minecraft-server/RegionBattle\n");
+                "https://craft-list.net/minecraft-server/RegionBattle-Custom-Plugins-for-Team-PVP---SMP---Cross-Play/vote\n");
 
         return true;
     }

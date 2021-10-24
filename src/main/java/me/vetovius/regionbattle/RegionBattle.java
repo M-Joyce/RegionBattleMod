@@ -45,6 +45,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command
         //this.getCommand("chat").setExecutor(new CommandChat()); //register command
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
+        this.getCommand("map").setExecutor(new CommandMap()); //register command
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
         this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
