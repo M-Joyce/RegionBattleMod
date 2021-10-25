@@ -8,7 +8,9 @@ import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -72,6 +74,15 @@ public class TokenShop implements Listener {
         creeperEggLoreList.add(Component.text("Cost: 40 Tokens").color(TextColor.color(0xFFC900)));
         inv.setItem(3,createGuiItem(Material.CREEPER_SPAWN_EGG, creeperEggName, creeperEggLoreList));
 
+        TextComponent TokenPickaxeName = Component.text("Token Pickaxe").color(TextColor.color(0xC29D));
+        ArrayList TokenPickaxeLoreList = new ArrayList<Component>();
+        TokenPickaxeLoreList.add(Component.text("A very good pickaxe.").color(TextColor.color(0xFFFF)));
+        TokenPickaxeLoreList.add(Component.text("Efficiency 6").color(TextColor.color(0xFFFF)));
+        TokenPickaxeLoreList.add(Component.text("Unbreaking 4").color(TextColor.color(0xFFFF)));
+        TokenPickaxeLoreList.add(Component.text("Fortune 3").color(TextColor.color(0xFFFF)));
+        TokenPickaxeLoreList.add(Component.text("Cost: 50 Tokens").color(TextColor.color(0xFFC900)));
+        inv.setItem(4,createGuiItem(Material.NETHERITE_PICKAXE, TokenPickaxeName, TokenPickaxeLoreList));
+
 
     }
 
@@ -123,6 +134,17 @@ public class TokenShop implements Listener {
             case 2: purchaseItem(p, clickedItem,35); //skelly egg
                 break;
             case 3: purchaseItem(p, clickedItem,40); //creeper egg
+                break;
+            case 4:  //Token voter pickaxe
+                ItemStack TokenPickAxe = new ItemStack(Material.NETHERITE_PICKAXE);
+                ItemMeta TokenPickMeta = TokenPickAxe.getItemMeta();
+                TextComponent tokenPickName = Component.text("Token Pickaxe").color(TextColor.color(0xC29D));
+                TokenPickMeta.displayName(tokenPickName);
+                TokenPickMeta.addEnchant(Enchantment.DIG_SPEED, 6, true);
+                TokenPickMeta.addEnchant(Enchantment.DURABILITY, 4, true);
+                TokenPickMeta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, true);
+                TokenPickAxe.setItemMeta(TokenPickMeta);
+                purchaseItem(p, TokenPickAxe,50);
                 break;
         }
 
