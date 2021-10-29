@@ -7,16 +7,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import java.util.logging.Logger;
 
-public class CommandMap implements CommandExecutor {
+public class CommandDiscord implements CommandExecutor {
 
-    private static final Logger LOGGER = Logger.getLogger( CommandMap.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( CommandDiscord.class.getName() );
 
     // This method is called, when somebody uses our command
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
-        //send dynmap info
-        Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.DARK_AQUA + "Dynmap Link: " + ChatColor.AQUA +" http://play.regionbattle.com:8123/");
+        //send discord
+        Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.BLUE + "Discord Invite Link: " + ChatColor.AQUA +"https://discord.regionbattle.com/");
 
         return true;
     }

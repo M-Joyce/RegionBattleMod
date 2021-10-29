@@ -63,3 +63,7 @@ commands:
     description: Get the link to dynmap.
     usage: /map
     permission: RegionBattle.map
+  discord:
+    description: Get the invite link to RegionBattle's discord.
+    usage: /discord
+    permission: RegionBattle.discord

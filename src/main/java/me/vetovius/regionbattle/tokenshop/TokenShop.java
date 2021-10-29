@@ -140,7 +140,7 @@ public class TokenShop implements Listener {
                 ItemMeta TokenPickMeta = TokenPickAxe.getItemMeta();
                 TextComponent tokenPickName = Component.text("Token Pickaxe").color(TextColor.color(0xC29D));
                 TokenPickMeta.displayName(tokenPickName);
-                TokenPickMeta.addEnchant(Enchantment.DIG_SPEED, 6, true);
+                TokenPickMeta.addEnchant(Enchantment.DIG_SPEED, 7, true);
                 TokenPickMeta.addEnchant(Enchantment.DURABILITY, 4, true);
                 TokenPickMeta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, true);
                 TokenPickAxe.setItemMeta(TokenPickMeta);
