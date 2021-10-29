@@ -1,6 +1,7 @@
 package me.vetovius.regionbattle.rankuptokenrequirement;
 
 import me.vetovius.regionbattle.RegionBattle;
+import me.vetovius.regionbattle.regionbattle.Battle;
 import me.vetovius.regionbattle.tokenshop.Token;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -13,10 +14,13 @@ import sh.okx.rankup.requirements.ProgressiveRequirement;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class RBTokenDeductibleRequirement extends ProgressiveRequirement implements DeductibleRequirement {
 
     public static RegionBattle rbPlugin = RegionBattle.getPlugin(RegionBattle.class);
+
+    private static final Logger LOGGER = Logger.getLogger( RBTokenDeductibleRequirement.class.getName() );
 
     public RBTokenDeductibleRequirement(RankupPlugin plugin, String name) {
         super(plugin, name);
@@ -74,6 +78,7 @@ public class RBTokenDeductibleRequirement extends ProgressiveRequirement impleme
 
         if(totalTokensInPlayerInventory >= getValueInt()){
             player.sendMessage("You have used "+getValueInt() +" tokens to rank up.");
+            LOGGER.info(player.getName() + "purchased a rank for # tokens:" + getValueInt());
 
             ItemStack tokensToRemove = Token.getTokenItemStack();
             tokensToRemove.setAmount(getValueInt()); //set the amount of the itemStack

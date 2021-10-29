@@ -1,6 +1,7 @@
 package me.vetovius.regionbattle.tokenshop;
 
 import me.vetovius.regionbattle.RegionBattle;
+import me.vetovius.regionbattle.regionbattle.Battle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
@@ -23,10 +24,12 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.logging.Logger;
 
 public class TokenShop implements Listener {
     private final Inventory inv;
     private RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
+    private static final Logger LOGGER = Logger.getLogger( TokenShop.class.getName() );
 
 
     public TokenShop() {
@@ -178,6 +181,8 @@ public class TokenShop implements Listener {
             tokensToRemove.setAmount(tokenCost);
             player.getInventory().removeItemAnySlot(tokensToRemove);
             player.getInventory().addItem(itemStack);
+
+            LOGGER.info(player.getName() + " purchased an item from the token shop for tokens: " + tokenCost);
         }
         else{
             player.sendMessage("You do not have enough tokens!");
