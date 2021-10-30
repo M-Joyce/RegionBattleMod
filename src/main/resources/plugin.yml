@@ -23,10 +23,6 @@ commands:
     description: Temporarily opt out of battles. Toggleable.
     usage: /battleoptout
     permission: RegionBattle.battleoptout
-#  chat:
-#    description: Toggle which chat channel you are in.
-#    usage: /chat s for survival or /chat b for battle. Toggling both chats off will return you to global.
-#    permission: RegionBattle.chat
   vote:
     description: Vote for our server.
     usage: /vote
