@@ -1,11 +1,12 @@
 package me.vetovius.regionbattle.smpbattleregion;
 
+import me.vetovius.regionbattle.CommandSeek;
+import me.vetovius.regionbattle.CommandSendTeamChat;
 import me.vetovius.regionbattle.RegionBattle;
+import me.vetovius.regionbattle.persistentbattle.CommandStartPersistentBattle;
 import me.vetovius.regionbattle.persistentbattle.PersistentBattle;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.Particle;
-import org.bukkit.World;
+import org.bukkit.*;
+import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
 import java.awt.*;
@@ -24,14 +25,57 @@ public class BattleRegion {
     private static final int minDistanceFromSpawn = 550; //can't be closer than this to spawn
     private static final int radius = 10; //how big should the battle region square radius be in blocks?
 
+    private long startTime = 0;
+    private long duration = 0;
+
+    private int particleTaskId = 0;
+    private int timerTaskId = 0;
+    private int checkForPlayers = 0;
+
     private Location battleRegionCenter;
+
+    private ArrayList<Player> playersInZone = new ArrayList<Player>();
 
 
     public BattleRegion(RegionBattle pluginInstance){
         this.pluginInstance = pluginInstance;
         findLocationForBattleRegion(); //find a suitable location for the battle region
-        initBattleRegionParticles();
+        particleTaskId=initBattleRegionParticles();
 
+        //1 hour = 3600000 miliseconds
+        startTime = System.currentTimeMillis();
+        duration =  System.currentTimeMillis() + 3600000; //1 hour from now
+
+        startBattleRegionTimer();
+    }
+
+    protected void startBattleRegionTimer(){
+
+        timerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+            public void run() {
+
+                if (System.currentTimeMillis() >= duration){ //Time is up, end the battle region.
+
+                    Bukkit.getScheduler().cancelTask(timerTaskId);
+                    Bukkit.getScheduler().cancelTask(particleTaskId);
+                    Bukkit.getScheduler().cancelTask(checkForPlayers);
+
+                    for(Player p : smpWorld.getPlayers()){
+                        p.sendMessage("The battle region has vanished!");
+                    }
+
+
+                }
+
+            }}, 20, 20*30); //repeat task every 30 seconds
+
+        //Actual Battle Region Logic goes here.
+        checkForPlayers = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+            public void run() {
+                playersInZone = (ArrayList<Player>) battleRegionCenter.getNearbyPlayers(radius); //updating the playersInZone list if zone is empty or contains players.
+                //For Debugging LOGGER.info(playersInZone.toString());
+
+            }}, 20, 20*5); //repeat task every 5 seconds, assuming 20TPS.
 
     }
 
@@ -56,9 +100,12 @@ public class BattleRegion {
 
         LOGGER.info("battleRegionCenter Found. X: " + x + " Z: " + z);
         battleRegionCenter = new Location(smpWorld,x,smpWorld.getHighestBlockYAt(x,z)+1,z); //set battleRegionCenter
+        for(Player p : smpWorld.getPlayers()){
+            p.sendMessage("A BattleRegion has appeared at X: " + x + " Z: "+ z +". Control it for a reward!");
+        }
     }
 
-    private void initBattleRegionParticles(){
+    private int initBattleRegionParticles(){
 
         //Generate max and min points of a sqaure based on the battleRegionCenter
         Point max = new Point(battleRegionCenter.getBlockX()+radius,battleRegionCenter.getBlockZ()+radius);
@@ -78,14 +125,14 @@ public class BattleRegion {
             particleLocations.add(new Location(smpWorld,min.x,smpWorld.getHighestBlockYAt(min.x,maxZ)+1,maxZ));
         }
 
-        int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+        int particleTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
-                    smpWorld.spawnParticle(Particle.DRIPPING_OBSIDIAN_TEAR,location, 3, 0, 0, 0, 1, null, true);
+                    smpWorld.spawnParticle(Particle.SPELL_WITCH,location, 10, 0, 0.5, 0, 0, null, true);
                 }
             }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
-
+        return particleTaskId;
     }
 
 }
