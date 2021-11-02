@@ -190,6 +190,8 @@ public class Regions {
 
     private Point[] findRegionZones(){ //find zones for region
 
+        Random rand = new Random();
+
         int rX = 0; //red points
         int rZ = 0;
 
@@ -201,11 +203,11 @@ public class Regions {
 
         //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
         while((minDistance >= r.distance(b)) || (r.distance(b) >= maxDistance) || !world.getHighestBlockAt(((bX+(bX+regionSize))/2),((bZ+(bZ+regionSize))/2)).getType().isSolid() || !world.getHighestBlockAt(((rX+(rX+regionSize))/2),((rZ+(rZ+regionSize))/2)).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
-            rX = new Random().nextInt(max - min + 1) + min;
-            rZ = new Random().nextInt(max - min + 1) + min;
+            rX = rand.nextInt(max - min + 1) + min;
+            rZ = rand.nextInt(max - min + 1) + min;
 
-            bX = new Random().nextInt(max - min + 1) + min;
-            bZ = new Random().nextInt(max - min + 1) + min;
+            bX = rand.nextInt(max - min + 1) + min;
+            bZ = rand.nextInt(max - min + 1) + min;
 
             r = new Point(rX,rZ);
             b = new Point(bX,bZ);

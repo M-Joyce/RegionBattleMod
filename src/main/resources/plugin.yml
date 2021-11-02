@@ -63,3 +63,7 @@ commands:
     description: Get the invite link to RegionBattle's discord.
     usage: /discord
     permission: RegionBattle.discord
+  spawnbattleregion:
+    description: Spawn a new battle region zone in SMP.
+    usage: /spawnbattleregion
+    permission: RegionBattle.spawnbattleregion

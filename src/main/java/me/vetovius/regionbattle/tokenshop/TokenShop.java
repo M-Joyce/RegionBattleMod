@@ -80,7 +80,7 @@ public class TokenShop implements Listener {
         TextComponent TokenPickaxeName = Component.text("Token Pickaxe").color(TextColor.color(0xC29D));
         ArrayList TokenPickaxeLoreList = new ArrayList<Component>();
         TokenPickaxeLoreList.add(Component.text("A very good pickaxe.").color(TextColor.color(0xFFFF)));
-        TokenPickaxeLoreList.add(Component.text("Efficiency 6").color(TextColor.color(0xFFFF)));
+        TokenPickaxeLoreList.add(Component.text("Efficiency 7").color(TextColor.color(0xFFFF)));
         TokenPickaxeLoreList.add(Component.text("Unbreaking 4").color(TextColor.color(0xFFFF)));
         TokenPickaxeLoreList.add(Component.text("Fortune 3").color(TextColor.color(0xFFFF)));
         TokenPickaxeLoreList.add(Component.text("Cost: 50 Tokens").color(TextColor.color(0xFFC900)));

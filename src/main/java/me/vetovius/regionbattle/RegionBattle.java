@@ -5,6 +5,7 @@ import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.persistentbattle.*;
 import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
+import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -56,6 +57,9 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
         this.getCommand("startpersistentbattle").setExecutor(new CommandStartPersistentBattle()); //register command
         this.getCommand("joinbattle").setExecutor(new CommandJoinBattle()); //register command
         this.getCommand("leavebattle").setExecutor(new CommandLeaveBattle()); //register command
+
+        //SMP Battle Region Commands
+        this.getCommand("spawnbattleregion").setExecutor(new CommandSpawnBattleRegion()); //register command
 
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
