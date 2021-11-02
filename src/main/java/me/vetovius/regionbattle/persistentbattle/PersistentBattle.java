@@ -299,11 +299,20 @@ public class PersistentBattle implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if they teleport.
 
-
-        if(event.getCause() == PlayerTeleportEvent.TeleportCause.END_GATEWAY || event.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN){ //the specific cause we set earlier for a valid TP by this plugin.
-
+        if(event.getCause() == PlayerTeleportEvent.TeleportCause.END_GATEWAY || event.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN || event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL){ //the specific cause we set earlier for a valid TP by this plugin.
+            //Do nothing
         }
         else{
+
+            if(event.getTo().getWorld() != world){
+                //Do nothing here, continue if to kick player.
+            }
+            else if (event.getFrom().distance(event.getTo()) < 80){ //This wont run unless they aren't tping in the same world
+                //Do nothing, they were teleported such a small distance that this is likely just anticheat or worldguard
+                return;
+            }
+
+            //kick player for teleporting
             Player p = event.getPlayer();
             if(redPlayers.contains(p) || bluePlayers.contains(p)){
                 p.sendMessage("You were removed from battle for teleporting.");

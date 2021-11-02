@@ -431,7 +431,15 @@ public class Battle implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if the teleport.
 
         if (battleRegions != null) {
-            if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY){
+            if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY && event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL){
+
+                if(event.getTo().getWorld() != Regions.world){
+                    //Do nothing here, continue if to kick player.
+                }
+                else if (event.getFrom().distance(event.getTo()) < 80){ //This wont run unless they aren't tping in the same world
+                    //Do nothing, they were teleported such a small distance that this is likely just anticheat or worldguard
+                    return;
+                }
                 Player p = event.getPlayer();
                 if (p.getWorld() == Regions.world) {
                     String playerUUID = p.getUniqueId().toString();

@@ -83,6 +83,8 @@ public class Regions {
         regionRed.setFlag(Flags.ENTRY, StateFlag.State.DENY);
         regionRed.setFlag(Flags.EXIT, StateFlag.State.DENY);
         regionRed.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL); //don't let members leave the region for now
+        regionRed.setFlag(Flags.ENDERPEARL, StateFlag.State.DENY);
+        regionRed.setFlag(Flags.ENDERPEARL.getRegionGroupFlag(), RegionGroup.ALL);
 
         regionManager.addRegion(regionRed); //add region to RegionManager (saves it)
 
@@ -102,9 +104,14 @@ public class Regions {
         regionBlue.setFlag(Flags.ENTRY, StateFlag.State.DENY);
         regionBlue.setFlag(Flags.EXIT, StateFlag.State.DENY);
         regionBlue.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL); //don't let members leave the region for now
+        regionBlue.setFlag(Flags.ENDERPEARL, StateFlag.State.DENY);
+        regionBlue.setFlag(Flags.ENDERPEARL.getRegionGroupFlag(), RegionGroup.ALL);
 
         regionManager.addRegion(regionBlue); //add region to RegionManager (saves it)
         particleRunnerID = regionParticles(minBlue,maxBlue,minRed,maxRed);
+
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+        Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
     }
 
     //Generate the region particles on a schedule as a way of showing the border of the region.
@@ -132,29 +139,21 @@ public class Regions {
         for(int maxRedX=maxRed.getBlockX();maxRedX>minRed.getBlockX();maxRedX--) { //Red Region Particles
             //Ground
             particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,maxRed.getBlockZ())+1,maxRed.getBlockZ()));
-            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,maxRed.getBlockZ())+1,maxRed.getBlockZ()));
-            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
             particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
         }
         for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX--) { //Blue Region Particles - North and South Boundary
             //Ground
             particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
-            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
-            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,minBlue.getBlockZ())+1,minBlue.getBlockZ()));
             particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,minBlue.getBlockZ())+1,minBlue.getBlockZ()));
         }
         for(int maxRedZ=maxRed.getBlockZ();maxRedZ>minRed.getBlockZ();maxRedZ--) { //Red Region Particles
             //Ground
             particleLocations.add(new Location(world,maxRed.getBlockX(),world.getHighestBlockYAt(maxRed.getBlockX(),maxRedZ)+1,maxRedZ));
-            particleLocations.add(new Location(world,maxRed.getBlockX(),world.getHighestBlockYAt(maxRed.getBlockX(),maxRedZ)+1,maxRedZ));
-            particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
             particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
         }
         for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ--) { //Blue Region Particles - West and East Boundary
             //Ground
             particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
-            particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
-            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(minBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
             particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(minBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
         }
 
@@ -162,7 +161,7 @@ public class Regions {
         int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
                 for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
-                    world.spawnParticle(Particle.BARRIER,location.getBlockX(), location.getBlockY(), location.getBlockZ(), 10);
+                    world.spawnParticle(Particle.BARRIER,location, 3, 0, 0, 0, 1, null, true);
                 }
             }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
         return id;
@@ -229,6 +228,8 @@ public class Regions {
         regionBlue.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL);
         regionBlue.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
         regionBlue.setFlag(Flags.PVP, StateFlag.State.ALLOW);
+        regionBlue.setFlag(Flags.ENDERPEARL, StateFlag.State.ALLOW);
+        regionBlue.setFlag(Flags.ENDERPEARL.getRegionGroupFlag(), RegionGroup.ALL);
 
 
         regionRed.setFlag(Flags.EXIT, StateFlag.State.ALLOW);
@@ -236,6 +237,8 @@ public class Regions {
         regionRed.setFlag(Flags.EXIT.getRegionGroupFlag(), RegionGroup.ALL);
         regionRed.setFlag(Flags.ENTRY.getRegionGroupFlag(), RegionGroup.ALL);
         regionRed.setFlag(Flags.PVP, StateFlag.State.ALLOW);
+        regionRed.setFlag(Flags.ENDERPEARL, StateFlag.State.ALLOW);
+        regionRed.setFlag(Flags.ENDERPEARL.getRegionGroupFlag(), RegionGroup.ALL);
 
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.

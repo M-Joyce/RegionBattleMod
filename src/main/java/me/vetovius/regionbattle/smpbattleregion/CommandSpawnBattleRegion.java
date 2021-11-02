@@ -18,10 +18,10 @@ public class CommandSpawnBattleRegion implements CommandExecutor {
 
         RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
 
-        if(battleRegion == null){
+        //if(battleRegion == null){ //May need this in the future, but probably not.
             LOGGER.info("--Creating SMP Battle Region--");
-            battleRegion = new BattleRegion(RegionBattle.getPlugin(RegionBattle.class));
-        }
+            battleRegion = new BattleRegion(plugin);
+        //}
 
         return true;
     }
