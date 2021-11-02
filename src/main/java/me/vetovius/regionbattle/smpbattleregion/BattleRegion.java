@@ -38,7 +38,7 @@ public class BattleRegion {
         Point point = new Point(x,z); //create initial center point
         //This will be a bit confusing, in the context of Point, z is y.
 
-        //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
+        //get new points while the regions are not in requirements as is defined by range or if block is liquid
         while((minDistanceFromSpawn > point.distance(spawn)) || (Math.abs(point.x) > range) || (Math.abs(point.y) > range) || !smpWorld.getHighestBlockAt(x,z).getType().isSolid()){ //get new points while the regions are too close together as is defined by minDistance/maxDistance or if block is liquid
             x = r.nextInt((range*2))-range;
             z = r.nextInt((range*2))-range;
