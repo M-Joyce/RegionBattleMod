@@ -21,6 +21,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -102,6 +105,15 @@ public class BattleRegion implements Listener {
 
             }}, 20, 20*30); //repeat task every 30 seconds
 
+
+        int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+            public void run() {
+                for(Player p : smpWorld.getPlayers()){
+                    p.sendMessage(ChatColor.AQUA + "A BattleRegion exists at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +". Capture it for a reward!");
+                }
+            }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
+
+
         //Actual Battle Region Logic goes here.
         checkForPlayers = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
@@ -145,9 +157,23 @@ public class BattleRegion implements Listener {
                             for(Player p : smpWorld.getPlayers()){
                                 p.sendMessage(ChatColor.AQUA + "The battle region has been captured by " + capturingPlayer.getName() +"!");
                             }
+                            capturingPlayer.sendMessage(ChatColor.AQUA + "You have captured the zone! Check the center of the battle region for your reward!");
 
-                            //TODO reward capturing player
-                            //TODO maybe give capturing player a strength/armor buff for 1 minute?
+                            int captureParticleTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+                                public void run() {
+                                    smpWorld.spawnParticle(Particle.COMPOSTER,battleRegionCenter, 50, 1, 1, 1, 2, null, true);
+                                }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
+
+                            //Give some Loot!
+                            for(ItemStack itemStack : BattleRegionLootItem.getRandomItemStacks()){
+                                smpWorld.dropItem(battleRegionCenter,itemStack);
+                            }
+                            ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                            Bukkit.dispatchCommand(console, "eco give "+capturingPlayer.getName()+" 1000"); //give $1000 for capturing!
+
+                            capturingPlayer.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,1200,1));
+                            capturingPlayer.addPotionEffect(new PotionEffect(PotionEffectType.INCREASE_DAMAGE,1200,1));
+                            capturingPlayer.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE,1200,1));
 
                             //after 1 minute cancel all the RegionBattle Stuff.
                             Bukkit.getScheduler().scheduleSyncDelayedTask(pluginInstance, new Runnable() {
@@ -155,6 +181,7 @@ public class BattleRegion implements Listener {
                                 public void run() {
                                     Bukkit.getScheduler().cancelTask(timerTaskId);
                                     Bukkit.getScheduler().cancelTask(particleTaskId);
+                                    Bukkit.getScheduler().cancelTask(captureParticleTaskId);
                                     captureProgressBar.removeAll();
                                     if(!wither.isDead()){
                                         wither.setHealth(0);
@@ -209,9 +236,8 @@ public class BattleRegion implements Listener {
 
         LOGGER.info("battleRegionCenter Found. X: " + x + " Z: " + z);
         battleRegionCenter = new Location(smpWorld,x,smpWorld.getHighestBlockYAt(x,z)+1,z); //set battleRegionCenter
-        //TODO there should be a way to get this announcement every so often so players that join after its creation can find it.
         for(Player p : smpWorld.getPlayers()){
-            p.sendMessage(ChatColor.AQUA + "A BattleRegion has appeared at X: " + x + " Z: "+ z +". Control it for a reward!");
+            p.sendMessage(ChatColor.AQUA + "A BattleRegion has just appeared at X: " + x + " Z: "+ z +". Capture it for a reward!");
         }
     }
 

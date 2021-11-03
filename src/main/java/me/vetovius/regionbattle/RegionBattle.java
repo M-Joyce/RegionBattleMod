@@ -8,6 +8,7 @@ import me.vetovius.regionbattle.regionbattle.*;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.Chest;
@@ -71,6 +72,15 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
                 Bukkit.dispatchCommand(console, "startpersistentbattle");
             }
         }, 20*60*2L); //20 Tick (1 Second) * 60 * 2 delay before run() is called
+
+
+        //For spawning battle regions
+        int spawnBattleRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            public void run() {
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console, "spawnbattleregion");
+            }}, 2400, 20*60*65); //repeat task every 30 seconds
+
 
     }
     @Override
