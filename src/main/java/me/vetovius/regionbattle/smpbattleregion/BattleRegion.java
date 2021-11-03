@@ -1,26 +1,17 @@
 package me.vetovius.regionbattle.smpbattleregion;
 
-import com.vexsoftware.votifier.model.VotifierEvent;
 import io.papermc.paper.event.entity.EntityMoveEvent;
-import me.vetovius.regionbattle.CommandSeek;
-import me.vetovius.regionbattle.CommandSendTeamChat;
 import me.vetovius.regionbattle.RegionBattle;
-import me.vetovius.regionbattle.persistentbattle.CommandStartPersistentBattle;
-import me.vetovius.regionbattle.persistentbattle.PersistentBattle;
-import me.vetovius.regionbattle.regionbattle.Battle;
 import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.ConsoleCommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.entity.Wither;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityChangeBlockEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -272,10 +263,10 @@ public class BattleRegion implements Listener {
     }
 
     @EventHandler
-    public void onEntityChangeBlockEvent(EntityChangeBlockEvent e) {
+    public void onEntityExplodeEvent(EntityExplodeEvent e) {
         if(e.getEntity().getLocation().getWorld() == smpWorld){
-            if(e.getEntity() instanceof Wither){
-                if (e.getBlock().getLocation().distanceSquared(battleRegionCenter) < (200*200)){ //TODO this method for distance is best practice, refactor others to use it
+            if(e.getEntity().getType() == EntityType.WITHER_SKULL){
+                if (e.getLocation().distanceSquared(battleRegionCenter) < (250*250)){ //TODO this method for distance is best practice, refactor others to use it
                     e.setCancelled(true);
                 }
             }
@@ -286,8 +277,10 @@ public class BattleRegion implements Listener {
     public void onEntityMove(EntityMoveEvent e) {
         if(e.getEntity().getLocation().getWorld() == smpWorld){
             if(e.getEntity() instanceof Wither){
-                if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) > (50*50)){ //cant leave beyond this radius
-                    e.setCancelled(true);
+                if(e.getEntity().getLocation().distanceSquared(battleRegionCenter) < (250*250)){
+                    if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) > (50*50)){ //cant leave beyond this radius
+                        e.getEntity().teleport(battleRegionCenter);
+                    }
                 }
             }
         }
