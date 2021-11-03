@@ -1,5 +1,7 @@
 package me.vetovius.regionbattle.smpbattleregion;
 
+import com.vexsoftware.votifier.model.VotifierEvent;
+import io.papermc.paper.event.entity.EntityMoveEvent;
 import me.vetovius.regionbattle.CommandSeek;
 import me.vetovius.regionbattle.CommandSendTeamChat;
 import me.vetovius.regionbattle.RegionBattle;
@@ -11,7 +13,14 @@ import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Wither;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.entity.EntityChangeBlockEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -19,7 +28,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
-public class BattleRegion {
+public class BattleRegion implements Listener {
 
     private static final Logger LOGGER = Logger.getLogger( BattleRegion.class.getName() );
     private RegionBattle pluginInstance;
@@ -35,6 +44,7 @@ public class BattleRegion {
 
     private long timeToCapture = 300000; //5 minutes = 300000ms
     private long captureStartTime;
+    private long currentTimeToCapture; //used internally, to keep track of timestamp when captured.
 
     private BossBar captureProgressBar;
 
@@ -51,9 +61,11 @@ public class BattleRegion {
 
     public BattleRegion(RegionBattle pluginInstance){
         this.pluginInstance = pluginInstance;
+
+        Bukkit.getPluginManager().registerEvents(this, pluginInstance); //register events
+
         findLocationForBattleRegion(); //find a suitable location for the battle region
         particleTaskId=initBattleRegionParticles();
-        //TODO Maybe spawn a monster(s)/boss?
 
         //1 hour = 3600000 miliseconds
         startTime = System.currentTimeMillis();
@@ -66,6 +78,9 @@ public class BattleRegion {
 
     protected void startBattleRegionTimer(){
 
+        Wither wither = (Wither) smpWorld.spawnEntity(battleRegionCenter, EntityType.WITHER); //spawn a boss to defeat.
+        wither.setCustomName("Battle Region Guardian");
+
         timerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
 
@@ -74,9 +89,12 @@ public class BattleRegion {
                     Bukkit.getScheduler().cancelTask(timerTaskId);
                     Bukkit.getScheduler().cancelTask(particleTaskId);
                     Bukkit.getScheduler().cancelTask(checkForPlayers);
+                    if(!wither.isDead()){
+                        wither.setHealth(0);
+                    }
 
                     for(Player p : smpWorld.getPlayers()){
-                        p.sendMessage("The battle region has vanished!");
+                        p.sendMessage(ChatColor.AQUA+"The battle region has vanished!");
                     }
 
 
@@ -115,17 +133,17 @@ public class BattleRegion {
                         captureProgressBar.setColor(BarColor.GREEN);
                         capturingPlayer = playersInZone.get(0);
                         captureStartTime = System.currentTimeMillis();
-                        timeToCapture += System.currentTimeMillis();
+                        currentTimeToCapture = timeToCapture + System.currentTimeMillis();
                     }
                     else if(playersInZone.get(0) != capturingPlayer){ //New player is in control
                         capturingPlayer = playersInZone.get(0);
                     }else if(playersInZone.get(0) == capturingPlayer){
-                        if(System.currentTimeMillis() > captureStartTime + timeToCapture){
+                        if(System.currentTimeMillis() > currentTimeToCapture){
                             //Zone is captured
                             Bukkit.getScheduler().cancelTask(checkForPlayers);
 
                             for(Player p : smpWorld.getPlayers()){
-                                p.sendMessage("The battle region has been captured by " + capturingPlayer.getName() +"!");
+                                p.sendMessage(ChatColor.AQUA + "The battle region has been captured by " + capturingPlayer.getName() +"!");
                             }
 
                             //TODO reward capturing player
@@ -137,6 +155,10 @@ public class BattleRegion {
                                 public void run() {
                                     Bukkit.getScheduler().cancelTask(timerTaskId);
                                     Bukkit.getScheduler().cancelTask(particleTaskId);
+                                    captureProgressBar.removeAll();
+                                    if(!wither.isDead()){
+                                        wither.setHealth(0);
+                                    }
                                 }
                             }, 20*60); //1 minute delay
 
@@ -146,7 +168,7 @@ public class BattleRegion {
 
                         }
                         else{
-                            double currPerc = (100 - ((System.currentTimeMillis() - captureStartTime) * 100) / (timeToCapture - captureStartTime)) * 0.01;
+                            double currPerc = (100 - ((System.currentTimeMillis() - captureStartTime) * 100) / (currentTimeToCapture - captureStartTime)) * 0.01;
                             captureProgressBar.setProgress(currPerc);
                         }
 
@@ -189,7 +211,7 @@ public class BattleRegion {
         battleRegionCenter = new Location(smpWorld,x,smpWorld.getHighestBlockYAt(x,z)+1,z); //set battleRegionCenter
         //TODO there should be a way to get this announcement every so often so players that join after its creation can find it.
         for(Player p : smpWorld.getPlayers()){
-            p.sendMessage("A BattleRegion has appeared at X: " + x + " Z: "+ z +". Control it for a reward!");
+            p.sendMessage(ChatColor.AQUA + "A BattleRegion has appeared at X: " + x + " Z: "+ z +". Control it for a reward!");
         }
     }
 
@@ -221,6 +243,41 @@ public class BattleRegion {
             }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
         return particleTaskId;
+    }
+
+    @EventHandler
+    public void onEntityChangeBlockEvent(EntityChangeBlockEvent e) {
+        if(e.getEntity().getLocation().getWorld() == smpWorld){
+            if(e.getEntity() instanceof Wither){
+                if (e.getBlock().getLocation().distanceSquared(battleRegionCenter) < (200*200)){ //TODO this method for distance is best practice, refactor others to use it
+                    e.setCancelled(true);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    public void onEntityMove(EntityMoveEvent e) {
+        if(e.getEntity().getLocation().getWorld() == smpWorld){
+            if(e.getEntity() instanceof Wither){
+                if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) > (50*50)){ //cant leave beyond this radius
+                    e.setCancelled(true);
+                }
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onEntityDeath(EntityDeathEvent e) {
+        if(e.getEntity().getLocation().getWorld() == smpWorld){
+            if(e.getEntity() instanceof Wither){
+                if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) < (75*75)){ //cant leave beyond this radius
+                    e.getDrops().clear();
+                }
+            }
+        }
+
     }
 
 }
