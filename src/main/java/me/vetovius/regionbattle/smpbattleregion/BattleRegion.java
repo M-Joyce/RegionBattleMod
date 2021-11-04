@@ -33,6 +33,8 @@ public class BattleRegion implements Listener {
     private static final int radius = 10; //how big should the battle region square radius be in blocks?
     private static final int captureBarRadius = 100;
 
+    public static final String witherCustomName = "Battle Region Guardian";
+
     private long startTime = 0;
     private long duration = 0;
 
@@ -73,7 +75,14 @@ public class BattleRegion implements Listener {
     protected void startBattleRegionTimer(){
 
         Wither wither = (Wither) smpWorld.spawnEntity(battleRegionCenter, EntityType.WITHER); //spawn a boss to defeat.
-        wither.setCustomName("Battle Region Guardian");
+        wither.setCustomName(witherCustomName);
+
+        int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+            public void run() {
+                for(Player p : smpWorld.getPlayers()){
+                    p.sendMessage(ChatColor.AQUA + "A BattleRegion exists at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +". Capture it for a reward!");
+                }
+            }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
         timerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
@@ -83,8 +92,14 @@ public class BattleRegion implements Listener {
                     Bukkit.getScheduler().cancelTask(timerTaskId);
                     Bukkit.getScheduler().cancelTask(particleTaskId);
                     Bukkit.getScheduler().cancelTask(checkForPlayers);
-                    if(!wither.isDead()){
-                        wither.setHealth(0);
+                    Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
+
+                    for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
+                            if(e.getType() == EntityType.WITHER){
+                                if(e.getCustomName().equals(witherCustomName)){
+                                    e.setHealth(0);
+                                }
+                            }
                     }
 
                     for(Player p : smpWorld.getPlayers()){
@@ -96,13 +111,6 @@ public class BattleRegion implements Listener {
 
             }}, 20, 20*30); //repeat task every 30 seconds
 
-
-        int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
-            public void run() {
-                for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.AQUA + "A BattleRegion exists at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +". Capture it for a reward!");
-                }
-            }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
 
         //Actual Battle Region Logic goes here.
@@ -173,9 +181,15 @@ public class BattleRegion implements Listener {
                                     Bukkit.getScheduler().cancelTask(timerTaskId);
                                     Bukkit.getScheduler().cancelTask(particleTaskId);
                                     Bukkit.getScheduler().cancelTask(captureParticleTaskId);
+                                    Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
                                     captureProgressBar.removeAll();
-                                    if(!wither.isDead()){
-                                        wither.setHealth(0);
+
+                                    for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
+                                        if(e.getType() == EntityType.WITHER){
+                                            if(e.getCustomName().equals(witherCustomName)){
+                                                e.setHealth(0);
+                                            }
+                                        }
                                     }
                                 }
                             }, 20*60); //1 minute delay

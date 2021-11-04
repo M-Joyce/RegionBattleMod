@@ -5,6 +5,7 @@ import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.persistentbattle.*;
 import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
+import me.vetovius.regionbattle.smpbattleregion.BattleRegion;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
@@ -15,6 +16,8 @@ import org.bukkit.block.Chest;
 import org.bukkit.block.EnderChest;
 import org.bukkit.block.ShulkerBox;
 import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -70,6 +73,14 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console, "startregionbattle");
                 Bukkit.dispatchCommand(console, "startpersistentbattle");
+
+                for(LivingEntity e : Bukkit.getWorld("world").getLivingEntities()){
+                    if(e.getType() == EntityType.WITHER){
+                        if(e.getCustomName().equals(BattleRegion.witherCustomName)){
+                            e.setHealth(0);
+                        }
+                    }
+                }
             }
         }, 20*60*2L); //20 Tick (1 Second) * 60 * 2 delay before run() is called
 
@@ -79,7 +90,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
             public void run() {
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console, "spawnbattleregion");
-            }}, 2400, 20*60*65); //repeat task every 30 seconds
+            }}, 2400, 20*60*65); //repeat task
 
 
     }
