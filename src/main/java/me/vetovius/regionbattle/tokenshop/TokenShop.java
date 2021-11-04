@@ -1,17 +1,14 @@
 package me.vetovius.regionbattle.tokenshop;
 
 import me.vetovius.regionbattle.RegionBattle;
-import me.vetovius.regionbattle.regionbattle.Battle;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -19,6 +16,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -86,6 +84,12 @@ public class TokenShop implements Listener {
         TokenPickaxeLoreList.add(Component.text("Cost: 50 Tokens").color(TextColor.color(0xFFC900)));
         inv.setItem(4,createGuiItem(Material.NETHERITE_PICKAXE, TokenPickaxeName, TokenPickaxeLoreList));
 
+        TextComponent Fortune4BookName = Component.text("Fortune 4 Enchanted Book").color(TextColor.color(0xC29D));
+        ArrayList Fortune4BookLoreList = new ArrayList<Component>();
+        Fortune4BookLoreList.add(Component.text("A very good pickaxe.").color(TextColor.color(0xFFFF)));
+        Fortune4BookLoreList.add(Component.text("Fortune 4").color(TextColor.color(0xFFFF)));
+        Fortune4BookLoreList.add(Component.text("Cost: 20 Tokens").color(TextColor.color(0xFFC900)));
+        inv.setItem(5,createGuiItem(Material.ENCHANTED_BOOK, Fortune4BookName, Fortune4BookLoreList));
 
     }
 
@@ -148,6 +152,15 @@ public class TokenShop implements Listener {
                 TokenPickMeta.addEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, true);
                 TokenPickAxe.setItemMeta(TokenPickMeta);
                 purchaseItem(p, TokenPickAxe,50);
+                break;
+            case 5:  //Fortune 4 Book
+                ItemStack Fortune4Book = new ItemStack(Material.ENCHANTED_BOOK);
+                EnchantmentStorageMeta Fortune4BookMeta = (EnchantmentStorageMeta) Fortune4Book.getItemMeta();
+                TextComponent Fortune4Bookname = Component.text("Enchanted Book: Fortune 4").color(TextColor.color(0xC29D));
+                Fortune4BookMeta.displayName(Fortune4Bookname);
+                Fortune4BookMeta.addStoredEnchant(Enchantment.LOOT_BONUS_BLOCKS, 4, true);
+                Fortune4Book.setItemMeta(Fortune4BookMeta);
+                purchaseItem(p, Fortune4Book,20);
                 break;
         }
 
