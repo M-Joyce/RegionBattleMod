@@ -137,9 +137,22 @@ public class BattleRegion implements Listener {
                     capturingPlayer = null;
                 }
                 else if(playersInZone.size() == 1){
+                    Boolean witherAlive = false;
 
+                    for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(100)){
+                        if(e.getType() == EntityType.WITHER){
+                            if(e.getCustomName().equals(witherCustomName)){
+                                witherAlive = true;
+                            }
+                        }
+                    }
 
-                    if(capturingPlayer == null){
+                    if(witherAlive){
+                        captureProgressBar.setTitle("You must slay the Guardian!");
+                        capturingPlayer = null;
+                        captureProgressBar.setColor(BarColor.PURPLE);
+                    }
+                    else if(capturingPlayer == null){
                         captureProgressBar.setTitle(playersInZone.get(0).getName() + " is capturing the Battle Region!");
                         captureProgressBar.setColor(BarColor.GREEN);
                         capturingPlayer = playersInZone.get(0);
