@@ -192,7 +192,7 @@ public class BattleRegion implements Listener {
                                         }
                                     }
                                 }
-                            }, 20*60); //1 minute delay
+                            }, 20*120); //1 minute delay
 
 
                             captureProgressBar.setProgress(0);
