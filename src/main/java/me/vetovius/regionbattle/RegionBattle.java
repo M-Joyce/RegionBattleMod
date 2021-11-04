@@ -71,6 +71,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
                 Bukkit.dispatchCommand(console, "startregionbattle");
                 Bukkit.dispatchCommand(console, "startpersistentbattle");
 
+                //Making sure no battle region withers exist
                 for(LivingEntity e : Bukkit.getWorld("world").getLivingEntities()){
                     if(e.getType() == EntityType.WITHER){
                         if(e.getCustomName().equals(BattleRegion.witherCustomName)){
@@ -87,7 +88,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
             public void run() {
                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console, "spawnbattleregion");
-            }}, 2400, 20*60*65); //repeat task
+            }}, 3000, 20*60*65); //repeat task
 
 
     }
