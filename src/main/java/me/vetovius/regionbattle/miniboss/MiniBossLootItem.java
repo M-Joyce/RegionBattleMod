@@ -9,13 +9,13 @@ import java.util.Random;
 
 public enum MiniBossLootItem{
 
-    Netherite_Ingot(Material.NETHERITE_INGOT,50,7),
-    Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,50,5),
-    Diamond(Material.DIAMOND,65,25),
-    Token(Material.AMETHYST_SHARD,50,7),
-    Netherite_Axe(Material.NETHERITE_AXE,10,1),
-    Netherite_Shovel(Material.NETHERITE_SHOVEL,10,1),
-    Netherite_Pickaxe(Material.NETHERITE_PICKAXE,10,1);
+    Netherite_Ingot(Material.NETHERITE_INGOT,50,2),
+    Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,50,2),
+    Diamond(Material.DIAMOND,65,7),
+    Token(Material.AMETHYST_SHARD,50,2),
+    Diamond_Axe(Material.NETHERITE_AXE,20,1),
+    Diamond_Shovel(Material.NETHERITE_SHOVEL,20,1),
+    Diamond_Pickaxe(Material.NETHERITE_PICKAXE,20,1);
 
     private Material material;
     private double chance;

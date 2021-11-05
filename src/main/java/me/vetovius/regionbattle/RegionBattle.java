@@ -42,6 +42,7 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
         getLogger().info("onEnable is called!");
 
 
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         Bukkit.getPluginManager().registerEvents(this, this); //register events
 
         this.getCommand("startregionbattle").setExecutor(new CommandStartRegionBattle()); //register command
@@ -73,7 +74,6 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
             @Override
             public void run() {
                 //Start first battle.
-                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console, "startregionbattle");
                 Bukkit.dispatchCommand(console, "startpersistentbattle");
 
@@ -95,9 +95,14 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
         //For spawning battle regions
         int spawnBattleRegionTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
             public void run() {
-                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                 Bukkit.dispatchCommand(console, "spawnbattleregion");
             }}, 3000, 20*60*65); //repeat task
+
+        //For spawning miniBoss
+        int spawnMiniBossTask = Bukkit.getScheduler().scheduleSyncRepeatingTask(this, new Runnable() {
+            public void run() {
+                Bukkit.dispatchCommand(console, "spawnminiboss");
+            }}, 2000, 20*60*45); //repeat task
 
 
     }

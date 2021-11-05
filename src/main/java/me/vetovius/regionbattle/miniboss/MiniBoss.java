@@ -92,7 +92,7 @@ public class MiniBoss implements Listener {
         int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.LIGHT_PURPLE + "A "+ miniBossName + " has appeared at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() +". Slay it for a reward!");
+                    p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has appeared at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() +". Slay it for a reward!");
                 }
             }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
@@ -115,7 +115,7 @@ public class MiniBoss implements Listener {
                     }
 
                     for(Player p : smpWorld.getPlayers()){
-                        p.sendMessage(ChatColor.LIGHT_PURPLE + "The " + miniBossName +" has vanished!");
+                        p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has vanished!");
                     }
 
                 }
@@ -165,7 +165,7 @@ public class MiniBoss implements Listener {
         LOGGER.info("miniBossZoneCenter Found. X: " + x + " Z: " + z);
         miniBossZoneCenter = new Location(smpWorld,x,smpWorld.getHighestBlockYAt(x,z)+1,z); //set miniBossZoneCenter
         for(Player p : smpWorld.getPlayers()){
-            p.sendMessage(ChatColor.LIGHT_PURPLE + "A " + miniBossName + " has just appeared at X: " + x + " Z: "+ z +". Slay it for a reward!");
+            p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has just appeared at X: " + x + " Z: "+ z +". Slay it for a reward!");
         }
     }
 
@@ -186,17 +186,14 @@ public class MiniBoss implements Listener {
     public void onEntityDeath(EntityDeathEvent e) {
 
         if(Objects.equals(e.getEntity().getCustomName(), miniBossName)){
-            if(e.getEntity().getKiller() == null){
+            if(e.getEntity().getKiller() != null){
                 //announce
                 for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.LIGHT_PURPLE + "The " + miniBossName +" has been slain by " + e.getEntity().getKiller().getName() + "!");
+                    p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"]" + " has been slain by " + e.getEntity().getKiller().getName() + "!");
                 }
 
                 //give loot
-                for(ItemStack is : MiniBossLootItem.getRandomItemStacks()){
-                    e.getDrops().add(is);
-                }
-
+                e.getDrops().addAll(MiniBossLootItem.getRandomItemStacks());
             }
             else{
                 e.getDrops().clear();

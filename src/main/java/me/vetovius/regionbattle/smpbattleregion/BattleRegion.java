@@ -81,7 +81,7 @@ public class BattleRegion implements Listener {
         int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.AQUA + "A BattleRegion exists at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +". Capture it for a reward!");
+                    p.sendMessage(ChatColor.AQUA + "A [" + ChatColor.BLUE + "Battle Region" + ChatColor.AQUA + "] exists at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +". Capture it for a reward!");
                 }
             }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
@@ -105,7 +105,7 @@ public class BattleRegion implements Listener {
                     }
 
                     for(Player p : smpWorld.getPlayers()){
-                        p.sendMessage(ChatColor.AQUA+"The battle region has vanished!");
+                        p.sendMessage(ChatColor.AQUA+"The [" + ChatColor.BLUE + "Battle Region" + ChatColor.AQUA + "] has vanished!");
                     }
 
 
@@ -169,7 +169,7 @@ public class BattleRegion implements Listener {
                             Bukkit.getScheduler().cancelTask(checkForPlayers);
 
                             for(Player p : smpWorld.getPlayers()){
-                                p.sendMessage(ChatColor.AQUA + "The battle region has been captured by " + capturingPlayer.getName() +"!");
+                                p.sendMessage(ChatColor.AQUA + "The [" + ChatColor.BLUE + "Battle Region" + ChatColor.AQUA + "] has been captured by " + capturingPlayer.getName() +"!");
                             }
                             capturingPlayer.sendMessage(ChatColor.AQUA + "You have captured the zone! Check the center of the battle region for your reward!");
 
@@ -257,7 +257,7 @@ public class BattleRegion implements Listener {
         LOGGER.info("battleRegionCenter Found. X: " + x + " Z: " + z);
         battleRegionCenter = new Location(smpWorld,x,smpWorld.getHighestBlockYAt(x,z)+1,z); //set battleRegionCenter
         for(Player p : smpWorld.getPlayers()){
-            p.sendMessage(ChatColor.AQUA + "A BattleRegion has just appeared at X: " + x + " Z: "+ z +". Capture it for a reward!");
+            p.sendMessage(ChatColor.AQUA + "A [" + ChatColor.BLUE + "Battle Region" + ChatColor.AQUA + "] has just appeared at X: " + x + " Z: "+ z +". Capture it for a reward!");
         }
     }
 
