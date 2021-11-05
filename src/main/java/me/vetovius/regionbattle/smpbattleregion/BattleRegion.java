@@ -94,6 +94,7 @@ public class BattleRegion implements Listener {
                     Bukkit.getScheduler().cancelTask(particleTaskId);
                     Bukkit.getScheduler().cancelTask(checkForPlayers);
                     Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
+                    captureProgressBar.removeAll();
 
                     for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
                             if(e.getType() == EntityType.WITHER){
