@@ -13,6 +13,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -48,9 +49,9 @@ public class MiniBoss implements Listener {
 
     private ArrayList<Player> miniBossHealthBarPlayersList = new ArrayList<Player>();
 
-    private int miniBossHealth = 300;
-    private int miniBossDamage = 10;
-    private int miniBossArmor = 20;
+    private int miniBossHealth = 250;
+    private int miniBossDamage = 8;
+    private int miniBossArmor = 15;
 
 
     public MiniBoss(RegionBattle pluginInstance){
@@ -80,6 +81,7 @@ public class MiniBoss implements Listener {
         miniBossDamageInstance.setBaseValue(miniBossDamage);
         AttributeInstance miniBossArmorInstance = miniBoss.getAttribute(Attribute.GENERIC_ARMOR);
         miniBossArmorInstance.setBaseValue(miniBossArmor);
+
 
         PersistentDataContainer miniBossPDC = miniBoss.getPersistentDataContainer();
         if(!miniBossPDC.has(new NamespacedKey(pluginInstance,"maxAllowedAge"), PersistentDataType.LONG)) {
@@ -217,6 +219,22 @@ public class MiniBoss implements Listener {
                 miniBossHealthBar.setProgress(livingEntity.getHealth() / miniBossHealth);
             }
         }
+
+    }
+
+    @EventHandler
+    public void onShootBow(EntityShootBowEvent e) {
+
+        if(e.getEntity().getWorld() == smpWorld){
+            if(Objects.equals(e.getEntity().getCustomName(), miniBossName)) {
+                AbstractArrow projectile = (AbstractArrow)e.getProjectile();
+                projectile.setDamage(miniBossDamage);
+                projectile.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
+                projectile.setKnockbackStrength(1);
+            }
+        }
+
+
 
     }
 
