@@ -90,7 +90,7 @@ public class MiniBoss implements Listener {
         int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has appeared at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() +". Slay it for a reward!");
+                    p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] is lurking at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() +". Slay it for a reward!");
                 }
             }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
