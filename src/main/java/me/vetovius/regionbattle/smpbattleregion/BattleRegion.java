@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.logging.Logger;
 
@@ -96,7 +97,7 @@ public class BattleRegion implements Listener {
 
                     for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
                             if(e.getType() == EntityType.WITHER){
-                                if(e.getCustomName().equals(witherCustomName)){
+                                if(Objects.equals(e.getCustomName(), witherCustomName)){
                                     e.setHealth(0);
                                 }
                             }
@@ -141,7 +142,7 @@ public class BattleRegion implements Listener {
 
                     for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(100)){
                         if(e.getType() == EntityType.WITHER){
-                            if(e.getCustomName().equals(witherCustomName)){
+                            if(Objects.equals(e.getCustomName(), witherCustomName)){
                                 witherAlive = true;
                             }
                         }
@@ -199,7 +200,7 @@ public class BattleRegion implements Listener {
 
                                     for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
                                         if(e.getType() == EntityType.WITHER){
-                                            if(e.getCustomName().equals(witherCustomName)){
+                                            if(Objects.equals(e.getCustomName(), witherCustomName)){
                                                 e.setHealth(0);
                                             }
                                         }

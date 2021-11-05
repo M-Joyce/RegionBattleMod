@@ -67,3 +67,7 @@ commands:
     description: Spawn a new battle region zone in SMP.
     usage: /spawnbattleregion
     permission: RegionBattle.spawnbattleregion
+  spawnminiboss:
+    description: Spawn a new miniboss at a random location.
+    usage: /spawnminiboss
+    permission: RegionBattle.spawnminiboss

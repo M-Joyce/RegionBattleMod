@@ -2,6 +2,8 @@ package me.vetovius.regionbattle;
 
 import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
+import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
+import me.vetovius.regionbattle.miniboss.MiniBoss;
 import me.vetovius.regionbattle.persistentbattle.*;
 import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
@@ -27,6 +29,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.okx.rankup.events.RankupRegisterEvent;
 
+import java.util.Objects;
 import java.util.logging.Logger;
 
 
@@ -62,6 +65,9 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
         //SMP Battle Region Commands
         this.getCommand("spawnbattleregion").setExecutor(new CommandSpawnBattleRegion()); //register command
 
+        //MiniBoss Commands
+        this.getCommand("spawnminiboss").setExecutor(new CommandSpawnMiniBoss()); //register command
+
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
@@ -71,10 +77,13 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
                 Bukkit.dispatchCommand(console, "startregionbattle");
                 Bukkit.dispatchCommand(console, "startpersistentbattle");
 
-                //Making sure no battle region withers exist
+                //Making sure no battle region withers or minibosses exist
                 for(LivingEntity e : Bukkit.getWorld("world").getLivingEntities()){
                     if(e.getType() == EntityType.WITHER){
-                        if(e.getCustomName().equals(BattleRegion.witherCustomName)){
+                        if(Objects.equals(e.getCustomName(), BattleRegion.witherCustomName)){
+                            e.setHealth(0);
+                        }
+                        else if(Objects.equals(e.getCustomName(), MiniBoss.miniBossName)){
                             e.setHealth(0);
                         }
                     }
