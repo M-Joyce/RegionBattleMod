@@ -13,9 +13,9 @@ public enum MiniBossLootItem{
     Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,50,2),
     Diamond(Material.DIAMOND,65,7),
     Token(Material.AMETHYST_SHARD,50,2),
-    Diamond_Axe(Material.NETHERITE_AXE,20,1),
-    Diamond_Shovel(Material.NETHERITE_SHOVEL,20,1),
-    Diamond_Pickaxe(Material.NETHERITE_PICKAXE,20,1);
+    Diamond_Axe(Material.NETHERITE_AXE,7,1),
+    Diamond_Shovel(Material.NETHERITE_SHOVEL,7,1),
+    Diamond_Pickaxe(Material.NETHERITE_PICKAXE,7,1);
 
     private Material material;
     private double chance;
