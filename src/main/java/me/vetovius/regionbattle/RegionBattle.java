@@ -1,13 +1,12 @@
 package me.vetovius.regionbattle;
 
+import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
-import me.vetovius.regionbattle.miniboss.MiniBoss;
 import me.vetovius.regionbattle.persistentbattle.*;
 import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
-import me.vetovius.regionbattle.smpbattleregion.BattleRegion;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
@@ -28,14 +27,12 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import sh.okx.rankup.events.RankupRegisterEvent;
-
-import java.util.Objects;
 import java.util.logging.Logger;
 
 
 public class RegionBattle extends JavaPlugin implements Listener {
 
-private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getName() );
+    private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getName() );
 
     @Override
     public void onEnable() {
@@ -76,18 +73,6 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
                 //Start first battle.
                 Bukkit.dispatchCommand(console, "startregionbattle");
                 Bukkit.dispatchCommand(console, "startpersistentbattle");
-
-                //Making sure no battle region withers or minibosses exist
-                for(LivingEntity e : Bukkit.getWorld("world").getLivingEntities()){
-                    if(e.getType() == EntityType.WITHER){
-                        if(Objects.equals(e.getCustomName(), BattleRegion.witherCustomName)){
-                            e.setHealth(0);
-                        }
-                        else if(Objects.equals(e.getCustomName(), MiniBoss.miniBossName)){
-                            e.setHealth(0);
-                        }
-                    }
-                }
             }
         }, 20*60*2L); //20 Tick (1 Second) * 60 * 2 delay before run() is called
 
@@ -106,9 +91,23 @@ private static final Logger LOGGER = Logger.getLogger( RegionBattle.class.getNam
 
 
     }
+
     @Override
     public void onDisable() {
         getLogger().info("onDisable is called!");
+    }
+
+    @EventHandler
+    public void onEntityAddedToWorld(EntityAddToWorldEvent event) {
+        if(event.getEntity().getWorld() == Bukkit.getWorld("world")){
+            if(event.getEntity().getType() == EntityType.WITHER || event.getEntity().getType() == EntityType.WITHER_SKELETON){
+                if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(this,"maxAllowedAge"), PersistentDataType.LONG)){
+                    if (event.getEntity().getPersistentDataContainer().get(new NamespacedKey(this,"maxAllowedAge"), PersistentDataType.LONG) < System.currentTimeMillis()) {
+                        event.getEntity().remove();
+                    }
+                }
+            }
+        }
     }
 
     @EventHandler

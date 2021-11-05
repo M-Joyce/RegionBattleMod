@@ -12,9 +12,9 @@ import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class MiniBoss implements Listener {
 
     public static final String miniBossName = "Demonic Fiend";
 
-    private long duration = 0;
+    private long duration = 0; //how long miniboss lasts
     private long startTime = 0;
 
 
@@ -71,13 +71,6 @@ public class MiniBoss implements Listener {
 
     protected void startMiniBossTimer(){
 
-        //TODO here, spawn miniboss, figure out name, in RegionBattle make sure to kill these on server restart in same loop as Battle Guardian.
-
-        //TODO Make sure boss drops items
-        //TODO make drops Less OP
-        //TODO test boss combat, make sure its a decent challenge.
-        //TODO make these miniBosses spawn automatically
-
         LivingEntity miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.WITHER_SKELETON); //spawn a boss to defeat.
         miniBoss.setCustomName(miniBossName);
         AttributeInstance miniBossMaxHealthInstance = miniBoss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
@@ -87,6 +80,11 @@ public class MiniBoss implements Listener {
         miniBossDamageInstance.setBaseValue(miniBossDamage);
         AttributeInstance miniBossArmorInstance = miniBoss.getAttribute(Attribute.GENERIC_ARMOR);
         miniBossArmorInstance.setBaseValue(miniBossArmor);
+
+        PersistentDataContainer miniBossPDC = miniBoss.getPersistentDataContainer();
+        if(!miniBossPDC.has(new NamespacedKey(pluginInstance,"maxAllowedAge"), PersistentDataType.LONG)) {
+            miniBossPDC.set(new NamespacedKey(pluginInstance, "maxAllowedAge"), PersistentDataType.LONG, duration);
+        }
 
 
         int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
@@ -107,9 +105,9 @@ public class MiniBoss implements Listener {
                     Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
 
                     for(LivingEntity e : miniBossZoneCenter.getNearbyLivingEntities(200)){
-                        if(e.getType() == EntityType.WITHER){
+                        if(e.getType() == EntityType.WITHER_SKELETON){
                             if(Objects.equals(e.getCustomName(), miniBossName)){
-                                e.setHealth(0);
+                                e.remove();
                             }
                         }
                     }
@@ -184,30 +182,29 @@ public class MiniBoss implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
+        if(e.getEntity().getWorld() == smpWorld){
+            if(Objects.equals(e.getEntity().getCustomName(), miniBossName)){
+                if(e.getEntity().getKiller() != null){
+                    //announce
+                    for(Player p : smpWorld.getPlayers()){
+                        p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"]" + " has been slain by " + e.getEntity().getKiller().getName() + "!");
+                    }
 
-        if(Objects.equals(e.getEntity().getCustomName(), miniBossName)){
-            if(e.getEntity().getKiller() != null){
-                //announce
-                for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"]" + " has been slain by " + e.getEntity().getKiller().getName() + "!");
+                    //give loot
+                    e.getDrops().addAll(MiniBossLootItem.getRandomItemStacks());
+                }
+                else{
+                    e.getDrops().clear();
                 }
 
-                //give loot
-                e.getDrops().addAll(MiniBossLootItem.getRandomItemStacks());
-            }
-            else{
-                e.getDrops().clear();
-            }
+                //End tasks
+                miniBossHealthBar.removeAll();
+                Bukkit.getScheduler().cancelTask(timerTaskId);
+                Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
+                Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
 
-            //End tasks
-            miniBossHealthBar.removeAll();
-            Bukkit.getScheduler().cancelTask(timerTaskId);
-            Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
-            Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
-
+            }
         }
-
-
 
     }
 

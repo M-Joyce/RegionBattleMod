@@ -13,6 +13,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -37,7 +39,7 @@ public class BattleRegion implements Listener {
     public static final String witherCustomName = "Battle Region Guardian";
 
     private long startTime = 0;
-    private long duration = 0;
+    private long duration = 0; //how long battle region lasts
 
     private long timeToCapture = 300000; //5 minutes = 300000ms
     private long captureStartTime;
@@ -78,6 +80,12 @@ public class BattleRegion implements Listener {
         Wither wither = (Wither) smpWorld.spawnEntity(battleRegionCenter, EntityType.WITHER); //spawn a boss to defeat.
         wither.setCustomName(witherCustomName);
 
+        PersistentDataContainer witherPDC = wither.getPersistentDataContainer();
+        if(!witherPDC.has(new NamespacedKey(pluginInstance,"maxAllowedAge"), PersistentDataType.LONG)) {
+            witherPDC.set(new NamespacedKey(pluginInstance, "maxAllowedAge"), PersistentDataType.LONG, duration);
+        }
+
+
         int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
@@ -99,7 +107,7 @@ public class BattleRegion implements Listener {
                     for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
                             if(e.getType() == EntityType.WITHER){
                                 if(Objects.equals(e.getCustomName(), witherCustomName)){
-                                    e.setHealth(0);
+                                    e.remove();
                                 }
                             }
                     }
@@ -202,7 +210,7 @@ public class BattleRegion implements Listener {
                                     for(LivingEntity e : battleRegionCenter.getNearbyLivingEntities(200)){
                                         if(e.getType() == EntityType.WITHER){
                                             if(Objects.equals(e.getCustomName(), witherCustomName)){
-                                                e.setHealth(0);
+                                                e.remove();
                                             }
                                         }
                                     }
@@ -306,9 +314,11 @@ public class BattleRegion implements Listener {
     public void onEntityMove(EntityMoveEvent e) {
         if(e.getEntity().getLocation().getWorld() == smpWorld){
             if(e.getEntity() instanceof Wither){
-                if(e.getEntity().getLocation().distanceSquared(battleRegionCenter) < (250*250)){
-                    if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) > (50*50)){ //cant leave beyond this radius
-                        e.getEntity().teleport(battleRegionCenter);
+                if(Objects.equals(e.getEntity().getCustomName(), witherCustomName)){
+                    if(e.getEntity().getLocation().distanceSquared(battleRegionCenter) < (250*250)){
+                        if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) > (50*50)){ //cant leave beyond this radius
+                            e.getEntity().teleport(battleRegionCenter);
+                        }
                     }
                 }
             }
@@ -320,8 +330,10 @@ public class BattleRegion implements Listener {
     public void onEntityDeath(EntityDeathEvent e) {
         if(e.getEntity().getLocation().getWorld() == smpWorld){
             if(e.getEntity() instanceof Wither){
-                if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) < (75*75)){ //cant leave beyond this radius
-                    e.getDrops().clear();
+                if(Objects.equals(e.getEntity().getCustomName(), witherCustomName)) {
+                    if (e.getEntity().getLocation().distanceSquared(battleRegionCenter) < (75 * 75)) { //cant leave beyond this radius
+                        e.getDrops().clear();
+                    }
                 }
             }
         }
