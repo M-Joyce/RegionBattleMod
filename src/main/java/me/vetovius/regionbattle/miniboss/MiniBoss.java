@@ -32,7 +32,7 @@ public class MiniBoss implements Listener {
     private static final int minDistanceFromSpawn = 550; //can't be closer than this to spawn
     private static final int miniBossHealthBarRadius = 100;
 
-    public static final String miniBossName = "Demonic Fiend";
+    public static final String miniBossName = "Enraged Marauder";
 
     private long duration = 0; //how long miniboss lasts
     private long startTime = 0;
@@ -71,7 +71,7 @@ public class MiniBoss implements Listener {
 
     protected void startMiniBossTimer(){
 
-        LivingEntity miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.WITHER_SKELETON); //spawn a boss to defeat.
+        LivingEntity miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.PILLAGER); //spawn a boss to defeat.
         miniBoss.setCustomName(miniBossName);
         AttributeInstance miniBossMaxHealthInstance = miniBoss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         miniBossMaxHealthInstance.setBaseValue(miniBossHealth);
@@ -87,7 +87,7 @@ public class MiniBoss implements Listener {
         }
 
 
-        int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
+        broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
                     p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] is lurking at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() +". Slay it for a reward!");
@@ -105,7 +105,7 @@ public class MiniBoss implements Listener {
                     Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
 
                     for(LivingEntity e : miniBossZoneCenter.getNearbyLivingEntities(200)){
-                        if(e.getType() == EntityType.WITHER_SKELETON){
+                        if(e.getType() == EntityType.PILLAGER){
                             if(Objects.equals(e.getCustomName(), miniBossName)){
                                 e.remove();
                             }
@@ -172,8 +172,10 @@ public class MiniBoss implements Listener {
     public void onEntityMove(EntityMoveEvent e) {
         if(e.getEntity().getLocation().getWorld() == smpWorld){
             if(Objects.equals(e.getEntity().getCustomName(), miniBossName)){
-                if (e.getEntity().getLocation().distanceSquared(miniBossZoneCenter) > (50*50)){ //cant leave beyond this radius
-                    e.getEntity().teleport(miniBossZoneCenter);
+                if(e.getEntity().getLocation().distanceSquared(miniBossZoneCenter) < (250*250)){
+                    if (e.getEntity().getLocation().distanceSquared(miniBossZoneCenter) > (50*50)){ //cant leave beyond this radius
+                        e.getEntity().teleport(miniBossZoneCenter);
+                    }
                 }
             }
         }

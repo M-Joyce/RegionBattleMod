@@ -100,7 +100,7 @@ public class RegionBattle extends JavaPlugin implements Listener {
     @EventHandler
     public void onEntityAddedToWorld(EntityAddToWorldEvent event) {
         if(event.getEntity().getWorld() == Bukkit.getWorld("world")){
-            if(event.getEntity().getType() == EntityType.WITHER || event.getEntity().getType() == EntityType.WITHER_SKELETON){
+            if(event.getEntity().getType() == EntityType.WITHER || event.getEntity().getType() == EntityType.PILLAGER){
                 if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(this,"maxAllowedAge"), PersistentDataType.LONG)){
                     if (event.getEntity().getPersistentDataContainer().get(new NamespacedKey(this,"maxAllowedAge"), PersistentDataType.LONG) < System.currentTimeMillis()) {
                         event.getEntity().remove();
