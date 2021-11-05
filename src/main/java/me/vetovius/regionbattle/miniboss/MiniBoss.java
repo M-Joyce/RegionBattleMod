@@ -49,7 +49,7 @@ public class MiniBoss implements Listener {
     private ArrayList<Player> miniBossHealthBarPlayersList = new ArrayList<Player>();
 
     private int miniBossHealth = 300;
-    private int miniBossDamage = 7;
+    private int miniBossDamage = 10;
     private int miniBossArmor = 20;
 
 
