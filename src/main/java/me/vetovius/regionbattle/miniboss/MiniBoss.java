@@ -99,6 +99,24 @@ public class MiniBoss implements Listener {
         timerTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
 
+                for(LivingEntity e : miniBossZoneCenter.getNearbyLivingEntities(200)){
+                    if(e.getType() == EntityType.PILLAGER){
+                        if(Objects.equals(e.getCustomName(), miniBossName)){
+                            if(e.isDead()){
+                                LOGGER.info("Miniboss is dead for some reason, cancelling the miniboss instance. " + miniBossZoneCenter.toString());
+                                miniBossHealthBar.removeAll();
+                                Bukkit.getScheduler().cancelTask(timerTaskId);
+                                Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
+                                Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
+                                e.remove();
+                                for(Player p : smpWorld.getPlayers()){
+                                    p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has vanished!");
+                                }
+                            }
+                        }
+                    }
+                }
+
                 if (System.currentTimeMillis() >= duration){ //Time is up, end the battle region.
 
                     miniBossHealthBar.removeAll();
@@ -188,25 +206,27 @@ public class MiniBoss implements Listener {
     public void onEntityDeath(EntityDeathEvent e) {
         if(e.getEntity().getWorld() == smpWorld){
             if(Objects.equals(e.getEntity().getCustomName(), miniBossName)){
-                if(e.getEntity().getKiller() != null){
-                    //announce
-                    for(Player p : smpWorld.getPlayers()){
-                        p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"]" + " has been slain by " + e.getEntity().getKiller().getName() + "!");
+                if(e.getEntity().getLocation().distanceSquared(miniBossZoneCenter) < (100*100)){
+                    if(e.getEntity().getKiller() != null){
+                        //announce
+                        for(Player p : smpWorld.getPlayers()){
+                            p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"]" + " has been slain by " + e.getEntity().getKiller().getName() + "!");
+                        }
+
+                        //give loot
+                        e.getDrops().addAll(MiniBossLootItem.getRandomItemStacks());
+                    }
+                    else{
+                        e.getDrops().clear();
                     }
 
-                    //give loot
-                    e.getDrops().addAll(MiniBossLootItem.getRandomItemStacks());
-                }
-                else{
-                    e.getDrops().clear();
-                }
+                    //End tasks only if the location was within the right zone, else this could be other minibosses
+                    miniBossHealthBar.removeAll();
+                    Bukkit.getScheduler().cancelTask(timerTaskId);
+                    Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
+                    Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
 
-                //End tasks
-                miniBossHealthBar.removeAll();
-                Bukkit.getScheduler().cancelTask(timerTaskId);
-                Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
-                Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
-
+                }
             }
         }
 
