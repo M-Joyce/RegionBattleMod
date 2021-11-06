@@ -29,7 +29,7 @@ public class MiniBoss implements Listener {
     private RegionBattle pluginInstance;
 
     public static World smpWorld = Bukkit.getWorld("world");
-    private static final int range = 4000; //how far can the zone be from spawn + or -
+    private static final int range = 5500; //how far can the zone be from spawn + or -
     private static final int minDistanceFromSpawn = 550; //can't be closer than this to spawn
     private static final int miniBossHealthBarRadius = 100;
 
