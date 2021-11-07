@@ -254,6 +254,7 @@ public class MiniBoss implements Listener {
                 projectile.setDamage(miniBossDamage);
                 projectile.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                 projectile.setKnockbackStrength(1);
+                projectile.setPierceLevel(1); //Shields wont help too much now
             }
         }
     }
