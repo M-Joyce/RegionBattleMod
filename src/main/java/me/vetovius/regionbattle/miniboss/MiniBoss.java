@@ -73,6 +73,7 @@ public class MiniBoss implements Listener {
     protected void startMiniBossTimer(){
 
         LivingEntity miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.PILLAGER); //spawn a boss to defeat.
+        LOGGER.info("miniBoss spawned at X: " + miniBoss.getLocation().getBlockX() + " Z: " + miniBoss.getLocation().getBlockZ());
         miniBoss.setCustomName(miniBossName);
         AttributeInstance miniBossMaxHealthInstance = miniBoss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
         miniBossMaxHealthInstance.setBaseValue(miniBossHealth);
@@ -81,6 +82,8 @@ public class MiniBoss implements Listener {
         miniBossDamageInstance.setBaseValue(miniBossDamage);
         AttributeInstance miniBossArmorInstance = miniBoss.getAttribute(Attribute.GENERIC_ARMOR);
         miniBossArmorInstance.setBaseValue(miniBossArmor);
+        miniBoss.setRemoveWhenFarAway(false);
+        miniBoss.setPersistent(true);
 
 
         PersistentDataContainer miniBossPDC = miniBoss.getPersistentDataContainer();
@@ -245,17 +248,14 @@ public class MiniBoss implements Listener {
     @EventHandler
     public void onShootBow(EntityShootBowEvent e) {
 
-        if(e.getEntity().getWorld() == smpWorld){
-            if(Objects.equals(e.getEntity().getCustomName(), miniBossName)) {
-                AbstractArrow projectile = (AbstractArrow)e.getProjectile();
+        if(e.getEntity().getWorld() == smpWorld) {
+            if (Objects.equals(e.getEntity().getCustomName(), miniBossName)) {
+                AbstractArrow projectile = (AbstractArrow) e.getProjectile();
                 projectile.setDamage(miniBossDamage);
                 projectile.setPickupStatus(AbstractArrow.PickupStatus.DISALLOWED);
                 projectile.setKnockbackStrength(1);
             }
         }
-
-
-
     }
 
 }

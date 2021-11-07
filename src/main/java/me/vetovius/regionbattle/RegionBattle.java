@@ -103,6 +103,7 @@ public class RegionBattle extends JavaPlugin implements Listener {
             if(event.getEntity().getType() == EntityType.WITHER || event.getEntity().getType() == EntityType.PILLAGER){
                 if(event.getEntity().getPersistentDataContainer().has(new NamespacedKey(this,"maxAllowedAge"), PersistentDataType.LONG)){
                     if (event.getEntity().getPersistentDataContainer().get(new NamespacedKey(this,"maxAllowedAge"), PersistentDataType.LONG) < System.currentTimeMillis()) {
+                        LOGGER.info(event.getEntity().getCustomName() + " removed from " + event.getEntity().getLocation() + " by EntityAddToWorldEvent duration check.");
                         event.getEntity().remove();
                     }
                 }
