@@ -86,7 +86,6 @@ public class TokenShop implements Listener {
 
         TextComponent Fortune4BookName = Component.text("Fortune 4 Enchanted Book").color(TextColor.color(0xC29D));
         ArrayList Fortune4BookLoreList = new ArrayList<Component>();
-        Fortune4BookLoreList.add(Component.text("A very good pickaxe.").color(TextColor.color(0xFFFF)));
         Fortune4BookLoreList.add(Component.text("Fortune 4").color(TextColor.color(0xFFFF)));
         Fortune4BookLoreList.add(Component.text("Cost: 20 Tokens").color(TextColor.color(0xFFC900)));
         inv.setItem(5,createGuiItem(Material.ENCHANTED_BOOK, Fortune4BookName, Fortune4BookLoreList));
