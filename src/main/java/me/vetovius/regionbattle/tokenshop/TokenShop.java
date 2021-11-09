@@ -84,11 +84,11 @@ public class TokenShop implements Listener {
         TokenPickaxeLoreList.add(Component.text("Cost: 50 Tokens").color(TextColor.color(0xFFC900)));
         inv.setItem(4,createGuiItem(Material.NETHERITE_PICKAXE, TokenPickaxeName, TokenPickaxeLoreList));
 
-        TextComponent Fortune4BookName = Component.text("Fortune 4 Enchanted Book").color(TextColor.color(0xC29D));
-        ArrayList Fortune4BookLoreList = new ArrayList<Component>();
-        Fortune4BookLoreList.add(Component.text("Fortune 4").color(TextColor.color(0xFFFF)));
-        Fortune4BookLoreList.add(Component.text("Cost: 20 Tokens").color(TextColor.color(0xFFC900)));
-        inv.setItem(5,createGuiItem(Material.ENCHANTED_BOOK, Fortune4BookName, Fortune4BookLoreList));
+        TextComponent Fortune3BookName = Component.text("Fortune 3 Enchanted Book").color(TextColor.color(0xC29D));
+        ArrayList Fortune3BookLoreList = new ArrayList<Component>();
+        Fortune3BookLoreList.add(Component.text("Fortune 3").color(TextColor.color(0xFFFF)));
+        Fortune3BookLoreList.add(Component.text("Cost: 12 Tokens").color(TextColor.color(0xFFC900)));
+        inv.setItem(5,createGuiItem(Material.ENCHANTED_BOOK, Fortune3BookName, Fortune3BookLoreList));
 
     }
 
@@ -152,14 +152,14 @@ public class TokenShop implements Listener {
                 TokenPickAxe.setItemMeta(TokenPickMeta);
                 purchaseItem(p, TokenPickAxe,50);
                 break;
-            case 5:  //Fortune 4 Book
-                ItemStack Fortune4Book = new ItemStack(Material.ENCHANTED_BOOK);
-                EnchantmentStorageMeta Fortune4BookMeta = (EnchantmentStorageMeta) Fortune4Book.getItemMeta();
-                TextComponent Fortune4Bookname = Component.text("Enchanted Book: Fortune 4").color(TextColor.color(0xC29D));
-                Fortune4BookMeta.displayName(Fortune4Bookname);
-                Fortune4BookMeta.addStoredEnchant(Enchantment.LOOT_BONUS_BLOCKS, 4, true);
-                Fortune4Book.setItemMeta(Fortune4BookMeta);
-                purchaseItem(p, Fortune4Book,20);
+            case 5:  //Fortune 3 Book
+                ItemStack Fortune3Book = new ItemStack(Material.ENCHANTED_BOOK);
+                EnchantmentStorageMeta Fortune3BookMeta = (EnchantmentStorageMeta) Fortune3Book.getItemMeta();
+                TextComponent Fortune3Bookname = Component.text("Enchanted Book: Fortune 3").color(TextColor.color(0xC29D));
+                Fortune3BookMeta.displayName(Fortune3Bookname);
+                Fortune3BookMeta.addStoredEnchant(Enchantment.LOOT_BONUS_BLOCKS, 3, true);
+                Fortune3Book.setItemMeta(Fortune3BookMeta);
+                purchaseItem(p, Fortune3Book,12);
                 break;
         }
 
