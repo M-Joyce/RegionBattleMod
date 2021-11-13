@@ -17,6 +17,7 @@ public class CommandVote implements CommandExecutor {
 
         //send vote info
         Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.LIGHT_PURPLE + "Vote for us to get a reward!\n" +
+                "https://best-minecraft-servers.co/server-regionbattle.1311/vote\n" +
                 "https://minecraftservers.org/server/624356\n" +
                 "https://minecraft-server-list.com/server/481756/vote/\n" +
                 "https://minecraft-mp.com/server/293346/vote/\n" +
