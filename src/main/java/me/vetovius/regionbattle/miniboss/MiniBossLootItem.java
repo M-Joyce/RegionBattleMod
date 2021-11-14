@@ -11,7 +11,7 @@ import java.util.Random;
 public enum MiniBossLootItem{
 
     Netherite_Ingot(Material.NETHERITE_INGOT,50,2),
-    Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,50,2),
+    Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,20,2),
     Diamond(Material.DIAMOND,65,7),
     Token(Material.AMETHYST_SHARD,50,2),
     Diamond_Axe(Material.NETHERITE_AXE,7,1),

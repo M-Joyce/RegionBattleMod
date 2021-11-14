@@ -11,7 +11,7 @@ import java.util.Random;
 public enum BattleRegionLootItem{
 
     Netherite_Ingot(Material.NETHERITE_INGOT,50,5),
-    Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,50,3),
+    Enchanted_Golden_Apple(Material.ENCHANTED_GOLDEN_APPLE,25,3),
     Diamond(Material.DIAMOND,65,20),
     Token(Material.AMETHYST_SHARD,50,7),
     Netherite_Axe(Material.NETHERITE_AXE,10,1),
