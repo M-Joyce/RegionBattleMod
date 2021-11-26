@@ -21,6 +21,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class MiniBoss implements Listener {
@@ -95,7 +96,7 @@ public class MiniBoss implements Listener {
         broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] is lurking at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() +". Slay it for a reward!");
+                    p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] lurking at X: " + miniBossZoneCenter.getBlockX() + " Z: "+ miniBossZoneCenter.getBlockZ() + " will vanish in " + TimeUnit.MILLISECONDS.toMinutes(duration - System.currentTimeMillis()) + " minutes. Slay it for a reward!");
                 }
             }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
@@ -186,7 +187,7 @@ public class MiniBoss implements Listener {
         LOGGER.info("miniBossZoneCenter Found. X: " + x + " Z: " + z);
         miniBossZoneCenter = new Location(smpWorld,x,smpWorld.getHighestBlockYAt(x,z)+1,z); //set miniBossZoneCenter
         for(Player p : smpWorld.getPlayers()){
-            p.sendMessage(ChatColor.LIGHT_PURPLE + "A [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has just appeared at X: " + x + " Z: "+ z +". Slay it for a reward!");
+            p.sendMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + miniBossName + ChatColor.LIGHT_PURPLE +"] has just appeared at X: " + x + " Z: "+ z +". Slay it for a reward!");
         }
     }
 

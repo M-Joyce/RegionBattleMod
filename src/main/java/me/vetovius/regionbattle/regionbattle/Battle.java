@@ -431,39 +431,42 @@ public class Battle implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if the teleport.
 
         if (battleRegions != null) {
-            if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY && event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL){
 
-                if(event.getTo().getWorld() != Regions.world){
-                    //Do nothing here, continue if to kick player.
-                }
-                else if (event.getFrom().distance(event.getTo()) < 80){ //This wont run unless they aren't tping in the same world
-                    //Do nothing, they were teleported such a small distance that this is likely just anticheat or worldguard
-                    return;
-                }
-                Player p = event.getPlayer();
-                if (p.getWorld() == Regions.world) {
-                    String playerUUID = p.getUniqueId().toString();
+            if(event.getFrom().getWorld() == Regions.world){
+                if(event.getCause() != PlayerTeleportEvent.TeleportCause.END_GATEWAY && event.getCause() != PlayerTeleportEvent.TeleportCause.ENDER_PEARL){
 
-                    for(UUID uuid : battleRegions.regionRed.getMembers().getUniqueIds()){
-                        if(uuid.toString().equalsIgnoreCase(playerUUID)){
-                            redPlayers.remove(p);
-                            teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
-                            prepPhaseBossBar.removePlayer(p);
-                            p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
-                            p.sendMessage("You have been removed from the RegionBattle.");
-                        }
+                    if(event.getTo().getWorld() != Regions.world){
+                        //Do nothing here, continue if to kick player.
                     }
-
-                    for(UUID uuid : battleRegions.regionBlue.getMembers().getUniqueIds()){
-                        if(uuid.toString().equalsIgnoreCase(playerUUID)){
-                            bluePlayers.remove(p);
-                            teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
-                            prepPhaseBossBar.removePlayer(p);
-                            p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
-                            p.sendMessage("You have been removed from the RegionBattle.");
-                        }
+                    else if (event.getFrom().distance(event.getTo()) < 80){ //This wont run unless they aren't tping in the same world
+                        //Do nothing, they were teleported such a small distance that this is likely just anticheat or worldguard
+                        return;
                     }
+                    Player p = event.getPlayer();
+                    if (p.getWorld() == Regions.world) {
+                        String playerUUID = p.getUniqueId().toString();
 
+                        for(UUID uuid : battleRegions.regionRed.getMembers().getUniqueIds()){
+                            if(uuid.toString().equalsIgnoreCase(playerUUID)){
+                                redPlayers.remove(p);
+                                teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
+                                prepPhaseBossBar.removePlayer(p);
+                                p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
+                                p.sendMessage("You have been removed from the RegionBattle.");
+                            }
+                        }
+
+                        for(UUID uuid : battleRegions.regionBlue.getMembers().getUniqueIds()){
+                            if(uuid.toString().equalsIgnoreCase(playerUUID)){
+                                bluePlayers.remove(p);
+                                teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(p.displayName()));
+                                prepPhaseBossBar.removePlayer(p);
+                                p.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
+                                p.sendMessage("You have been removed from the RegionBattle.");
+                            }
+                        }
+
+                    }
                 }
             }
         }

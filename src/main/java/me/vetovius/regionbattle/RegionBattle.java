@@ -10,6 +10,7 @@ import me.vetovius.regionbattle.regionbattle.*;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.block.BlockState;
 import org.bukkit.block.ShulkerBox;
@@ -118,7 +119,12 @@ public class RegionBattle extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onBlockPlace(BlockPlaceEvent event){
-        //Bukkit.broadcastMessage("A block was placed!");
+        if(event.getBlock().getType() == Material.CARVED_PUMPKIN){
+            if(event.getItemInHand().getItemMeta().hasCustomModelData()){
+                event.setCancelled(true);
+            }
+
+        }
     }
 
     @EventHandler

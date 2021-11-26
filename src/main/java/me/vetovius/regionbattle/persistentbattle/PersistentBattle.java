@@ -299,7 +299,7 @@ public class PersistentBattle implements Listener {
     @EventHandler
     public void onPlayerTeleport(PlayerTeleportEvent event) { //remove player from battle if they teleport.
 
-        if(event.getFrom() == world){
+        if(event.getFrom().getWorld() == world){
 
             if(event.getCause() == PlayerTeleportEvent.TeleportCause.END_GATEWAY || event.getCause() == PlayerTeleportEvent.TeleportCause.UNKNOWN || event.getCause() == PlayerTeleportEvent.TeleportCause.ENDER_PEARL){ //the specific cause we set earlier for a valid TP by this plugin.
                 //Do nothing

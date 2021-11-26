@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 public class BattleRegion implements Listener {
@@ -89,7 +90,7 @@ public class BattleRegion implements Listener {
         int broadcastLocationTaskId = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
                 for(Player p : smpWorld.getPlayers()){
-                    p.sendMessage(ChatColor.AQUA + "A [" + ChatColor.BLUE + "Battle Region" + ChatColor.AQUA + "] exists at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +". Capture it for a reward!");
+                    p.sendMessage(ChatColor.AQUA + "The [" + ChatColor.BLUE + "Battle Region" + ChatColor.AQUA + "] at X: " + battleRegionCenter.getBlockX() + " Z: "+ battleRegionCenter.getBlockZ() +" will vanish in " + TimeUnit.MILLISECONDS.toMinutes(duration - System.currentTimeMillis()) + " minutes. Capture it for a reward!");
                 }
             }}, 6000, 18000); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
 
