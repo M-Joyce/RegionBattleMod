@@ -1,7 +1,6 @@
 package me.vetovius.regionbattle.rankuptokenrequirement;
 
 import me.vetovius.regionbattle.RegionBattle;
-import me.vetovius.regionbattle.regionbattle.Battle;
 import me.vetovius.regionbattle.tokenshop.Token;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;

@@ -1,9 +1,9 @@
 name: RegionBattle
-version: 0.1
+version: 1.1
 author: Vetovius
 main: me.vetovius.regionbattle.RegionBattle
-api-version: 1.17
-depend: [WorldGuard,Votifier]
+api-version: 1.18
+depend: [WorldGuard,Votifier, Rankup]
 
 
 commands:

@@ -161,7 +161,7 @@ public class Regions {
         int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
             public void run() {
                 for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
-                    world.spawnParticle(Particle.BARRIER,location, 3, 0, 0, 0, 1, null, true);
+                    world.spawnParticle(Particle.COMPOSTER,location, 3, 0, 0, 0, 1, null, true);
                 }
             }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
         return id;
