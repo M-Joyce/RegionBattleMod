@@ -188,7 +188,7 @@ public class PersistentBattle implements Listener {
                 }
             } else if (redPlayers.size() > bluePlayers.size()) { //red bigger, assign player to blue
                 team = "blue";
-            } else if (redPlayers.size() < bluePlayers.size()) { //blue bigger, assign player to red
+            } else { //blue bigger, assign player to red
                 team = "red";
             }
             LOGGER.info("Assigning " + PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " to Team " + team + ".");
@@ -210,7 +210,7 @@ public class PersistentBattle implements Listener {
                 teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
                 player.setScoreboard(board); //set player scoreboard
                 Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
-                score.setScore(score.getScore());
+                score.setScore(0);
 
                 for(Player p : redPlayers){
                     p.sendMessage(ChatColor.RED+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has joined the Red Team!");
@@ -228,7 +228,7 @@ public class PersistentBattle implements Listener {
                 teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
                 player.setScoreboard(board); //set player scoreboard
                 Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
-                score.setScore(score.getScore());
+                score.setScore(0);
 
                 for(Player p : redPlayers){
                     p.sendMessage(ChatColor.BLUE+PlainTextComponentSerializer.plainText().serialize(player.displayName()) + " has joined the Blue Team!");

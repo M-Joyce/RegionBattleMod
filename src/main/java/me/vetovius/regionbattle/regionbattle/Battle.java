@@ -131,7 +131,7 @@ public class Battle implements Listener {
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
             Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
-            score.setScore(score.getScore());
+            score.setScore(0);
         }
 
         for(Player player : bluePlayers){ //add blue players
@@ -143,7 +143,7 @@ public class Battle implements Listener {
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
             Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
-            score.setScore(score.getScore());
+            score.setScore(0);
         }
 
 

@@ -50,9 +50,9 @@ public class MiniBoss implements Listener {
 
     private ArrayList<Player> miniBossHealthBarPlayersList = new ArrayList<Player>();
 
-    private int miniBossHealth = 250;
-    private int miniBossDamage = 8;
-    private int miniBossArmor = 15;
+    private final int miniBossHealth = 250;
+    private final int miniBossDamage = 8;
+    private final int miniBossArmor = 15;
 
 
     public MiniBoss(RegionBattle pluginInstance){
