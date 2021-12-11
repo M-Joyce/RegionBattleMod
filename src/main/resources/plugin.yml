@@ -71,3 +71,7 @@ commands:
     description: Spawn a new miniboss at a random location.
     usage: /spawnminiboss
     permission: RegionBattle.spawnminiboss
+  vipfly:
+    description: Use to fly for a limited amount of time!
+    usage: /vipfly
+    permission: RegionBattle.vipfly

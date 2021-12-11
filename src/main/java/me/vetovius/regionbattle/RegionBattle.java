@@ -26,6 +26,8 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import sh.okx.rankup.events.RankupRegisterEvent;
 import java.util.logging.Logger;
 
@@ -49,6 +51,7 @@ public class RegionBattle extends JavaPlugin implements Listener {
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
         this.getCommand("map").setExecutor(new CommandMap()); //register command
         this.getCommand("discord").setExecutor(new CommandDiscord()); //register command
+        this.getCommand("vipfly").setExecutor(new CommandFly()); //register command
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
         this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
@@ -114,6 +117,18 @@ public class RegionBattle extends JavaPlugin implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
 
+        Player player = event.getPlayer();
+        if(player.getPersistentDataContainer().has(new NamespacedKey(this,"vipFlightEndTime"), PersistentDataType.LONG)){
+            LOGGER.info("Player: " + player.getName() + " found with vipFlightEndTime PDC value, checking duration, and cancelling flight if needed.");
+            long flightEndTime = player.getPersistentDataContainer().get(new NamespacedKey(this,"vipFlightEndTime"),PersistentDataType.LONG);
+            if(System.currentTimeMillis() >= flightEndTime){
+                player.sendMessage("You are no longer allowed to fly!");
+                player.setAllowFlight(false);
+
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,20*20,1)); //slow fall so they don't die.
+                player.getPersistentDataContainer().remove(new NamespacedKey(this,"vipFlightEndTime")); //remove PDC value
+            }
+        }
     }
 
     @EventHandler
