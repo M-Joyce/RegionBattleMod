@@ -1,4 +1,4 @@
-package me.vetovius.regionbattle.rankuptokenrequirement;
+package me.vetovius.regionbattle.rankuptokenrequirements;
 
 import me.vetovius.regionbattle.RegionBattle;
 import me.vetovius.regionbattle.tokenshop.Token;

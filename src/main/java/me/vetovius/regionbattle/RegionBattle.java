@@ -5,7 +5,8 @@ import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
 import me.vetovius.regionbattle.persistentbattle.*;
-import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirement;
+import me.vetovius.regionbattle.rankuptokenrequirements.RBTokenDeductibleRequirement;
+import me.vetovius.regionbattle.rankuptokenrequirements.RBVIPTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
@@ -200,8 +201,9 @@ public class RegionBattle extends JavaPlugin implements Listener {
     //Register Rankup requirement
 
     @EventHandler
-    public void rankupRegisterEvent (RankupRegisterEvent event) { //handle when players log off in the middle of battle
+    public void rankupRegisterEvent (RankupRegisterEvent event) {
         event.addRequirement(new RBTokenDeductibleRequirement(JavaPlugin.getPlugin(sh.okx.rankup.RankupPlugin.class), "RBTokenRequirement"));
+        event.addRequirement(new RBVIPTokenDeductibleRequirement(JavaPlugin.getPlugin(sh.okx.rankup.RankupPlugin.class), "RBVIPTokenRequirement"));
     }
 
 }
