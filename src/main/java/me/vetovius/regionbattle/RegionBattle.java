@@ -9,6 +9,7 @@ import me.vetovius.regionbattle.rankuptokenrequirement.RBTokenDeductibleRequirem
 import me.vetovius.regionbattle.regionbattle.*;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
+import me.vetovius.regionbattle.viptokens.CommandGiveVIPToken;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -55,6 +56,7 @@ public class RegionBattle extends JavaPlugin implements Listener {
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
         this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
+        this.getCommand("giveviptoken").setExecutor(new CommandGiveVIPToken()); //register command
         this.getCommand("opentokenshop").setExecutor(new CommandOpenTokenShop()); //register command
         this.getCommand("createtokenshop").setExecutor(new CommandCreateTokenShop()); //register command
 
@@ -135,7 +137,7 @@ public class RegionBattle extends JavaPlugin implements Listener {
     public void onBlockPlace(BlockPlaceEvent event){
         if(event.getBlock().getType() == Material.CARVED_PUMPKIN){
             if(event.getItemInHand().getItemMeta().hasCustomModelData()){
-                event.setCancelled(true);
+                event.setCancelled(true); //Don't allow placing hats. (carved pumpkins with custommodeldata).
             }
 
         }

@@ -75,3 +75,7 @@ commands:
     description: Use to fly for a limited amount of time!
     usage: /vipfly
     permission: RegionBattle.vipfly
+  giveviptoken:
+    description: Admin/Server only. Give the specified player a VIP token.
+    usage: /giveviptoken playername optional:amount
+    permission: RegionBattle.giveviptoken
