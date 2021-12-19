@@ -79,3 +79,8 @@ commands:
     description: Admin/Server only. Give the specified player a VIP token.
     usage: /giveviptoken playername optional:amount
     permission: RegionBattle.giveviptoken
+  addplayertoregionbattle:
+    description: Staff command to force add a player to a running RegionBattle.
+    usage: /addplayertoregionbattle playername team(red/blue)
+    permission: RegionBattle.addplayertoregionbattle
+

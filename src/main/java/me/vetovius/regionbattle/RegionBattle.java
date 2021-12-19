@@ -47,6 +47,7 @@ public class RegionBattle extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(this, this); //register events
 
         this.getCommand("startregionbattle").setExecutor(new CommandStartRegionBattle()); //register command
+        this.getCommand("addplayertoregionbattle").setExecutor(new CommandAddPlayerToRegionBattle()); //register command
         this.getCommand("seek").setExecutor(new CommandSeek()); //register command
         this.getCommand("tc").setExecutor(new CommandSendTeamChat()); //register command
         this.getCommand("battleoptout").setExecutor(new CommandBattleOptOut()); //register command

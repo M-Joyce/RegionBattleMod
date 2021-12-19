@@ -42,6 +42,7 @@ public class CommandStartRegionBattle implements CommandExecutor {
                         LOGGER.info("--Creating Battle--");
                         battle = new Battle(RegionBattle.getPlugin(RegionBattle.class));
                         CommandSeek.battle = battle;
+                        CommandAddPlayerToRegionBattle.battle = battle;
                         CommandSendTeamChat.battle = battle;
                         Bukkit.getScheduler().cancelTask(checkIfStartNewBattle);
                     }

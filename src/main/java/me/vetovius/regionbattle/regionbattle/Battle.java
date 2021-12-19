@@ -43,6 +43,13 @@ public class Battle implements Listener {
     private Team teamRed;
     private Team teamBlue;
 
+    private Location blueMidPoint;
+    private Location redMidPoint;
+
+    private Score score;
+
+    private Objective objective;
+
     private Regions battleRegions; //Regions object containing region for each team, and region related functionality
 
     public static ArrayList<Player> optOutPlayersList = new ArrayList<Player>();
@@ -56,6 +63,7 @@ public class Battle implements Listener {
     private BossBar prepPhaseBossBar;
 
     private RegionBattle plugin;
+
 
 
 
@@ -113,7 +121,7 @@ public class Battle implements Listener {
         //create objective for score board
         TextComponent objectiveName = Component.text("Player Kills").color(TextColor.color(0x9C8A));
 
-        Objective objective = board.registerNewObjective("battleObjective", "playerKillCount",objectiveName);
+        objective = board.registerNewObjective("battleObjective", "playerKillCount",objectiveName);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         //LOGGER.info("assignTeams() RED:" + redPlayers.toString());
@@ -130,7 +138,7 @@ public class Battle implements Listener {
             teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
-            Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+            score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
             score.setScore(0);
         }
 
@@ -142,7 +150,7 @@ public class Battle implements Listener {
             teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
             player.setScoreboard(board); //set player scoreboard
             prepPhaseBossBar.addPlayer(player); //display prep timer
-            Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+            score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
             score.setScore(0);
         }
 
@@ -161,7 +169,7 @@ public class Battle implements Listener {
         int rminY = regionRed.getMinimumPoint().getBlockY();
         int rminZ = regionRed.getMinimumPoint().getBlockZ();
 
-        Location redMidPoint = new Location(Regions.world,(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
+        redMidPoint = new Location(Regions.world,(rmaxX+rminX)/2,(rmaxY+rminY )/2,(rmaxZ+rminZ )/2);
         redMidPoint.setY(Regions.world.getHighestBlockYAt(redMidPoint)+1);
         //LOGGER.info("Teleporting Red Team to: "+redMidPoint);
         for(UUID uuid : regionRed.getMembers().getUniqueIds()){
@@ -177,7 +185,7 @@ public class Battle implements Listener {
         int bminY = regionBlue.getMinimumPoint().getBlockY();
         int bminZ = regionBlue.getMinimumPoint().getBlockZ();
 
-        Location blueMidPoint = new Location(Regions.world,(bmaxX+bminX)/2,(bmaxY+bminY )/2,(bmaxZ+bminZ )/2);
+        blueMidPoint = new Location(Regions.world,(bmaxX+bminX)/2,(bmaxY+bminY )/2,(bmaxZ+bminZ )/2);
         blueMidPoint.setY(Regions.world.getHighestBlockYAt(blueMidPoint)+1);
         //LOGGER.info("Teleporting Blue Team to: "+blueMidPoint);
 
@@ -258,6 +266,7 @@ public class Battle implements Listener {
 
                         CommandStartRegionBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
                         CommandSeek.battle = null;
+                        CommandAddPlayerToRegionBattle.battle = null;
                         CommandSendTeamChat.battle = null;
                         battleRegions = null;
 
@@ -491,6 +500,51 @@ public class Battle implements Listener {
             }.runTaskTimer(plugin, 0, 20);
         }
         prepPhaseBossBar.setVisible(true);
+    }
+
+    protected void forceAddPlayerToTeam(String team, Player player){ //used for CommandAddPlayerToRegionBattle
+        ItemStack compass = new ItemStack(Material.COMPASS,1);
+
+        if(team.equalsIgnoreCase("red")){
+
+            if(redPlayers.contains(player)){
+                LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                return;
+            }
+
+            if(bluePlayers.contains(player)){
+                LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                return;
+            }
+
+            redPlayers.add(player);
+            player.getInventory().clear(); //clear inventory
+            player.setHealth(20); //heal
+            player.setFoodLevel(20); //feed
+            player.getInventory().addItem(compass); //give player a compass for seek
+            teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
+            player.setScoreboard(board); //set player scoreboard
+            prepPhaseBossBar.addPlayer(player); //display prep timer
+            Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+            score.setScore(0);
+            player.teleport(redMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
+
+        }
+        else if(team.equalsIgnoreCase("blue")){
+            bluePlayers.add(player);
+            player.getInventory().clear(); //clear inventory
+            player.setHealth(20); //heal
+            player.setFoodLevel(20); //feed
+            player.getInventory().addItem(compass); //give player a compass for seek
+            teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
+            player.setScoreboard(board); //set player scoreboard
+            prepPhaseBossBar.addPlayer(player); //display prep timer
+            Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+            score.setScore(0);
+            player.teleport(blueMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
+
+        }
+
     }
 
 }
