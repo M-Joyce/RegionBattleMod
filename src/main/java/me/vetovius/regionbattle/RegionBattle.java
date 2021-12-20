@@ -4,6 +4,9 @@ import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
+import me.vetovius.regionbattle.perks.CommandAngel;
+import me.vetovius.regionbattle.perks.CommandFly;
+import me.vetovius.regionbattle.perks.CommandStartAngelEvent;
 import me.vetovius.regionbattle.persistentbattle.*;
 import me.vetovius.regionbattle.rankuptokenrequirements.RBTokenDeductibleRequirement;
 import me.vetovius.regionbattle.rankuptokenrequirements.RBVIPTokenDeductibleRequirement;
@@ -42,6 +45,9 @@ public class RegionBattle extends JavaPlugin implements Listener {
     public void onEnable() {
         getLogger().info("onEnable is called!");
 
+        //Create Config
+        this.saveDefaultConfig(); //create config.yml if not exists.
+
 
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         Bukkit.getPluginManager().registerEvents(this, this); //register events
@@ -54,7 +60,11 @@ public class RegionBattle extends JavaPlugin implements Listener {
         this.getCommand("vote").setExecutor(new CommandVote()); //register command
         this.getCommand("map").setExecutor(new CommandMap()); //register command
         this.getCommand("discord").setExecutor(new CommandDiscord()); //register command
+
+        //Perk Commands
         this.getCommand("vipfly").setExecutor(new CommandFly()); //register command
+        this.getCommand("angel").setExecutor(new CommandAngel()); //register command
+        this.getCommand("startangelevent").setExecutor(new CommandStartAngelEvent()); //register command
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
         this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
@@ -72,7 +82,6 @@ public class RegionBattle extends JavaPlugin implements Listener {
 
         //MiniBoss Commands
         this.getCommand("spawnminiboss").setExecutor(new CommandSpawnMiniBoss()); //register command
-
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
@@ -95,7 +104,6 @@ public class RegionBattle extends JavaPlugin implements Listener {
             public void run() {
                 Bukkit.dispatchCommand(console, "spawnminiboss");
             }}, 2000, 20*60*45); //repeat task
-
 
     }
 
@@ -122,15 +130,30 @@ public class RegionBattle extends JavaPlugin implements Listener {
     public void onPlayerJoin(PlayerJoinEvent event) {
 
         Player player = event.getPlayer();
+
+        //VIP Fly
         if(player.getPersistentDataContainer().has(new NamespacedKey(this,"vipFlightEndTime"), PersistentDataType.LONG)){
             LOGGER.info("Player: " + player.getName() + " found with vipFlightEndTime PDC value, checking duration, and cancelling flight if needed.");
             long flightEndTime = player.getPersistentDataContainer().get(new NamespacedKey(this,"vipFlightEndTime"),PersistentDataType.LONG);
             if(System.currentTimeMillis() >= flightEndTime){
-                player.sendMessage("You are no longer allowed to fly!");
+                player.sendMessage("Your flight time is up!");
                 player.setAllowFlight(false);
 
                 player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,20*20,1)); //slow fall so they don't die.
                 player.getPersistentDataContainer().remove(new NamespacedKey(this,"vipFlightEndTime")); //remove PDC value
+            }
+        }
+
+        //Angel Event fly boost
+        if(player.getPersistentDataContainer().has(new NamespacedKey(this,"serverFlyBoostEndTime"), PersistentDataType.LONG)){
+            LOGGER.info("Player: " + player.getName() + " found with serverFlyBoostEndTime PDC value, checking duration, and cancelling flight if needed.");
+            long flightEndTime = player.getPersistentDataContainer().get(new NamespacedKey(this,"serverFlyBoostEndTime"),PersistentDataType.LONG);
+            if(System.currentTimeMillis() >= flightEndTime){
+                player.sendMessage("Your flight time is up!");
+                player.setAllowFlight(false);
+
+                player.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING,20*20,1)); //slow fall so they don't die.
+                player.getPersistentDataContainer().remove(new NamespacedKey(this,"serverFlyBoostEndTime")); //remove PDC value
             }
         }
     }

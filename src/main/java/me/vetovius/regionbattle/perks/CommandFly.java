@@ -1,5 +1,6 @@
-package me.vetovius.regionbattle;
+package me.vetovius.regionbattle.perks;
 
+import me.vetovius.regionbattle.RegionBattle;
 import me.vetovius.regionbattle.persistentbattle.PersistentBattle;
 import me.vetovius.regionbattle.regionbattle.Regions;
 import org.bukkit.Bukkit;
@@ -22,7 +23,7 @@ public class CommandFly implements CommandExecutor {
     private static final Logger LOGGER = Logger.getLogger( CommandFly.class.getName() );
     RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
     private int flightTimer;
-    private static final int flyMinutes = 20;
+    private static final int flyMinutes = 60;
     private static final int flyCooldownHours = 12;
 
     // This method is called, when somebody uses our command

@@ -83,4 +83,12 @@ commands:
     description: Staff command to force add a player to a running RegionBattle.
     usage: /addplayertoregionbattle playername team(red/blue)
     permission: RegionBattle.addplayertoregionbattle
+  angel:
+    description: Use to fly for a limited amount of time during the great angel event!
+    usage: /angel
+    permission: RegionBattle.angel
+  startangelevent:
+    description: Start a Great Angel Event! To be used by BuyCraft when a player purchases the package.
+    usage: /startangelevent
+    permission: RegionBattle.startangelevent
 
