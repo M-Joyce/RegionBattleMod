@@ -2,6 +2,7 @@ package me.vetovius.regionbattle;
 
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.vexsoftware.votifier.model.VotifierEvent;
+import me.vetovius.regionbattle.SQLiteDB.DBUtils;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
 import me.vetovius.regionbattle.perks.CommandAngel;
@@ -47,6 +48,9 @@ public class RegionBattle extends JavaPlugin implements Listener {
 
         //Create Config
         this.saveDefaultConfig(); //create config.yml if not exists.
+
+        //create DB
+        DBUtils.createNewDatabase(this);
 
 
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
