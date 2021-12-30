@@ -8,13 +8,12 @@ import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
 import me.vetovius.regionbattle.perks.CommandAngel;
 import me.vetovius.regionbattle.perks.CommandFly;
 import me.vetovius.regionbattle.perks.CommandStartAngelEvent;
+import me.vetovius.regionbattle.perks.CommandUpdatePlayerTotalSpend;
 import me.vetovius.regionbattle.persistentbattle.*;
 import me.vetovius.regionbattle.rankuptokenrequirements.RBTokenDeductibleRequirement;
-import me.vetovius.regionbattle.rankuptokenrequirements.RBVIPTokenDeductibleRequirement;
 import me.vetovius.regionbattle.regionbattle.*;
 import me.vetovius.regionbattle.smpbattleregion.CommandSpawnBattleRegion;
 import me.vetovius.regionbattle.tokenshop.*;
-import me.vetovius.regionbattle.viptokens.CommandGiveVIPToken;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -69,10 +68,10 @@ public class RegionBattle extends JavaPlugin implements Listener {
         this.getCommand("vipfly").setExecutor(new CommandFly()); //register command
         this.getCommand("angel").setExecutor(new CommandAngel()); //register command
         this.getCommand("startangelevent").setExecutor(new CommandStartAngelEvent()); //register command
+        this.getCommand("updateplayertotalspend").setExecutor(new CommandUpdatePlayerTotalSpend()); //register command
 
         this.getCommand("createlootchest").setExecutor(new CommandCreateLootChest()); //register command
         this.getCommand("giveplayertoken").setExecutor(new CommandGivePlayerToken()); //register command
-        this.getCommand("giveviptoken").setExecutor(new CommandGiveVIPToken()); //register command
         this.getCommand("opentokenshop").setExecutor(new CommandOpenTokenShop()); //register command
         this.getCommand("createtokenshop").setExecutor(new CommandCreateTokenShop()); //register command
 
@@ -231,7 +230,6 @@ public class RegionBattle extends JavaPlugin implements Listener {
     @EventHandler
     public void rankupRegisterEvent (RankupRegisterEvent event) {
         event.addRequirement(new RBTokenDeductibleRequirement(JavaPlugin.getPlugin(sh.okx.rankup.RankupPlugin.class), "RBTokenRequirement"));
-        event.addRequirement(new RBVIPTokenDeductibleRequirement(JavaPlugin.getPlugin(sh.okx.rankup.RankupPlugin.class), "RBVIPTokenRequirement"));
     }
 
 }

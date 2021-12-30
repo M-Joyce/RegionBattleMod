@@ -1,6 +1,7 @@
 package me.vetovius.regionbattle.SQLiteDB;
 
 import me.vetovius.regionbattle.RegionBattle;
+import org.bukkit.entity.Player;
 
 import java.sql.*;
 import java.util.logging.Logger;
@@ -20,7 +21,7 @@ public class DBUtils {
             if (conn != null) {
                 DatabaseMetaData meta = conn.getMetaData();
                LOGGER.info("The driver name is " + meta.getDriverName());
-                LOGGER.info("A new database has been created.");
+               LOGGER.info("A new database has been created.");
             }
 
         } catch (SQLException e) {
@@ -33,7 +34,7 @@ public class DBUtils {
     public static void createTables() {
         // SQL statement for creating a new table
         String sql = "CREATE TABLE IF NOT EXISTS playerdata (\n"
-                + " uuid blob PRIMARY KEY,\n"
+                + " uuid text PRIMARY KEY,\n"
                 + " username text NOT NULL,\n"
                 + " totalSpendInStore numeric"
                 + ");";
@@ -41,12 +42,31 @@ public class DBUtils {
         try (Connection conn = DriverManager.getConnection(connectionString);
              Statement stmt = conn.createStatement()) {
             // create a new table
-            stmt.execute(sql);
+            stmt.execute(sql); //create table from sql statement
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            LOGGER.info(e.getMessage());
         }
     }
 
 
+    public static void updatePlayerSpend(Player player, float amount) {
+        // SQL statement for creating a new table
+        String sql = "INSERT INTO playerdata (uuid, username, totalSpendInStore) \n" +
+                "VALUES (?,?,?)\n" +
+                "ON CONFLICT(uuid) DO UPDATE \n" +
+                "SET totalSpendInStore = totalSpendInStore + ? WHERE uuid = ?";
+
+        try (Connection conn = DriverManager.getConnection(connectionString);
+            PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, player.getUniqueId().toString());
+            pstmt.setString(2, player.getName());
+            pstmt.setFloat(3, amount);
+            pstmt.setFloat(4, amount);
+            pstmt.setString(5, player.getUniqueId().toString());
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
 }

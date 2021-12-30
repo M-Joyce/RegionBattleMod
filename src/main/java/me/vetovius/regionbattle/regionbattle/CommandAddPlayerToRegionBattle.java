@@ -1,17 +1,12 @@
 package me.vetovius.regionbattle.regionbattle;
 
-import me.vetovius.regionbattle.CommandSeek;
-import me.vetovius.regionbattle.CommandSendTeamChat;
 import me.vetovius.regionbattle.RegionBattle;
-import me.vetovius.regionbattle.viptokens.VIPToken;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import java.util.UUID;
 import java.util.logging.Logger;
 
 public class CommandAddPlayerToRegionBattle implements CommandExecutor {
