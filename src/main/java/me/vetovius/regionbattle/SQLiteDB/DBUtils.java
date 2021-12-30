@@ -50,7 +50,7 @@ public class DBUtils {
 
 
     public static void updatePlayerSpend(Player player, float amount) {
-        // SQL statement for creating a new table
+        // SQL statement updating player total spend, or inserting a row if not row for player exists
         String sql = "INSERT INTO playerdata (uuid, username, totalSpendInStore) \n" +
                 "VALUES (?,?,?)\n" +
                 "ON CONFLICT(uuid) DO UPDATE \n" +
@@ -67,6 +67,29 @@ public class DBUtils {
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    public static float getPlayerSpend(Player player) {
+        // SQL statement updating player total spend, or inserting a row if not row for player exists
+        String sql = "SELECT totalSpendInStore FROM playerdata WHERE uuid = ?";
+        float totalSpendInStore = 0.0f;
+
+        try (Connection conn = DriverManager.getConnection(connectionString);
+             PreparedStatement pstmt  = conn.prepareStatement(sql)){
+
+            // set the value
+            pstmt.setString(1,player.getUniqueId().toString());
+            ResultSet rs  = pstmt.executeQuery();
+
+            // loop through the result set
+            while (rs.next()) {
+                totalSpendInStore = rs.getFloat("totalSpendInStore");
+            }
+        } catch (SQLException e) {
+            LOGGER.info(e.getMessage());
+        }
+
+        return totalSpendInStore;
     }
 
 }
