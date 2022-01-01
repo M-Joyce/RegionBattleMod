@@ -64,7 +64,7 @@ public class MiniBoss implements Listener {
 
         //Get Random value for miniboss type
         Random rand = new Random();
-        randomValue = rand.nextInt() % 2;
+        randomValue = rand.nextInt((1) + 1);
 
         if(randomValue == 0){
             miniBossName = "Enraged Marauder";
