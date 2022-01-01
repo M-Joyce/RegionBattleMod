@@ -166,6 +166,14 @@ public class RegionBattle extends JavaPlugin implements Listener {
         if(event.getBlock().getType() == Material.CARVED_PUMPKIN){
             if(event.getItemInHand().getItemMeta().hasCustomModelData()){
                 event.setCancelled(true); //Don't allow placing hats. (carved pumpkins with custommodeldata).
+                event.getPlayer().sendMessage("You can't place a hat!");
+            }
+
+        }
+        if(event.getBlock().getType() == Material.BEDROCK){ //NY 22 Bedrock "Forbidden Stone" Event make the stone not placeable
+            if(event.getItemInHand().getItemMeta().hasLore()){
+                event.setCancelled(true); //Don't allow placing hats. (carved pumpkins with custommodeldata).
+                event.getPlayer().sendMessage("You can't place this!");
             }
 
         }
