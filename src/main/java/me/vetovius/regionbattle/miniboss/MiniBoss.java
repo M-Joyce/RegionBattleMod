@@ -34,7 +34,7 @@ public class MiniBoss implements Listener {
     private static final int minDistanceFromSpawn = 550; //can't be closer than this to spawn
     private static final int miniBossHealthBarRadius = 100;
 
-    public static final String miniBossName = "Enraged Marauder";
+    public static String miniBossName = "MiniBoss";
 
     private long duration = 0; //how long miniboss lasts
     private long startTime = 0;
@@ -53,12 +53,25 @@ public class MiniBoss implements Listener {
     private final int miniBossHealth = 250;
     private final int miniBossDamage = 8;
     private final int miniBossArmor = 15;
+    private int randomValue;
 
 
     public MiniBoss(RegionBattle pluginInstance){
         this.pluginInstance = pluginInstance;
 
         Bukkit.getPluginManager().registerEvents(this, pluginInstance); //register events
+
+
+        //Get Random value for miniboss type
+        Random rand = new Random();
+        randomValue = rand.nextInt() % 2;
+
+        if(randomValue == 0){
+            miniBossName = "Enraged Marauder";
+        }
+        else if(randomValue == 1){
+            miniBossName = "Toxic Crawler";
+        }
 
         findLocationForMiniBoss(); //find a suitable location for the battle region
 
@@ -73,18 +86,38 @@ public class MiniBoss implements Listener {
 
     protected void startMiniBossTimer(){
 
-        LivingEntity miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.PILLAGER); //spawn a boss to defeat.
-        LOGGER.info("miniBoss spawned at X: " + miniBoss.getLocation().getBlockX() + " Z: " + miniBoss.getLocation().getBlockZ());
-        miniBoss.setCustomName(miniBossName);
-        AttributeInstance miniBossMaxHealthInstance = miniBoss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
-        miniBossMaxHealthInstance.setBaseValue(miniBossHealth);
-        miniBoss.setHealth(miniBossHealth);
-        AttributeInstance miniBossDamageInstance = miniBoss.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
-        miniBossDamageInstance.setBaseValue(miniBossDamage);
-        AttributeInstance miniBossArmorInstance = miniBoss.getAttribute(Attribute.GENERIC_ARMOR);
-        miniBossArmorInstance.setBaseValue(miniBossArmor);
-        miniBoss.setRemoveWhenFarAway(false);
-        miniBoss.setPersistent(true);
+
+        LivingEntity miniBoss = null; //initialize to null so compiler doesn't complain.
+
+        //Determine which minibos type should spawn
+        if(randomValue == 0){
+            miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.PILLAGER); //spawn a boss to defeat.
+            LOGGER.info("miniBoss spawned at X: " + miniBoss.getLocation().getBlockX() + " Z: " + miniBoss.getLocation().getBlockZ());
+            miniBoss.setCustomName(miniBossName);
+            AttributeInstance miniBossMaxHealthInstance = miniBoss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            miniBossMaxHealthInstance.setBaseValue(miniBossHealth);
+            miniBoss.setHealth(miniBossHealth);
+            AttributeInstance miniBossDamageInstance = miniBoss.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+            miniBossDamageInstance.setBaseValue(miniBossDamage);
+            AttributeInstance miniBossArmorInstance = miniBoss.getAttribute(Attribute.GENERIC_ARMOR);
+            miniBossArmorInstance.setBaseValue(miniBossArmor);
+            miniBoss.setRemoveWhenFarAway(false);
+            miniBoss.setPersistent(true);
+        }
+        else if(randomValue == 1){
+            miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.CAVE_SPIDER); //spawn a boss to defeat.
+            LOGGER.info("miniBoss spawned at X: " + miniBoss.getLocation().getBlockX() + " Z: " + miniBoss.getLocation().getBlockZ());
+            miniBoss.setCustomName(miniBossName);
+            AttributeInstance miniBossMaxHealthInstance = miniBoss.getAttribute(Attribute.GENERIC_MAX_HEALTH);
+            miniBossMaxHealthInstance.setBaseValue(miniBossHealth);
+            miniBoss.setHealth(miniBossHealth);
+            AttributeInstance miniBossDamageInstance = miniBoss.getAttribute(Attribute.GENERIC_ATTACK_DAMAGE);
+            miniBossDamageInstance.setBaseValue(miniBossDamage);
+            AttributeInstance miniBossArmorInstance = miniBoss.getAttribute(Attribute.GENERIC_ARMOR);
+            miniBossArmorInstance.setBaseValue(miniBossArmor);
+            miniBoss.setRemoveWhenFarAway(false);
+            miniBoss.setPersistent(true);
+        }
 
 
         PersistentDataContainer miniBossPDC = miniBoss.getPersistentDataContainer();
@@ -104,7 +137,7 @@ public class MiniBoss implements Listener {
             public void run() {
 
                 for(LivingEntity e : miniBossZoneCenter.getNearbyLivingEntities(200)){
-                    if(e.getType() == EntityType.PILLAGER){
+                    if(e.getType() == EntityType.PILLAGER || e.getType() == EntityType.CAVE_SPIDER){
                         if(Objects.equals(e.getCustomName(), miniBossName)){
                             if(e.isDead()){
                                 LOGGER.info("Miniboss is dead for some reason, cancelling the miniboss instance. " + miniBossZoneCenter.toString());
@@ -121,7 +154,7 @@ public class MiniBoss implements Listener {
                     }
                 }
 
-                if (System.currentTimeMillis() >= duration){ //Time is up, end the battle region.
+                if (System.currentTimeMillis() >= duration){ //Time is up, end the miniboss.
 
                     miniBossHealthBar.removeAll();
                     Bukkit.getScheduler().cancelTask(timerTaskId);
@@ -129,7 +162,7 @@ public class MiniBoss implements Listener {
                     Bukkit.getScheduler().cancelTask(broadcastLocationTaskId);
 
                     for(LivingEntity e : miniBossZoneCenter.getNearbyLivingEntities(200)){
-                        if(e.getType() == EntityType.PILLAGER){
+                        if(e.getType() == EntityType.PILLAGER || e.getType() == EntityType.CAVE_SPIDER){
                             if(Objects.equals(e.getCustomName(), miniBossName)){
                                 e.remove();
                             }
