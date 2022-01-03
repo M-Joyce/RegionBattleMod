@@ -91,4 +91,8 @@ commands:
     description: Used by the server to update playertotalspend amount for tracking VIP rank progression.
     usage: /updateplayertotalspend playername amountToAdd
     permission: RegionBattle.updateplayertotalspend
+  spawnbehemoth:
+    description: Used by admins to spawn a Behemoth Event.
+    usage: /spawnbehemoth
+    permission: RegionBattle.spawnbehemoth
 

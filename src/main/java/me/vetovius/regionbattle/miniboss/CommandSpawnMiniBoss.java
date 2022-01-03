@@ -1,7 +1,6 @@
 package me.vetovius.regionbattle.miniboss;
 
 import me.vetovius.regionbattle.RegionBattle;
-import me.vetovius.regionbattle.smpbattleregion.BattleRegion;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;

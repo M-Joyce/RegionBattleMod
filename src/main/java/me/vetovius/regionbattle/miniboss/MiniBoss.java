@@ -89,7 +89,7 @@ public class MiniBoss implements Listener {
 
         LivingEntity miniBoss = null; //initialize to null so compiler doesn't complain.
 
-        //Determine which minibos type should spawn
+        //Determine which miniboss type should spawn
         if(randomValue == 0){
             miniBoss = (LivingEntity) smpWorld.spawnEntity(miniBossZoneCenter, EntityType.PILLAGER); //spawn a boss to defeat.
             LOGGER.info("miniBoss spawned at X: " + miniBoss.getLocation().getBlockX() + " Z: " + miniBoss.getLocation().getBlockZ());

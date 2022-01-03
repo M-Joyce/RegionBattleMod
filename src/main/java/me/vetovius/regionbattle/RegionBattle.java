@@ -3,6 +3,7 @@ package me.vetovius.regionbattle;
 import com.destroystokyo.paper.event.entity.EntityAddToWorldEvent;
 import com.vexsoftware.votifier.model.VotifierEvent;
 import me.vetovius.regionbattle.SQLiteDB.DBUtils;
+import me.vetovius.regionbattle.behemoth.CommandSpawnBehemoth;
 import me.vetovius.regionbattle.chestloot.CommandCreateLootChest;
 import me.vetovius.regionbattle.miniboss.CommandSpawnMiniBoss;
 import me.vetovius.regionbattle.perks.CommandAngel;
@@ -85,6 +86,9 @@ public class RegionBattle extends JavaPlugin implements Listener {
 
         //MiniBoss Commands
         this.getCommand("spawnminiboss").setExecutor(new CommandSpawnMiniBoss()); //register command
+
+        //Behemoth Commands
+        this.getCommand("spawnbehemoth").setExecutor(new CommandSpawnBehemoth()); //register command
 
         Bukkit.getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
             @Override
