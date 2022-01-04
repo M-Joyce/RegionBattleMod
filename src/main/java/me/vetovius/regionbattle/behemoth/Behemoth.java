@@ -8,16 +8,17 @@ import org.bukkit.attribute.AttributeInstance;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.LivingEntity;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.projectiles.ProjectileSource;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 
@@ -40,6 +41,7 @@ public class Behemoth implements Listener {
     private int checkForBossBarPlayersId=0;
 
     private final int behemothHealth = 2000;
+    private final int behemothFollowRange = 40;
     private final int behemothDamage = 20;
     private final int behemothArmor = 25;
     private final double behemothSpeed = 0.3;
@@ -74,6 +76,8 @@ public class Behemoth implements Listener {
             behemothArmorInstance.setBaseValue(behemothArmor);
             AttributeInstance behemothSpeedInstance = behemoth.getAttribute(Attribute.GENERIC_MOVEMENT_SPEED);
             behemothSpeedInstance.setBaseValue(behemothSpeed);
+            AttributeInstance behemothFollowInstance = behemoth.getAttribute(Attribute.GENERIC_FOLLOW_RANGE);
+            behemothFollowInstance.setBaseValue(behemothFollowRange);
             behemoth.setRemoveWhenFarAway(false);
             behemoth.setPersistent(true);
 
@@ -156,9 +160,31 @@ public class Behemoth implements Listener {
             if (e.getEntity() instanceof LivingEntity livingEntity) {
                 if(e.getDamager() instanceof Player){
                     ((Player) e.getDamager()).addPotionEffect(new PotionEffect(PotionEffectType.POISON,20*1,1));
+                    Vector direction = player.getLocation().toVector().subtract(behemoth.getLocation().toVector()).normalize();
+                    Arrow arrow = behemoth.launchProjectile(Arrow.class,direction);
+                    arrow.addCustomEffect(new PotionEffect(PotionEffectType.POISON,20*1,1),true);
+                    arrow.setKnockbackStrength(1);
                 }
                 behemothHealthBar.setProgress(livingEntity.getHealth() / behemothHealth);
             }
+        }
+
+    }
+
+    @EventHandler
+    public void onProjectileHit(ProjectileHitEvent e) {
+
+        if(e.getHitEntity() instanceof IronGolem){
+
+            if(Objects.equals(e.getHitEntity().getCustomName(), behemothName)){
+                if (e.getEntity().getShooter() instanceof Player player) {
+                    //player.addPotionEffect(new PotionEffect(PotionEffectType.POISON,20*1,1));
+                    Vector direction = player.getLocation().toVector().subtract(behemoth.getLocation().toVector()).normalize().multiply(3);
+                    behemoth.launchProjectile(Arrow.class,direction).setKnockbackStrength(2);
+
+                }
+            }
+
         }
 
     }
