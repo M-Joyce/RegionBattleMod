@@ -104,7 +104,7 @@ public class Behemoth implements Listener {
                     behemoth.remove();
 
                     //F this deprecation, I'm using it anyway because this must be manually spawned by an admin
-                    Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + behemoth + ChatColor.LIGHT_PURPLE +"] has perished!");
+                    Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + behemothName + ChatColor.LIGHT_PURPLE +"] has perished!");
 
                 }
 
@@ -143,6 +143,7 @@ public class Behemoth implements Listener {
         if(e.getPlayer().getWorld() == behemoth.getWorld()) {
             if(behemoth.getLocation().distanceSquared(e.getPlayer().getLocation()) < (50*50)){ //if player is "near" behemoth
                 e.setKeepInventory(true);
+                e.getDrops().clear(); //clear player drops, keep inv is on.
             }
         }
 
