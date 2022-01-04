@@ -45,7 +45,7 @@ public class Behemoth implements Listener {
     private final int behemothFollowRange = 40;
     private final int behemothDamage = 20;
     private final int behemothArmor = 25;
-    private final double behemothSpeed = 0.3;
+    private final double behemothSpeed = 0.33;
 
     public Behemoth(RegionBattle pluginInstance, Player player, CommandSpawnBehemoth spawnCommand){
         this.pluginInstance = pluginInstance;
