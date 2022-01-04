@@ -16,15 +16,9 @@ public class CommandVote implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
         //send vote info
-        Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.LIGHT_PURPLE + "Vote for us to get a reward!\n" +
-                "https://best-minecraft-servers.co/server-regionbattle.1311/vote\n" +
-                "https://minecraftservers.org/server/624356\n" +
-                "https://minecraft-server-list.com/server/481756/vote/\n" +
-                "https://minecraft-mp.com/server/293346/vote/\n" +
-                "https://www.planetminecraft.com/server/regionbattle/\n" +
-                "https://topminecraftservers.org/server/21394\n" +
-                "https://minebrowse.com/server/3550\n" +
-                "https://craft-list.net/minecraft-server/RegionBattle-Custom-Plugins-for-Team-PVP---SMP---Cross-Play/vote\n");
+        Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.AQUA + "Vote for us to get a reward! Voting daily helps our server grow!\n" +
+                "All vote sites are listed at: " + ChatColor.YELLOW + "[" + ChatColor.GOLD + "https://regionbattle.com/vote" + ChatColor.YELLOW + "]\n" +
+                ChatColor.AQUA + "Make sure you are online while voting, and bedrock users should include the '-' before their name.");
         return true;
     }
 
