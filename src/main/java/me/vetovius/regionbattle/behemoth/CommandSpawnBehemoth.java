@@ -1,7 +1,6 @@
 package me.vetovius.regionbattle.behemoth;
 
 import me.vetovius.regionbattle.RegionBattle;
-import me.vetovius.regionbattle.miniboss.MiniBoss;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,6 +10,8 @@ import java.util.logging.Logger;
 
 
 public class CommandSpawnBehemoth implements CommandExecutor {
+
+    protected Behemoth behemoth;
 
     private static final Logger LOGGER = Logger.getLogger( me.vetovius.regionbattle.behemoth.CommandSpawnBehemoth.class.getName() );
 
@@ -26,7 +27,7 @@ public class CommandSpawnBehemoth implements CommandExecutor {
             RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
 
             LOGGER.info("--Spawning a Behemoth--");
-            new Behemoth(plugin,player); //Init Behemoth
+            this.behemoth = new Behemoth(plugin,player,this); //Init Behemoth
         }
 
 

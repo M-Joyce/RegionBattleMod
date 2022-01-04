@@ -30,6 +30,7 @@ public class Behemoth implements Listener {
     private static final Logger LOGGER = Logger.getLogger( Behemoth.class.getName() );
     private RegionBattle pluginInstance;
     private Player player; //player who summoned the Behemoth
+    private CommandSpawnBehemoth spawnCommandInstance;
 
     LivingEntity behemoth;
 
@@ -46,9 +47,10 @@ public class Behemoth implements Listener {
     private final int behemothArmor = 25;
     private final double behemothSpeed = 0.3;
 
-    public Behemoth(RegionBattle pluginInstance, Player player){
+    public Behemoth(RegionBattle pluginInstance, Player player, CommandSpawnBehemoth spawnCommand){
         this.pluginInstance = pluginInstance;
         this.player = player;
+        this.spawnCommandInstance = spawnCommand;
 
         Bukkit.getPluginManager().registerEvents(this, pluginInstance); //register events
 
@@ -105,7 +107,9 @@ public class Behemoth implements Listener {
                     LOGGER.info("Behemoth is dead, cancelling the instance.");
                     behemothHealthBar.removeAll();
                     Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
-                    behemoth.remove();
+                    behemoth.remove(); //remove behemoth
+                    behemoth = null; //set behemoth null so instance goes away
+                    spawnCommandInstance.behemoth = null; //set spawn command instance of this class to null
 
                     //F this deprecation, I'm using it anyway because this must be manually spawned by an admin
                     Bukkit.broadcastMessage(ChatColor.LIGHT_PURPLE + "The [" + ChatColor.DARK_RED + behemothName + ChatColor.LIGHT_PURPLE +"] has perished!");
@@ -119,6 +123,9 @@ public class Behemoth implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
+        if(behemoth == null){ //no behemoth, no special stuff.
+            return;
+        }
         if(e.getEntity().getWorld() == behemoth.getWorld()){
             if(Objects.equals(e.getEntity().getCustomName(), behemothName)){
 
@@ -136,6 +143,9 @@ public class Behemoth implements Listener {
                 //End tasks only if the location was within the right zone, else this could be other minibosses
                 behemothHealthBar.removeAll();
                 Bukkit.getScheduler().cancelTask(checkForBossBarPlayersId);
+                behemoth.remove(); //remove behemoth
+                behemoth = null; //set behemoth null so instance goes away
+                spawnCommandInstance.behemoth = null; //set spawn command instance of this class to null
 
             }
         }
@@ -144,6 +154,9 @@ public class Behemoth implements Listener {
 
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) { //keep inv near behemoth boss, because its OP
+        if(behemoth == null){ //no behemoth, no special stuff.
+            return;
+        }
         if(e.getPlayer().getWorld() == behemoth.getWorld()) {
             if(behemoth.getLocation().distanceSquared(e.getPlayer().getLocation()) < (50*50)){ //if player is "near" behemoth
                 e.setKeepInventory(true);
@@ -156,6 +169,9 @@ public class Behemoth implements Listener {
 
     @EventHandler
     public void onEntityDamageByEntity(EntityDamageByEntityEvent e) {
+        if(behemoth == null){ //no behemoth, no special stuff.
+            return;
+        }
         if(Objects.equals(e.getEntity().getCustomName(), behemothName)){
             if (e.getEntity() instanceof LivingEntity livingEntity) {
                 if(e.getDamager() instanceof Player){
@@ -173,7 +189,9 @@ public class Behemoth implements Listener {
 
     @EventHandler
     public void onProjectileHit(ProjectileHitEvent e) {
-
+        if(behemoth == null){ //no behemoth, no special stuff.
+            return;
+        }
         if(e.getHitEntity() instanceof IronGolem){
 
             if(Objects.equals(e.getHitEntity().getCustomName(), behemothName)){
