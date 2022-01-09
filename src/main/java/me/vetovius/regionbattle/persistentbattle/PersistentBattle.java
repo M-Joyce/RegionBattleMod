@@ -17,6 +17,7 @@ import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -78,7 +79,7 @@ public class PersistentBattle implements Listener {
         TextComponent objectiveName = Component.text("Player Kills").color(TextColor.color(0x9C8A));
 
         //create objective for score board
-        objective = board.registerNewObjective("battleObjective", "playerKillCount",objectiveName);
+        objective = board.registerNewObjective("battleObjective", "dummy",objectiveName);
         objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
         teamBlue.color(NamedTextColor.BLUE); //Set Colors for teams
@@ -397,6 +398,20 @@ public class PersistentBattle implements Listener {
             LOGGER.info("Something went wrong, player needed to be removed from battle but was not on a team!");
         }
 
+    }
+
+    @EventHandler
+    private void onPlayerDeath(PlayerDeathEvent e){
+
+        if(e.getPlayer().getWorld() == world){ //manually track scores
+            if(e.getPlayer().getKiller() instanceof Player){
+                Player killer = e.getPlayer().getKiller();
+                if(bluePlayers.contains(killer) || redPlayers.contains(killer)) {
+                    Score score = objective.getScore(killer.getName());
+                    score.setScore(score.getScore() + 1);
+                }
+            }
+        }
     }
 
 }
