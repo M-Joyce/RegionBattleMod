@@ -398,6 +398,9 @@ public class PersistentBattle implements Listener {
             LOGGER.info("Something went wrong, player needed to be removed from battle but was not on a team!");
         }
 
+        Score score = objective.getScore(player.getName()); //remove score if player leaves
+        score.resetScore();
+
     }
 
     @EventHandler
