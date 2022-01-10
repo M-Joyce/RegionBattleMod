@@ -410,7 +410,7 @@ public class PersistentBattle implements Listener {
             if(e.getPlayer().getKiller() instanceof Player){
                 Player killer = e.getPlayer().getKiller();
                 if(bluePlayers.contains(killer) || redPlayers.contains(killer)) {
-                    Score score = objective.getScore(killer.getName());
+                    Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(killer.displayName()));
                     score.setScore(score.getScore() + 1);
                 }
             }
