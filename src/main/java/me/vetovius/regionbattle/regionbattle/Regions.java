@@ -71,7 +71,7 @@ public class Regions {
 
         //Red Team Region////////////
         BlockVector3 minRed = BlockVector3.at(redX, 0, redZ);
-        BlockVector3 maxRed = BlockVector3.at(redX+regionSize, 255, redZ + regionSize);
+        BlockVector3 maxRed = BlockVector3.at(redX+regionSize, 320, redZ + regionSize);
         regionRed = new ProtectedCuboidRegion("Team_Red", minRed, maxRed);
 
         //Red Team DefaultDomain for owners/members //TODO should server be owner?
@@ -90,7 +90,7 @@ public class Regions {
 
         //Blue Team Region//////////////
         BlockVector3 minBlue = BlockVector3.at(blueX, 0, blueZ);
-        BlockVector3 maxBlue = BlockVector3.at(blueX+regionSize, 255, blueZ+regionSize);
+        BlockVector3 maxBlue = BlockVector3.at(blueX+regionSize, 320, blueZ+regionSize);
 
         regionBlue = new ProtectedCuboidRegion("Team_Blue", minBlue, maxBlue);
 
