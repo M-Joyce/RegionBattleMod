@@ -54,9 +54,9 @@ public class PersistentBattle implements Listener {
     public static World world = Bukkit.getWorld("Battle");
 
     private static final int max = 4000; //max coordinate
-    private static final int min = 600; //min coordinate
+    private static final int min = 500; //min coordinate
     private static final int minDistance = 400; //minimum distance between region centers.
-    private static final int maxDistance = 1000; //maximum distance between region centers.
+    private static final int maxDistance = 850; //maximum distance between region centers.
 
     private long hourTime; //system time when its been 1 hour from battle start.
     private long startTime;

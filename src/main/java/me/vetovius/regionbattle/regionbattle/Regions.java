@@ -33,8 +33,8 @@ public class Regions {
     private static final int regionSize = 300; //dimension region should be (a square at y=0 to max height)
     private static final int max = 2800; //max coordinate
     private static final int min = 800; //min coordinate
-    private static final int minDistance = 500; //minimum distance between region centers.
-    private static final int maxDistance = 1200; //maximum distance between region centers.
+    private static final int minDistance = 400; //minimum distance between region centers.
+    private static final int maxDistance = 800; //maximum distance between region centers.
 
     //Getting World
     public static final World world = Bukkit.getWorld("RegionBattle");
