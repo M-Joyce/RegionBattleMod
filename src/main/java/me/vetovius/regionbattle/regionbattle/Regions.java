@@ -13,8 +13,11 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.vetovius.regionbattle.RegionBattle;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitTask;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
@@ -45,7 +48,7 @@ public class Regions {
     private DefaultDomain membersBlue; //blue team members
     private DefaultDomain membersRed; //red team members
 
-    protected int particleRunnerID;
+    protected BukkitTask particleRunnerTask;
 
 
     public Regions(){
@@ -108,14 +111,14 @@ public class Regions {
         regionBlue.setFlag(Flags.ENDERPEARL.getRegionGroupFlag(), RegionGroup.ALL);
 
         regionManager.addRegion(regionBlue); //add region to RegionManager (saves it)
-        particleRunnerID = regionParticles(minBlue,maxBlue,minRed,maxRed);
+        particleRunnerTask = regionParticles(minBlue,maxBlue,minRed,maxRed);
 
         ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
         Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
     }
 
     //Generate the region particles on a schedule as a way of showing the border of the region.
-    public int regionParticles(BlockVector3 minBlue, BlockVector3 maxBlue, BlockVector3 minRed, BlockVector3 maxRed)
+    public BukkitTask regionParticles(BlockVector3 minBlue, BlockVector3 maxBlue, BlockVector3 minRed, BlockVector3 maxRed)
     {
 
         LOGGER.info("Initiating Particles..");
@@ -158,13 +161,15 @@ public class Regions {
         }
 
         RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
-        int id = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-            public void run() {
-                for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
-                    world.spawnParticle(Particle.COMPOSTER,location, 3, 0, 0, 0, 1, null, true);
-                }
-            }}, 0, 60); //second parameter is the frequency in ticks of the flash, 100 = flash every 100 ticks(5 seconds).
-        return id;
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
+                world.spawnParticle(Particle.COMPOSTER,location, 3, 0, 0, 0, 1, null, true);
+            }
+        }, 0, 60);
+
+        return task;
+
     }
 
     protected void assignRegionMembers(Battle battle){
@@ -182,9 +187,6 @@ public class Regions {
 
         regionRed.setMembers(membersRed);
         regionBlue.setMembers(membersBlue);
-
-        //LOGGER.info("redMembers: " + regionRed.getMembers().toString());
-        //LOGGER.info("blueMembers: " + regionBlue.getMembers().toString());
     }
 
     private Point[] findRegionZones(){ //find zones for region

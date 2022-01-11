@@ -8,10 +8,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -60,6 +57,8 @@ public class Battle implements Listener {
 
     private BukkitTask prepCountdownTask;
 
+    private BukkitTask spawnTeamParticlesTask;
+
     private BossBar prepPhaseBossBar;
 
     private RegionBattle plugin;
@@ -91,7 +90,8 @@ public class Battle implements Listener {
         this.battleRegions.assignRegionMembers(this);
         this.teleportTeams(battleRegions.regionRed,battleRegions.regionBlue);
         this.startPrepPhaseBossBarTimer();
-        this.battleTimer(battleRegions.particleRunnerID);
+        this.battleTimer(battleRegions.particleRunnerTask);
+        spawnTeamParticlesTask = this.startTeamParticles();
 
     }
 
@@ -204,7 +204,22 @@ public class Battle implements Listener {
 
     }
 
-    public void battleTimer(int particleRunnerID){
+    private BukkitTask startTeamParticles(){
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            for(Player p: bluePlayers){
+                Regions.world.spawnParticle(Particle.REDSTONE,p.getLocation(), 1, 0, 0, 0, 0, new Particle.DustOptions(Color.BLUE, 8), true);
+            }
+
+            for(Player p: redPlayers){
+                Regions.world.spawnParticle(Particle.REDSTONE,p.getLocation(), 1, 0, 0, 0, 0, new Particle.DustOptions(Color.RED, 8), true);
+            }
+        }, 0, 20*2); //20 ticks = 1 sec
+
+        return task;
+    }
+
+    public void battleTimer(BukkitTask particleRunnerTask){
 
         Regions.world.setTime(23200); //set time to Morning
 
@@ -262,7 +277,8 @@ public class Battle implements Listener {
                             prepCountdownTask.cancel();
                         }
 
-                        Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
+                        particleRunnerTask.cancel(); //Cancel Particle Effects at boundary
+                        spawnTeamParticlesTask.cancel();
 
                         CommandStartRegionBattle.battle = null; //Tell CommandStartRegionBattle that the battle is over and another can be started.
                         CommandSeek.battle = null;
@@ -295,7 +311,8 @@ public class Battle implements Listener {
 
                 battleRegions.removeFlagsForBattle(); //remove flags in regions to allow for battle
 
-                Bukkit.getScheduler().cancelTask(particleRunnerID); //Cancel Particle Effects at boundary
+                particleRunnerTask.cancel(); //Cancel Particle Effects at boundary
+                spawnTeamParticlesTask.cancel();
 
             }}, 20*60L*prepareMinutes); //20 ticks per second * 60 seconds * # Minutes wanted from prepareMinutes
     }

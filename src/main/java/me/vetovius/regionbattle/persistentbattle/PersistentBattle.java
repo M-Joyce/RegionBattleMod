@@ -10,6 +10,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
@@ -18,10 +19,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
 
 import java.awt.*;
@@ -59,6 +63,7 @@ public class PersistentBattle implements Listener {
 
     private BossBar battleTimerBar;
     protected int timerTaskId;
+    protected BukkitTask spawnTeamParticlesTask;
 
 
     public PersistentBattle(RegionBattle pluginInstance){
@@ -112,6 +117,8 @@ public class PersistentBattle implements Listener {
         startTime = System.currentTimeMillis();
         hourTime =  System.currentTimeMillis() + 3600000 * 2; //1 hour from now * 2
 
+        spawnTeamParticlesTask = startTeamParticles();
+
         this.battleTimerBar = Bukkit.createBossBar(ChatColor.GRAY+"The battle is on!", BarColor.RED, BarStyle.SEGMENTED_10);
         battleTimerBar.setProgress(1);
         battleTimer(); //keep track of time
@@ -128,6 +135,7 @@ public class PersistentBattle implements Listener {
                 if (System.currentTimeMillis() >= hourTime){ //Hour is up, end the battle and start a new one.
 
                     Bukkit.getScheduler().cancelTask(timerTaskId);
+                    spawnTeamParticlesTask.cancel();
                     //remove players, avoiding comodification exception
                     ArrayList<Player> toRemove = new ArrayList<>();
                     for(Player p : redPlayers){
@@ -272,6 +280,21 @@ public class PersistentBattle implements Listener {
         else{
             Bukkit.getPlayer(uuid).sendMessage("You aren't in the battle world.");
         }
+    }
+
+    private BukkitTask startTeamParticles(){
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            for(Player p: bluePlayers){
+                world.spawnParticle(Particle.REDSTONE,p.getLocation(), 1, 0, 0, 0, 0, new Particle.DustOptions(Color.BLUE, 8), true);
+            }
+
+            for(Player p: redPlayers){
+                world.spawnParticle(Particle.REDSTONE,p.getLocation(), 1, 0, 0, 0, 0, new Particle.DustOptions(Color.RED, 8), true);
+            }
+        }, 0, 20*2); //20 ticks = 1 sec
+
+        return task;
     }
 
     @EventHandler
