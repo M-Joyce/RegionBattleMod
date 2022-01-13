@@ -13,6 +13,7 @@ import com.sk89q.worldguard.protection.regions.ProtectedRegion;
 import com.sk89q.worldguard.protection.regions.RegionContainer;
 import me.vetovius.regionbattle.RegionBattle;
 import org.bukkit.*;
+import org.bukkit.Color;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
@@ -140,32 +141,41 @@ public class Regions {
         }
         for(int maxRedX=maxRed.getBlockX();maxRedX>minRed.getBlockX();maxRedX--) { //Red Region Particles
             //Ground
-            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,maxRed.getBlockZ())+1,maxRed.getBlockZ()));
-            particleLocations.add(new Location(world,maxRedX,world.getHighestBlockYAt(maxRedX,minRed.getBlockZ())+1,minRed.getBlockZ()));
+            for(int y=62; y<=172 ; y+=10) {
+                particleLocations.add(new Location(world,maxRedX,y,maxRed.getBlockZ()));
+                particleLocations.add(new Location(world,maxRedX,y,minRed.getBlockZ()));
+            }
+
         }
         for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX--) { //Blue Region Particles - North and South Boundary
             //Ground
-            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,maxBlue.getBlockZ())+1,maxBlue.getBlockZ()));
-            particleLocations.add(new Location(world,maxBlueX,world.getHighestBlockYAt(maxBlueX,minBlue.getBlockZ())+1,minBlue.getBlockZ()));
+            for(int y=62; y<=172 ; y+=10) {
+                particleLocations.add(new Location(world,maxBlueX,y,maxBlue.getBlockZ()));
+                particleLocations.add(new Location(world,maxBlueX,y,minBlue.getBlockZ()));
+            }
         }
         for(int maxRedZ=maxRed.getBlockZ();maxRedZ>minRed.getBlockZ();maxRedZ--) { //Red Region Particles
             //Ground
-            particleLocations.add(new Location(world,maxRed.getBlockX(),world.getHighestBlockYAt(maxRed.getBlockX(),maxRedZ)+1,maxRedZ));
-            particleLocations.add(new Location(world,minRed.getBlockX(),world.getHighestBlockYAt(minRed.getBlockX(),maxRedZ)+1,maxRedZ));
+            for(int y=62; y<=172 ; y+=10) {
+                particleLocations.add(new Location(world,maxRed.getBlockX(),y,maxRedZ));
+                particleLocations.add(new Location(world,minRed.getBlockX(),y,maxRedZ));
+            }
         }
         for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ--) { //Blue Region Particles - West and East Boundary
             //Ground
-            particleLocations.add(new Location(world,maxBlue.getBlockX(),world.getHighestBlockYAt(maxBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
-            particleLocations.add(new Location(world,minBlue.getBlockX(),world.getHighestBlockYAt(minBlue.getBlockX(),maxBlueZ)+1,maxBlueZ));
+            for(int y=62; y<=172 ; y+=10) {
+                particleLocations.add(new Location(world,maxBlue.getBlockX(),y,maxBlueZ));
+                particleLocations.add(new Location(world,minBlue.getBlockX(),y,maxBlueZ));
+            }
         }
 
         RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
 
         BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
             for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
-                world.spawnParticle(Particle.COMPOSTER,location, 3, 0, 0, 0, 1, null, true);
+                world.spawnParticle(Particle.REDSTONE,location, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 3), true);
             }
-        }, 0, 60);
+        }, 0, 100);
 
         return task;
 

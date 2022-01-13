@@ -19,15 +19,18 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import org.bukkit.scoreboard.*;
+import org.bukkit.util.BoundingBox;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class PersistentBattle implements Listener {
@@ -49,12 +52,15 @@ public class PersistentBattle implements Listener {
     Location redSpawn;
     Location blueSpawn;
 
+    private BoundingBox border;
+
     public static World world = Bukkit.getWorld("Battle");
 
-    private static final int max = 4000; //max coordinate
-    private static final int min = 500; //min coordinate
+    private static final int max = 5000; //max coordinate
+    private static final int min = 1000; //min coordinate
     private static final int minDistance = 400; //minimum distance between region centers.
     private static final int maxDistance = 850; //maximum distance between region centers.
+    private static final int borderRadius = 1000; //radius of the dynamic border.
 
     private long hourTime; //system time when its been 1 hour from battle start.
     private long startTime;
@@ -62,6 +68,7 @@ public class PersistentBattle implements Listener {
     private BossBar battleTimerBar;
     protected int timerTaskId;
     protected BukkitTask spawnTeamParticlesTask;
+    protected BukkitTask borderParticlesTask;
 
 
     public PersistentBattle(RegionBattle pluginInstance){
@@ -108,6 +115,20 @@ public class PersistentBattle implements Listener {
         redSpawn = new Location(world,redX,world.getHighestBlockYAt(redX,redZ)+1,redZ);
         blueSpawn = new Location(world,blueX,world.getHighestBlockYAt(blueX,blueZ)+1,blueZ);
 
+        //Create BoundingBox Border
+
+        int midX = Math.round(((redX + blueX)/2));
+        int midZ = Math.round(((redZ + blueZ)/2));
+
+
+        //create a new border using min/max corners
+        border = new BoundingBox(midX-borderRadius, 0, midZ-borderRadius , midX+borderRadius, 320, midZ+borderRadius);
+
+        LOGGER.info("Battle Border created. Center: " + border.getCenter());
+
+        borderParticlesTask = borderParticles();
+
+
 
         ChestLoot chestLoot = new ChestLoot(4000, new Location(world, 3000, 80, 3000), plugin); //init chestLoot feature to generate loot in unopened chestLoot chests each game (only if pdc value is set)
 
@@ -134,6 +155,7 @@ public class PersistentBattle implements Listener {
 
                     Bukkit.getScheduler().cancelTask(timerTaskId);
                     spawnTeamParticlesTask.cancel();
+                    borderParticlesTask.cancel();
                     //remove players, avoiding comodification exception
                     ArrayList<Player> toRemove = new ArrayList<>();
                     for(Player p : redPlayers){
@@ -295,6 +317,56 @@ public class PersistentBattle implements Listener {
         return task;
     }
 
+    //Generate the border particles on a schedule as a way of showing the border of the battle.
+    public BukkitTask borderParticles()
+    {
+
+        LOGGER.info("Initiating Border Particles..");
+
+
+        Location minBorder = border.getMin().toLocation(world);
+        Location maxBorder = border.getMax().toLocation(world);
+
+        //Create List of points for vertical particles at corners of region
+        List<Location> particleLocations = new ArrayList<>();
+
+            for(int maxRedY=maxBorder.getBlockY();maxRedY>minBorder.getBlockY();maxRedY--) {
+                //vertical corners
+                particleLocations.add(new Location(world,maxBorder.getBlockX(),maxRedY,maxBorder.getBlockZ()));
+                particleLocations.add(new Location(world,minBorder.getBlockX(),maxRedY,maxBorder.getBlockZ()));
+                particleLocations.add(new Location(world,maxBorder.getBlockX(),maxRedY,minBorder.getBlockZ()));
+                particleLocations.add(new Location(world,minBorder.getBlockX(),maxRedY,minBorder.getBlockZ()));
+            }
+            for(int maxRedX=maxBorder.getBlockX();maxRedX>minBorder.getBlockX();maxRedX--) {
+                //Ground
+                for(int y=62; y<=172 ; y+=10) {
+                    particleLocations.add(new Location(world, maxRedX, y, maxBorder.getBlockZ()));
+                    particleLocations.add(new Location(world, maxRedX, y, minBorder.getBlockZ()));
+                }
+            }
+            for(int maxRedZ=maxBorder.getBlockZ();maxRedZ>minBorder.getBlockZ();maxRedZ--) {
+                //Ground
+                for(int y=62; y<=172 ; y+=10){
+                    particleLocations.add(new Location(world,maxBorder.getBlockX(),y,maxRedZ));
+                    particleLocations.add(new Location(world,minBorder.getBlockX(),y,maxRedZ));
+                }
+
+            }
+
+
+
+        RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+            for(Location location : particleLocations){ //Set Particle Border by looping through particleLocations List
+                world.spawnParticle(Particle.REDSTONE,location, 0, 0, 0, 0, 0, new Particle.DustOptions(Color.GRAY, 3), true);
+            }
+        }, 0, 100);
+
+        return task;
+
+    }
+
     @EventHandler
     public void onPlayerRespawn (PlayerRespawnEvent event) { //handle when die and need to respawn to their team
         Player p = event.getPlayer();
@@ -433,6 +505,21 @@ public class PersistentBattle implements Listener {
                 if(bluePlayers.contains(killer) || redPlayers.contains(killer)) {
                     Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(killer.displayName()));
                     score.setScore(score.getScore() + 1);
+                }
+            }
+        }
+    }
+
+    @EventHandler
+    private void onPlayerMove(PlayerMoveEvent e){ //don't allow the player out of the border
+
+        if(e.getPlayer().getWorld() == world){
+            if(e.hasChangedBlock()){
+                if(bluePlayers.contains(e.getPlayer()) || redPlayers.contains(e.getPlayer())){
+                    if(!border.contains(e.getTo().toVector())){
+                        e.setCancelled(true);
+                        e.getPlayer().sendMessage("You can't leave the border!");
+                    }
                 }
             }
         }
