@@ -3,3 +3,5 @@ perks:
     angelEvent:
         isActive: false
         endTime: 0
+vote:
+    voteCount: 0

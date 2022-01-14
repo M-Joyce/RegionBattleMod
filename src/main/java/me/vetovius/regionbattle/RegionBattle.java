@@ -223,7 +223,9 @@ public class RegionBattle extends JavaPlugin implements Listener {
             else{
                 LOGGER.info("VOTIFIER: INVALID PLAYER NAME!" + event.getVote().toString());
             }
-
+            
+            this.getConfig().set("vote.voteCount" , this.getConfig().getInt("vote.voteCount") + 1); // update vote
+            this.saveConfig();
         }
 
     }
