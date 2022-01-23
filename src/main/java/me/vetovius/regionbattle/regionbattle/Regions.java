@@ -45,8 +45,8 @@ public class Regions {
     protected ProtectedRegion regionRed;
     protected ProtectedRegion regionBlue;
 
-    private DefaultDomain membersBlue; //blue team members
-    private DefaultDomain membersRed; //red team members
+    protected DefaultDomain membersBlue; //blue team members
+    protected DefaultDomain membersRed; //red team members
 
     protected BukkitTask particleRunnerTask;
 

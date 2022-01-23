@@ -534,7 +534,11 @@ public class Battle implements Listener {
                 return;
             }
 
+            LOGGER.info("Force adding player to red team.");
+
             redPlayers.add(player);
+            battleRegions.membersRed.addPlayer(player.toString());
+            battleRegions.regionRed.setMembers(battleRegions.membersRed);
             player.getInventory().clear(); //clear inventory
             player.setHealth(20); //heal
             player.setFoodLevel(20); //feed
@@ -548,7 +552,22 @@ public class Battle implements Listener {
 
         }
         else if(team.equalsIgnoreCase("blue")){
+
+            if(redPlayers.contains(player)){
+                LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                return;
+            }
+
+            if(bluePlayers.contains(player)){
+                LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                return;
+            }
+
+            LOGGER.info("Force adding player to blue team.");
+
             bluePlayers.add(player);
+            battleRegions.membersBlue.addPlayer(player.toString());
+            battleRegions.regionBlue.setMembers(battleRegions.membersBlue);
             player.getInventory().clear(); //clear inventory
             player.setHealth(20); //heal
             player.setFoodLevel(20); //feed

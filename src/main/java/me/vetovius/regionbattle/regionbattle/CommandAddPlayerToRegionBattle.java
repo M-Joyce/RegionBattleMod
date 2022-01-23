@@ -26,10 +26,10 @@ public class CommandAddPlayerToRegionBattle implements CommandExecutor {
                 if(args.length == 2) { //check if 2 args, else not valid command
                     if(Bukkit.getPlayerExact(args[0]) instanceof Player){
                         if(args[1].equalsIgnoreCase("red")){
-                            battle.forceAddPlayerToTeam("red", player);
+                            battle.forceAddPlayerToTeam("red", Bukkit.getPlayerExact(args[0]));
                         }
                         if(args[1].equalsIgnoreCase("blue")){
-                            battle.forceAddPlayerToTeam("blue", player);
+                            battle.forceAddPlayerToTeam("blue", Bukkit.getPlayerExact(args[0]));
                         }
                     }
                     else{
