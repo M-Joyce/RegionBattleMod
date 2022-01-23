@@ -581,6 +581,9 @@ public class Battle implements Listener {
 
         }
 
+        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+        Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
+
     }
 
 }
