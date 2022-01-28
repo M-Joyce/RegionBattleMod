@@ -298,6 +298,7 @@ public class Battle implements Listener {
                                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                                 Bukkit.dispatchCommand(console, "startregionbattle");
                                 newBattleCountdownTask.cancel();
+                                newBattleCountdownTask = null;
                                 newBattleCountdownBossBar.removeAll();
                                 newBattleCountdownBossBar.setVisible(false);
                                 newBattleCountdownBossBar = null;

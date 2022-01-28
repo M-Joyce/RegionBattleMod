@@ -56,15 +56,30 @@ public class CommandStartRegionBattle implements CommandExecutor {
                     else{
                         Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.RED + "There is already an ongoing battle! Wait until it ends!");
                     }
-                    newBattleCountdownTask.cancel();
-                    newBattleCountdownBossBar.removeAll();
-                    newBattleCountdownBossBar.setVisible(false);
-                    newBattleCountdownBossBar = null;
+                    if (newBattleCountdownTask != null) {
+                        newBattleCountdownTask.cancel();
+                        newBattleCountdownTask = null;
+                    }
+                    if (newBattleCountdownBossBar != null){
+                        newBattleCountdownBossBar.removeAll();
+                        newBattleCountdownBossBar.setVisible(false);
+                        newBattleCountdownBossBar = null;
+                    }
                 }
                 else{
                     //Do things if a game doesn't start due to not enough players
                     for(Player p : Regions.world.getPlayers()){
                         p.sendMessage(ChatColor.GREEN + "Not enough players! A new battle will begin in " + Battle.newBattleDelay + " minutes if there are enough players!");
+                    }
+
+                    if (newBattleCountdownTask != null) {
+                        newBattleCountdownTask.cancel();
+                        newBattleCountdownTask = null;
+                    }
+                    if (newBattleCountdownBossBar != null){
+                        newBattleCountdownBossBar.removeAll();
+                        newBattleCountdownBossBar.setVisible(false);
+                        newBattleCountdownBossBar = null;
                     }
 
                     if (newBattleCountdownTask == null) {
