@@ -63,8 +63,9 @@ public class Battle implements Listener {
 
     private RegionBattle plugin;
 
-
-
+    public BossBar newBattleCountdownBossBar;
+    public BukkitTask newBattleCountdownTask;
+    
 
     public Battle(RegionBattle pluginInstance){
 
@@ -290,12 +291,16 @@ public class Battle implements Listener {
                         for(Player p : Regions.world.getPlayers()){
                             p.sendMessage(ChatColor.GREEN + "A new battle will begin in " + newBattleDelay + " minutes!");
                         }
+                        newBattleStartCountDown(); //start countdown for new battle.
                         Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-
                             public void run() {
                                 //Start a new battle.
                                 ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
                                 Bukkit.dispatchCommand(console, "startregionbattle");
+                                newBattleCountdownTask.cancel();
+                                newBattleCountdownBossBar.removeAll();
+                                newBattleCountdownBossBar.setVisible(false);
+                                newBattleCountdownBossBar = null;
                             }
                         }, 20*60L*newBattleDelay); //20 ticks per second * 60 seconds * # Minutes
 
@@ -498,7 +503,6 @@ public class Battle implements Listener {
         }
     }
 
-
     private void startPrepPhaseBossBarTimer(){
         //Timer for preparation phase
 
@@ -507,7 +511,7 @@ public class Battle implements Listener {
                 int seconds = 60*prepareMinutes;
                 @Override
                 public void run() {
-                    if ((seconds -= 1) == 0) {
+                    if ((seconds -= 1) <= 0) {
                         prepCountdownTask.cancel();
                         prepPhaseBossBar.removeAll();
                     } else {
@@ -517,6 +521,38 @@ public class Battle implements Listener {
             }.runTaskTimer(plugin, 0, 20);
         }
         prepPhaseBossBar.setVisible(true);
+    }
+
+    private void newBattleStartCountDown(){
+        //Timer for preparation phase
+
+        if (newBattleCountdownTask == null) {
+            this.newBattleCountdownBossBar = Bukkit.createBossBar(ChatColor.GRAY+"Time until next battle.", BarColor.RED, BarStyle.SEGMENTED_10);
+            this.newBattleCountdownTask = new BukkitRunnable() {
+                int seconds = 60*newBattleDelay;
+                @Override
+                public void run() {
+                    if ((seconds -= 1) <= 0) {
+                        newBattleCountdownTask.cancel();
+                        newBattleCountdownBossBar.removeAll();
+                    } else {
+                        newBattleCountdownBossBar.setProgress(seconds / (60D*newBattleDelay));
+                    }
+
+                    for(Player p : Regions.world.getPlayers()) { //add players to boss bar.
+                        if(!newBattleCountdownBossBar.getPlayers().contains(p)){
+                            newBattleCountdownBossBar.addPlayer(p);
+                        }
+                    }
+                    for(Player p : newBattleCountdownBossBar.getPlayers()){ //remove player if not in battle world
+                        if(p.getWorld() != Regions.world){
+                            newBattleCountdownBossBar.removePlayer(p);
+                        }
+                    }
+                }
+            }.runTaskTimer(plugin, 0, 20);
+        }
+        newBattleCountdownBossBar.setVisible(true);
     }
 
     protected void forceAddPlayerToTeam(String team, Player player){ //used for CommandAddPlayerToRegionBattle
