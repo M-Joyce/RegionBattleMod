@@ -236,9 +236,9 @@ public class PersistentBattle implements Listener {
                 player.getInventory().clear(); //clear inventory
                 player.getInventory().addItem(compass); //give player a compass for seek
                 redPlayers.add(player);
-                teamRed.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
+                teamRed.addEntity(player); //add player to team
                 player.setScoreboard(board); //set player scoreboard
-                Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+                Score score = objective.getScore(player);
                 score.setScore(0);
 
                 for(Player p : redPlayers){
@@ -254,9 +254,9 @@ public class PersistentBattle implements Listener {
                 player.getInventory().clear(); //clear inventory
                 player.getInventory().addItem(compass); //give player a compass for seek
                 bluePlayers.add(player);
-                teamBlue.addEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName())); //add player to team
+                teamBlue.addEntity(player);
                 player.setScoreboard(board); //set player scoreboard
-                Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+                Score score = objective.getScore(player);
                 score.setScore(0);
 
                 for(Player p : redPlayers){
@@ -461,7 +461,7 @@ public class PersistentBattle implements Listener {
         battleTimerBar.removePlayer(player); //display prep timer
         if(redPlayers.contains(player)){
             redPlayers.remove(player);
-            teamRed.removeEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+            teamRed.removeEntity(player);
             player.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
             player.teleport(spawn);
             player.getInventory().clear(); //clear inventory
@@ -475,7 +475,7 @@ public class PersistentBattle implements Listener {
         }
         else if(bluePlayers.contains(player)){
             bluePlayers.remove(player);
-            teamBlue.removeEntry(PlainTextComponentSerializer.plainText().serialize(player.displayName()));
+            teamBlue.removeEntity(player);
             player.setScoreboard(manager.getNewScoreboard()); //manager.getNewScoreboard() will return a blank scoreboard
             player.teleport(spawn);
             player.getInventory().clear(); //clear inventory
@@ -503,7 +503,7 @@ public class PersistentBattle implements Listener {
             if(e.getPlayer().getKiller() instanceof Player){
                 Player killer = e.getPlayer().getKiller();
                 if(bluePlayers.contains(killer) || redPlayers.contains(killer)) {
-                    Score score = objective.getScore(PlainTextComponentSerializer.plainText().serialize(killer.displayName()));
+                    Score score = objective.getScore(killer);
                     score.setScore(score.getScore() + 1);
                 }
             }
