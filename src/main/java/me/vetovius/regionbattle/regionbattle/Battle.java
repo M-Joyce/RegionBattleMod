@@ -239,8 +239,7 @@ public class Battle implements Listener {
             int checkIfGameIsOverID = Bukkit.getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
                 public void run() {
 
-                    if((redPlayers.size() <= -1 || bluePlayers.size() <= -1)){ //End game check //TODO SET BACK TO 0
-                        //TODO///////////////////////////////////////////////////////////////////////////////////////////////
+                    if((redPlayers.size() <= 0 || bluePlayers.size() <= 0)){ //End game check
 
                         if(redPlayers.size() <= 0){
                             for(Player p : Regions.world.getPlayers()){
