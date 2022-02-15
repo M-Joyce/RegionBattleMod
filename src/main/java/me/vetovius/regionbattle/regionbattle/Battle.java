@@ -574,67 +574,73 @@ public class Battle implements Listener {
     protected void forceAddPlayerToTeam(String team, Player player){ //used for CommandAddPlayerToRegionBattle
         ItemStack compass = new ItemStack(Material.COMPASS,1);
 
-        if(team.equalsIgnoreCase("red")){
 
-            if(redPlayers.contains(player)){
-                LOGGER.info("Tried to force add a player, but the player is already on that team!");
-                return;
+        if(player.getWorld()==Regions.world){
+            if(team.equalsIgnoreCase("red")){
+
+                if(redPlayers.contains(player)){
+                    LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                    return;
+                }
+
+                if(bluePlayers.contains(player)){
+                    LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                    return;
+                }
+
+                LOGGER.info("Force adding player to red team.");
+
+                redPlayers.add(player);
+                battleRegions.membersRed.addPlayer(player.toString());
+                battleRegions.regionRed.setMembers(battleRegions.membersRed);
+                player.getInventory().clear(); //clear inventory
+                player.setHealth(20); //heal
+                player.setFoodLevel(20); //feed
+                player.getInventory().addItem(compass); //give player a compass for seek
+                teamRed.addEntity(player); //add player to team
+                player.setScoreboard(board); //set player scoreboard
+                prepPhaseBossBar.addPlayer(player); //display prep timer
+                Score score = objective.getScore(player);
+                score.setScore(0);
+                player.teleport(redMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
+
             }
+            else if(team.equalsIgnoreCase("blue")){
 
-            if(bluePlayers.contains(player)){
-                LOGGER.info("Tried to force add a player, but the player is already on that team!");
-                return;
+                if(redPlayers.contains(player)){
+                    LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                    return;
+                }
+
+                if(bluePlayers.contains(player)){
+                    LOGGER.info("Tried to force add a player, but the player is already on that team!");
+                    return;
+                }
+
+                LOGGER.info("Force adding player to blue team.");
+
+                bluePlayers.add(player);
+                battleRegions.membersBlue.addPlayer(player.toString());
+                battleRegions.regionBlue.setMembers(battleRegions.membersBlue);
+                player.getInventory().clear(); //clear inventory
+                player.setHealth(20); //heal
+                player.setFoodLevel(20); //feed
+                player.getInventory().addItem(compass); //give player a compass for seek
+                teamBlue.addEntity(player); //add player to team
+                player.setScoreboard(board); //set player scoreboard
+                prepPhaseBossBar.addPlayer(player); //display prep timer
+                Score score = objective.getScore(player);
+                score.setScore(0);
+                player.teleport(blueMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
+                ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
+                Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
             }
-
-            LOGGER.info("Force adding player to red team.");
-
-            redPlayers.add(player);
-            battleRegions.membersRed.addPlayer(player.toString());
-            battleRegions.regionRed.setMembers(battleRegions.membersRed);
-            player.getInventory().clear(); //clear inventory
-            player.setHealth(20); //heal
-            player.setFoodLevel(20); //feed
-            player.getInventory().addItem(compass); //give player a compass for seek
-            teamRed.addEntity(player); //add player to team
-            player.setScoreboard(board); //set player scoreboard
-            prepPhaseBossBar.addPlayer(player); //display prep timer
-            Score score = objective.getScore(player);
-            score.setScore(0);
-            player.teleport(redMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
-
         }
-        else if(team.equalsIgnoreCase("blue")){
-
-            if(redPlayers.contains(player)){
-                LOGGER.info("Tried to force add a player, but the player is already on that team!");
-                return;
-            }
-
-            if(bluePlayers.contains(player)){
-                LOGGER.info("Tried to force add a player, but the player is already on that team!");
-                return;
-            }
-
-            LOGGER.info("Force adding player to blue team.");
-
-            bluePlayers.add(player);
-            battleRegions.membersBlue.addPlayer(player.toString());
-            battleRegions.regionBlue.setMembers(battleRegions.membersBlue);
-            player.getInventory().clear(); //clear inventory
-            player.setHealth(20); //heal
-            player.setFoodLevel(20); //feed
-            player.getInventory().addItem(compass); //give player a compass for seek
-            teamBlue.addEntity(player); //add player to team
-            player.setScoreboard(board); //set player scoreboard
-            prepPhaseBossBar.addPlayer(player); //display prep timer
-            Score score = objective.getScore(player);
-            score.setScore(0);
-            player.teleport(blueMidPoint, PlayerTeleportEvent.TeleportCause.END_GATEWAY);
-
+        else{
+            LOGGER.info("Could not add player to regionbattle, they are not in the battle world!");
         }
-
-        ConsoleCommandSender console = Bukkit.getServer().getConsoleSender();
-        Bukkit.dispatchCommand(console,"wg flushstates"); //flushstates needed as players are in region during flag change.
 
     }
 
