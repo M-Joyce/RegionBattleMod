@@ -125,21 +125,21 @@ public class Regions {
 
         //Create List of points for vertical particles at corners of region
         List<Location> particleLocations = new ArrayList<>();
-        for(int maxBlueY=maxBlue.getBlockY();maxBlueY>minBlue.getBlockY();maxBlueY--){ //Blue Region Particles
+        for(int maxBlueY=maxBlue.getBlockY();maxBlueY>minBlue.getBlockY();maxBlueY-=3){ //Blue Region Particles
             //Vertical corners
             particleLocations.add(new Location(world,maxBlue.getBlockX(),maxBlueY,maxBlue.getBlockZ()));
             particleLocations.add(new Location(world,minBlue.getBlockX(),maxBlueY,maxBlue.getBlockZ()));
             particleLocations.add(new Location(world,maxBlue.getBlockX(),maxBlueY,minBlue.getBlockZ()));
             particleLocations.add(new Location(world,minBlue.getBlockX(),maxBlueY,minBlue.getBlockZ()));
         }
-        for(int maxRedY=maxRed.getBlockY();maxRedY>minRed.getBlockY();maxRedY--) { //Red Region Particles
+        for(int maxRedY=maxRed.getBlockY();maxRedY>minRed.getBlockY();maxRedY-=3) { //Red Region Particles
             //vertical corners
             particleLocations.add(new Location(world,maxRed.getBlockX(),maxRedY,maxRed.getBlockZ()));
             particleLocations.add(new Location(world,minRed.getBlockX(),maxRedY,maxRed.getBlockZ()));
             particleLocations.add(new Location(world,maxRed.getBlockX(),maxRedY,minRed.getBlockZ()));
             particleLocations.add(new Location(world,minRed.getBlockX(),maxRedY,minRed.getBlockZ()));
         }
-        for(int maxRedX=maxRed.getBlockX();maxRedX>minRed.getBlockX();maxRedX--) { //Red Region Particles
+        for(int maxRedX=maxRed.getBlockX();maxRedX>minRed.getBlockX();maxRedX-=3) { //Red Region Particles
             //Ground
             for(int y=62; y<=167 ; y+=15) {
                 particleLocations.add(new Location(world,maxRedX,y,maxRed.getBlockZ()));
@@ -147,21 +147,21 @@ public class Regions {
             }
 
         }
-        for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX--) { //Blue Region Particles - North and South Boundary
+        for(int maxBlueX=maxBlue.getBlockX();maxBlueX>minBlue.getBlockX();maxBlueX-=3) { //Blue Region Particles - North and South Boundary
             //Ground
             for(int y=62; y<=167 ; y+=15) {
                 particleLocations.add(new Location(world,maxBlueX,y,maxBlue.getBlockZ()));
                 particleLocations.add(new Location(world,maxBlueX,y,minBlue.getBlockZ()));
             }
         }
-        for(int maxRedZ=maxRed.getBlockZ();maxRedZ>minRed.getBlockZ();maxRedZ--) { //Red Region Particles
+        for(int maxRedZ=maxRed.getBlockZ();maxRedZ>minRed.getBlockZ();maxRedZ-=3) { //Red Region Particles
             //Ground
             for(int y=62; y<=167 ; y+=15) {
                 particleLocations.add(new Location(world,maxRed.getBlockX(),y,maxRedZ));
                 particleLocations.add(new Location(world,minRed.getBlockX(),y,maxRedZ));
             }
         }
-        for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ--) { //Blue Region Particles - West and East Boundary
+        for(int maxBlueZ=maxBlue.getBlockZ();maxBlueZ>minBlue.getBlockZ();maxBlueZ-=3) { //Blue Region Particles - West and East Boundary
             //Ground
             for(int y=62; y<=167 ; y+=15) {
                 particleLocations.add(new Location(world,maxBlue.getBlockX(),y,maxBlueZ));
