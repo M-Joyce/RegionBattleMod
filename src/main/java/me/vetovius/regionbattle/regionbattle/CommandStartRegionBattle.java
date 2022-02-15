@@ -54,7 +54,12 @@ public class CommandStartRegionBattle implements CommandExecutor {
                         Bukkit.getScheduler().cancelTask(checkIfStartNewBattle);
                     }
                     else{
-                        Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.RED + "There is already an ongoing battle! Wait until it ends!");
+                        if(sender instanceof Player){ //will throw exception since console can run this.
+                            Bukkit.getPlayer(sender.getName()).sendMessage(ChatColor.RED + "There is already an ongoing battle! Wait until it ends!");
+                        }
+                        else{
+                            LOGGER.info("There is already an ongoing battle! Wait until it ends!");
+                        }
                     }
                     if (newBattleCountdownTask != null) {
                         newBattleCountdownTask.cancel();
