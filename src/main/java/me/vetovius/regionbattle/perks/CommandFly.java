@@ -24,7 +24,7 @@ public class CommandFly implements CommandExecutor {
     RegionBattle plugin = RegionBattle.getPlugin(RegionBattle.class);
     private int flightTimer;
     private static final int flyMinutes = 60;
-    private static final int flyCooldownHours = 12;
+    private static final int flyCooldownHours = 8;
 
     // This method is called, when somebody uses our command
     @Override
