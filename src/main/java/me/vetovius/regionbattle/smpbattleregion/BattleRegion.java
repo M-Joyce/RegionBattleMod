@@ -127,7 +127,7 @@ public class BattleRegion implements Listener {
         //Actual Battle Region Logic goes here.
         checkForPlayers = Bukkit.getScheduler().scheduleSyncRepeatingTask(pluginInstance, new Runnable() {
             public void run() {
-                playersInZone = (ArrayList<Player>) battleRegionCenter.getNearbyPlayers(radius); //updating the playersInZone list if zone is empty or contains players.
+                playersInZone = (ArrayList<Player>) battleRegionCenter.getNearbyPlayers(radius+3); //updating the playersInZone list if zone is empty or contains players. // + 3 to make the capturable area slightly bigger
                 captureProgressBarPlayersList = (ArrayList<Player>) battleRegionCenter.getNearbyPlayers(captureBarRadius);
 
                 for(Player p : captureProgressBar.getPlayers()){
